@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1000591950923",
+    "project_id": "nhatro360-1dfaa",
+    "storage_bucket": "nhatro360-1dfaa.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1000591950923:android:d1f3ca4fb48456437139ce",
+        "android_client_info": {
+          "package_name": "com.example.nhatro360"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAt7bBdxJw7yutpKaqnK3Q8VNW7xfbbXt8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
