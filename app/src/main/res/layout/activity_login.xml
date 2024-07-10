@@ -22,7 +22,7 @@
     <ImageView
         android:id="@+id/imV_top"
         android:layout_width="match_parent"
-        android:layout_height="130dp"
+        android:layout_height="120dp"
         android:layout_alignParentTop="true"
         android:layout_marginLeft="0dp"
         android:layout_marginTop="0dp"
@@ -47,14 +47,16 @@
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    app:boxStrokeColor="@color/blue2"
+                    app:boxStrokeErrorColor="@color/red">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/edt_email"
                         android:layout_width="match_parent"
-                        android:layout_height="55dp"
-                        android:inputType="textEmailAddress"
-                        android:hint="@string/login_email_hint">
+                        android:layout_height="50dp"
+                        android:hint="@string/login_email_hint"
+                        android:inputType="textEmailAddress">
 
                     </com.google.android.material.textfield.TextInputEditText>
                 </com.google.android.material.textfield.TextInputLayout>
@@ -63,7 +65,7 @@
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginVertical="10dp">
+                    android:layout_marginVertical="5dp">
 
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/pw"
@@ -73,12 +75,14 @@
                         tools:ignore="MissingConstraints"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent">
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:boxStrokeColor="@color/blue2"
+                        app:boxStrokeErrorColor="@color/red">
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/edt_password"
                             android:layout_width="match_parent"
-                            android:layout_height="55dp"
+                            android:layout_height="50dp"
                             android:hint="@string/login_password_hint"
                             android:inputType="textPassword" />
 
@@ -135,6 +139,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginVertical="10dp"
                     android:orientation="horizontal"
                     android:gravity="center">
 
@@ -170,7 +175,7 @@
                     android:id="@+id/btn_google"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginVertical="10dp"
+                    android:layout_marginBottom="10dp"
                     android:background="@drawable/button_border"
                     android:gravity="center"
                     android:text="@string/login_button4"
