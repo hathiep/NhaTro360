@@ -14,15 +14,17 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.fragment.app.FragmentStatePagerAdapter;
 
+import com.example.nhatro360.CustomViewPager;
+import com.example.nhatro360.ViewPagerAdapter;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.navigation.NavigationBarView;
-import com.google.android.material.navigation.NavigationView;
 import com.example.nhatro360.R;
 
 public class MainActivity extends AppCompatActivity {
 
-    BottomNavigationView bottomNavigationView;
+    private BottomNavigationView bottomNavigationView;
+    private CustomViewPager viewPager; // Use CustomViewPager
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,29 +58,46 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
+        init();
+        setUpViewPager();
+        setOnMenuSelected();
+
+    }
+
+    public void init(){
+        viewPager = findViewById(R.id.view_pager); // Cast to CustomViewPager is not necessary
         bottomNavigationView = findViewById(R.id.bottom_navigation);
+    }
+
+    private void setUpViewPager(){
+        ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager(), FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
+        viewPager.setAdapter(viewPagerAdapter);
+    }
+
+    private void setOnMenuSelected(){
         bottomNavigationView.setOnItemSelectedListener(new BottomNavigationView.OnItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 int itemId = item.getItemId();
                 if (itemId == R.id.nav_home) {
-                    Toast.makeText(MainActivity.this, "Trang chủ", Toast.LENGTH_SHORT).show();
+                    viewPager.setCurrentItem(0, false); // Disable smooth scrolling
                     return true;
                 }
                 if (itemId == R.id.nav_search) {
-                    Toast.makeText(MainActivity.this, "Tìm kiếm", Toast.LENGTH_SHORT).show();
+                    viewPager.setCurrentItem(1, false); // Disable smooth scrolling
                     return true;
                 }
                 if (itemId == R.id.nav_post) {
-                    Toast.makeText(MainActivity.this, "Bài viết", Toast.LENGTH_SHORT).show();
+                    viewPager.setCurrentItem(2, false); // Disable smooth scrolling
                     return true;
                 }
                 if (itemId == R.id.nav_account) {
-                    Toast.makeText(MainActivity.this, "Tài khoản", Toast.LENGTH_SHORT).show();
+                    viewPager.setCurrentItem(3, false); // Disable smooth scrolling
                     return true;
                 }
                 return false;
             }
         });
     }
+
 }

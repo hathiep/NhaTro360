@@ -3,7 +3,9 @@
     <item
         android:id="@+id/nav_home"
         android:title="@string/home"
-        android:icon="@drawable/icon_home" />
+        android:icon="@drawable/icon_home"
+        android:iconTint="@android:color/white"
+        android:background="@android:color/white" />
     <item
         android:id="@+id/nav_search"
         android:title="@string/search"
