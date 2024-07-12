@@ -171,12 +171,13 @@
 
                 </LinearLayout>
 
-                <Button
+                <TextView
                     android:id="@+id/btn_google"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="45dp"
                     android:layout_marginBottom="10dp"
                     android:background="@drawable/button_border"
+                    android:backgroundTint="@color/red2"
                     android:gravity="center"
                     android:text="@string/login_button4"
                     android:textAllCaps="true"

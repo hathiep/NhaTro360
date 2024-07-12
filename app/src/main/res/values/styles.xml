@@ -1,12 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-<!--    &lt;!&ndash; Base application theme &ndash;&gt;-->
-<!--    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">-->
-<!--        &lt;!&ndash; Customize your theme here &ndash;&gt;-->
-<!--        <item name="colorPrimary">@color/blue2</item>-->
-<!--        <item name="colorPrimaryDark">@color/blue2</item>-->
-<!--        <item name="colorAccent">@color/blue2</item>-->
-<!--        <item name="android:navigationBarColor">@color/blue2</item>-->
-<!--    </style>-->
+    <!-- Base application theme -->
 </resources>
 
