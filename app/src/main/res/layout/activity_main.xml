@@ -12,8 +12,23 @@
     <com.example.nhatro360.CustomViewPager
         android:id="@+id/view_pager"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@id/bottom_navigation"/>
+        android:layout_height="1000dp"
+        android:layout_alignParentTop="true" />
+
+    <!-- FrameLayout để chứa các fragment -->
+    <FrameLayout
+        android:id="@+id/fragment_container"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_below="@id/view_pager"
+        android:layout_above="@id/bottom_navigation" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_above="@id/bottom_navigation"
+        android:background="@drawable/bottom_navigation_background" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_navigation"
@@ -27,8 +42,6 @@
         app:itemTextColor="@drawable/bottom_navigation_icon"
         app:itemBackground="@drawable/bottom_navigation_item_background"
         app:labelVisibilityMode="labeled"
-        app:menu="@menu/menu_bottom_nav">
-
-    </com.google.android.material.bottomnavigation.BottomNavigationView>
+        app:menu="@menu/menu_bottom_nav" />
 
 </RelativeLayout>

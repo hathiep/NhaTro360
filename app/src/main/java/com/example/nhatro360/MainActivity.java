@@ -8,18 +8,15 @@ import android.view.View;
 import android.view.WindowInsetsController;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 
-import com.example.nhatro360.CustomViewPager;
-import com.example.nhatro360.ViewPagerAdapter;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.example.nhatro360.R;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -29,7 +26,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             getWindow().setDecorFitsSystemWindows(false);
@@ -62,6 +58,10 @@ public class MainActivity extends AppCompatActivity {
         setUpViewPager();
         setOnMenuSelected();
 
+        // Thêm fragment mặc định (nếu có)
+        if (savedInstanceState == null) {
+            openFragment(new HomeFragment());
+        }
     }
 
     public void init(){
@@ -100,4 +100,10 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    public void openFragment(Fragment fragment) {
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragment_container, fragment)
+                .addToBackStack(null)
+                .commit();
+    }
 }

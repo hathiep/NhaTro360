@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/view_pager"
+        android:layout_width="match_parent"
+        android:layout_height="200dp" />
+
+    <TextView
+        android:id="@+id/tv_price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Price"
+        android:textSize="18sp"
+        android:paddingTop="8dp"
+        android:textColor="@color/blue" />
+
+    <TextView
+        android:id="@+id/tv_address"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Address"
+        android:textSize="18sp"
+        android:paddingTop="8dp"
+        android:textColor="@color/blue" />
+
+    <TextView
+        android:id="@+id/tv_area"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Area"
+        android:textSize="18sp"
+        android:paddingTop="8dp"
+        android:textColor="@color/blue" />
+
+    <TextView
+        android:id="@+id/tv_time_posted"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Time Posted"
+        android:textSize="18sp"
+        android:paddingTop="8dp"
+        android:textColor="@color/blue" />
+
+    <!-- Add icons for amenities -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingTop="8dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/image_wifi"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:src="@drawable/icon_wifi"
+                android:paddingEnd="8dp"
+                app:tint="@color/black" />
+
+            <ImageView
+                android:id="@+id/image_wc"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:src="@drawable/icon_wc"
+                android:paddingEnd="8dp"
+                app:tint="@color/black" />
+
+            <ImageView
+                android:id="@+id/image_parking"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:src="@drawable/icon_parking"
+                android:paddingEnd="8dp"
+                app:tint="@color/black" />
+
+            <ImageView
+                android:id="@+id/image_free_time"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:src="@drawable/icon_free_time"
+                android:paddingEnd="8dp"
+                app:tint="@color/black" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/image_kitchen"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:src="@drawable/icon_kitchen"
+                android:paddingEnd="8dp"
+                app:tint="@color/black" />
+
+            <ImageView
+                android:id="@+id/image_air_conditioner"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:src="@drawable/icon_air_conditioner"
+                android:paddingEnd="8dp"
+                app:tint="@color/black" />
+
+            <ImageView
+                android:id="@+id/image_fridge"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:src="@drawable/icon_fridge"
+                android:paddingEnd="8dp"
+                app:tint="@color/black" />
+
+            <ImageView
+                android:id="@+id/image_washing_machine"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:src="@drawable/icon_washing_machine"
+                android:paddingEnd="8dp"
+                app:tint="@color/black" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+</LinearLayout>

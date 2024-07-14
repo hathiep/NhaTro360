@@ -10,6 +10,10 @@ public class ViewPagerAdapter extends FragmentStatePagerAdapter {
         super(fm, behavior);
     }
 
+    public ViewPagerAdapter(FragmentManager childFragmentManager, int[] imageResourcesArray) {
+        super(childFragmentManager);
+    }
+
     @NonNull
     @Override
     public Fragment getItem(int position) {
