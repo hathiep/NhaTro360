@@ -29,4 +29,12 @@
     <string name="search">Tìm kiếm</string>
     <string name="post">Bài viết</string>
     <string name="account">Tài khoản</string>
+    <string name="utility1">Wifi</string>
+    <string name="utility2">WC riêng</string>
+    <string name="utility3">Giữ xe</string>
+    <string name="utility4">Tự do</string>
+    <string name="utility5">Bếp</string>
+    <string name="utility6">Điều hoà</string>
+    <string name="utility7">Tủ lạnh</string>
+    <string name="utility8">Máy giặt</string>
 </resources>

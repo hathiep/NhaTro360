@@ -1,6 +1,8 @@
 package com.example.nhatro360;
 
-import android.content.Intent;
+import android.annotation.SuppressLint;
+import android.content.Context;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -9,22 +11,27 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class RoomDetail extends AppCompatActivity {
 
     private static final String TAG = "RoomDetailActivity";
 
-    private TextView tvPrice, tvAddress, tvArea, tvTimePosted;
-    private ImageView imageWifi, imageWC, imageParking, imageFreeTime, imageKitchen, imageAirConditioner, imageFridge, imageWashingMachine;
+    private TextView tvPrice, tvTitle, tvAddress, tvContact, tvArea, tvTimePosted, tvUtilities, tvWifi, tvWc, tvParking, tvFreeTime, tvKitchen, tvAirConditioner, tvFridge, tvWashingMachine;
+    private ImageView imvWifi, imvWc, imvParking, imvFreeTime, imvKitchen, imvAirConditioner, imvFridge, imvWashingMachine;
+    private List<TextView> listTvUtilites = new ArrayList<>();
+    private List<ImageView> listImvUtilites = new ArrayList<>();
     private ViewPager viewPager;
 
     private FirebaseFirestore db;
 
+    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,20 +42,29 @@ public class RoomDetail extends AppCompatActivity {
 
         // Initialize views
         tvPrice = findViewById(R.id.tv_price);
+        tvTitle = findViewById(R.id.tv_title);
         tvAddress = findViewById(R.id.tv_address);
+        tvContact = findViewById(R.id.tv_contact);
         tvArea = findViewById(R.id.tv_area);
         tvTimePosted = findViewById(R.id.tv_time_posted);
-
-        imageWifi = findViewById(R.id.image_wifi);
-        imageWC = findViewById(R.id.image_wc);
-        imageParking = findViewById(R.id.image_parking);
-        imageFreeTime = findViewById(R.id.image_free_time);
-        imageKitchen = findViewById(R.id.image_kitchen);
-        imageAirConditioner = findViewById(R.id.image_air_conditioner);
-        imageFridge = findViewById(R.id.image_fridge);
-        imageWashingMachine = findViewById(R.id.image_washing_machine);
-
+        tvUtilities = findViewById(R.id.tv_utilities);
         viewPager = findViewById(R.id.view_pager);
+        listImvUtilites.add(findViewById(R.id.imv_wifi));
+        listImvUtilites.add(findViewById(R.id.imv_wc));
+        listImvUtilites.add(findViewById(R.id.imv_parking));
+        listImvUtilites.add(findViewById(R.id.imv_free_time));
+        listImvUtilites.add(findViewById(R.id.imv_kitchen));
+        listImvUtilites.add(findViewById(R.id.imv_air_conditioner));
+        listImvUtilites.add(findViewById(R.id.imv_fridge));
+        listImvUtilites.add(findViewById(R.id.imv_washing_machine));
+        listTvUtilites.add(findViewById(R.id.tv_wifi));
+        listTvUtilites.add(findViewById(R.id.tv_wc));
+        listTvUtilites.add(findViewById(R.id.tv_parking));
+        listTvUtilites.add(findViewById(R.id.tv_free_time));
+        listTvUtilites.add(findViewById(R.id.tv_kitchen));
+        listTvUtilites.add(findViewById(R.id.tv_air_conditioner));
+        listTvUtilites.add(findViewById(R.id.tv_fridge));
+        listTvUtilites.add(findViewById(R.id.tv_washing_machine));
 
         String roomId = getIntent().getStringExtra("roomId");
         if (roomId != null) {
@@ -66,12 +82,7 @@ public class RoomDetail extends AppCompatActivity {
                         Room room = documentSnapshot.toObject(Room.class);
                         if (room != null) {
                             // Hiển thị thông tin phòng lên các TextView
-                            tvPrice.setText(room.getPrice());
-                            tvAddress.setText(room.getAddress());
-                            tvArea.setText(room.getArea());
-                            tvTimePosted.setText(room.getTimePosted());
-
-                            // Các xử lý khác nếu cần
+                            updateUI(room);
                         } else {
                             Log.d("RoomDetailActivity", "No such document");
                         }
@@ -86,46 +97,36 @@ public class RoomDetail extends AppCompatActivity {
 
     private void updateUI(Room room) {
         // Set text views
-        tvPrice.setText(room.getPrice());
+        tvPrice.setText(room.getPrice() + "/tháng");
+        tvTitle.setText(room.getTitle());
         tvAddress.setText(room.getAddress());
-        tvArea.setText(room.getArea());
+        tvContact.setText(room.getPhone() + " - " +  room.getHost());
+        tvArea.setText("DT " + room.getArea() +" m2");
         tvTimePosted.setText(room.getTimePosted());
 
+        int num_utilities = setUtilities(room.isHasWifi(), 0) + setUtilities(room.isHasPrivateWC(), 1) + setUtilities(room.isHasParking(), 2)
+                + setUtilities(room.isHasFreeTime(), 3) + setUtilities(room.isHasKitchen(), 4) + setUtilities(room.isHasAirConditioner(), 5)
+                + setUtilities(room.isHasFridge(), 6) + setUtilities(room.isHasWashingMachine(), 7);
+        tvUtilities.setText("Tiện ích phòng (" + num_utilities + ")");
         // Set up ViewPager with images
-        if (room.getImageResourceIds() != null && !room.getImageResourceIds().isEmpty()) {
-            int[] imageResourcesArray = new int[room.getImageResourceIds().size()];
-            for (int i = 0; i < room.getImageResourceIds().size(); i++) {
-                imageResourcesArray[i] = room.getImageResourceIds().get(i);
-            }
-            ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager(), imageResourcesArray);
+        if (room.getImages() != null && !room.getImages().isEmpty()) {
+            ImagePagerAdapter adapter = new ImagePagerAdapter(this, room.getImages());
             viewPager.setAdapter(adapter);
         }
-
-        // Set visibility and color filter for amenities icons
-        setImageVisibilityAndColor(imageWifi, room.isHasWifi());
-        setImageVisibilityAndColor(imageWC, room.isHasPrivateWC());
-        setImageVisibilityAndColor(imageParking, room.isHasParking());
-        setImageVisibilityAndColor(imageFreeTime, room.isHasFreeTime());
-        setImageVisibilityAndColor(imageKitchen, room.isHasKitchen());
-        setImageVisibilityAndColor(imageAirConditioner, room.isHasAirConditioner());
-        setImageVisibilityAndColor(imageFridge, room.isHasFridge());
-        setImageVisibilityAndColor(imageWashingMachine, room.isHasWashingMachine());
     }
 
-    // Helper method to set visibility and color filter for amenity icons
-    private void setImageVisibilityAndColor(ImageView imageView, boolean isVisible) {
-        if (isVisible) {
-            imageView.setVisibility(View.VISIBLE);
-            imageView.setColorFilter(getResources().getColor(R.color.blue));
-        } else {
-            imageView.setVisibility(View.GONE);
+    private int setUtilities(boolean utiliy, int i){
+        if(utiliy){
+            listImvUtilites.get(i).setColorFilter(ContextCompat.getColor(listImvUtilites.get(i).getContext(), R.color.blue2), PorterDuff.Mode.SRC_IN);
+            listTvUtilites.get(i).setTextColor(ContextCompat.getColor(listTvUtilites.get(i).getContext(), R.color.blue2));
+            return 1;
         }
+        return 0;
     }
+
     @Override
     public void onBackPressed() {
         super.onBackPressed();
         overridePendingTransition(0, 0);
     }
-
 }
-
