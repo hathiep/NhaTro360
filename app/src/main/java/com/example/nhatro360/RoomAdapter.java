@@ -57,7 +57,7 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
         public void bind(Room room) {
             tvPrice.setText(room.getPrice());
             tvAddress.setText(room.getAddress());
-            tvArea.setText(room.getArea());
+            tvArea.setText("DT " + room.getArea() +" m2");
             tvTimePosted.setText(room.getTimePosted());
         }
 

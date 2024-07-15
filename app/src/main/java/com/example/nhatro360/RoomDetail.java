@@ -23,8 +23,7 @@ public class RoomDetail extends AppCompatActivity {
 
     private static final String TAG = "RoomDetailActivity";
 
-    private TextView tvPrice, tvTitle, tvAddress, tvContact, tvArea, tvTimePosted, tvUtilities, tvWifi, tvWc, tvParking, tvFreeTime, tvKitchen, tvAirConditioner, tvFridge, tvWashingMachine;
-    private ImageView imvWifi, imvWc, imvParking, imvFreeTime, imvKitchen, imvAirConditioner, imvFridge, imvWashingMachine;
+    private TextView tvPrice, tvTitle, tvAddress, tvContact, tvArea, tvTimePosted, tvUtilities, tvInfor;
     private List<TextView> listTvUtilites = new ArrayList<>();
     private List<ImageView> listImvUtilites = new ArrayList<>();
     private ViewPager viewPager;
@@ -40,7 +39,18 @@ public class RoomDetail extends AppCompatActivity {
         // Initialize Firestore
         db = FirebaseFirestore.getInstance();
 
-        // Initialize views
+        init();
+
+        String roomId = getIntent().getStringExtra("roomId");
+        if (roomId != null) {
+            fetchRoomDetailsFromFirestore(roomId);
+        } else {
+            Log.e("RoomDetailActivity", "Room ID is null");
+        }
+    }
+
+    // Initialize views
+    private void init() {
         tvPrice = findViewById(R.id.tv_price);
         tvTitle = findViewById(R.id.tv_title);
         tvAddress = findViewById(R.id.tv_address);
@@ -49,29 +59,23 @@ public class RoomDetail extends AppCompatActivity {
         tvTimePosted = findViewById(R.id.tv_time_posted);
         tvUtilities = findViewById(R.id.tv_utilities);
         viewPager = findViewById(R.id.view_pager);
-        listImvUtilites.add(findViewById(R.id.imv_wifi));
-        listImvUtilites.add(findViewById(R.id.imv_wc));
-        listImvUtilites.add(findViewById(R.id.imv_parking));
-        listImvUtilites.add(findViewById(R.id.imv_free_time));
-        listImvUtilites.add(findViewById(R.id.imv_kitchen));
-        listImvUtilites.add(findViewById(R.id.imv_air_conditioner));
-        listImvUtilites.add(findViewById(R.id.imv_fridge));
-        listImvUtilites.add(findViewById(R.id.imv_washing_machine));
-        listTvUtilites.add(findViewById(R.id.tv_wifi));
-        listTvUtilites.add(findViewById(R.id.tv_wc));
-        listTvUtilites.add(findViewById(R.id.tv_parking));
-        listTvUtilites.add(findViewById(R.id.tv_free_time));
-        listTvUtilites.add(findViewById(R.id.tv_kitchen));
-        listTvUtilites.add(findViewById(R.id.tv_air_conditioner));
-        listTvUtilites.add(findViewById(R.id.tv_fridge));
-        listTvUtilites.add(findViewById(R.id.tv_washing_machine));
-
-        String roomId = getIntent().getStringExtra("roomId");
-        if (roomId != null) {
-            fetchRoomDetailsFromFirestore(roomId);
-        } else {
-            Log.e("RoomDetailActivity", "Room ID is null");
-        }
+            listImvUtilites.add(findViewById(R.id.imv_wifi));
+            listImvUtilites.add(findViewById(R.id.imv_wc));
+            listImvUtilites.add(findViewById(R.id.imv_parking));
+            listImvUtilites.add(findViewById(R.id.imv_free_time));
+            listImvUtilites.add(findViewById(R.id.imv_kitchen));
+            listImvUtilites.add(findViewById(R.id.imv_air_conditioner));
+            listImvUtilites.add(findViewById(R.id.imv_fridge));
+            listImvUtilites.add(findViewById(R.id.imv_washing_machine));
+            listTvUtilites.add(findViewById(R.id.tv_wifi));
+            listTvUtilites.add(findViewById(R.id.tv_wc));
+            listTvUtilites.add(findViewById(R.id.tv_parking));
+            listTvUtilites.add(findViewById(R.id.tv_free_time));
+            listTvUtilites.add(findViewById(R.id.tv_kitchen));
+            listTvUtilites.add(findViewById(R.id.tv_air_conditioner));
+            listTvUtilites.add(findViewById(R.id.tv_fridge));
+            listTvUtilites.add(findViewById(R.id.tv_washing_machine));
+        tvInfor = findViewById(R.id.tv_infor);
     }
 
     private void fetchRoomDetailsFromFirestore(String roomId) {
@@ -98,6 +102,13 @@ public class RoomDetail extends AppCompatActivity {
     private void updateUI(Room room) {
         // Set text views
         tvPrice.setText(room.getPrice() + "/tháng");
+
+        // Set up ViewPager with images
+        if (room.getImages() != null && !room.getImages().isEmpty()) {
+            ImagePagerAdapter adapter = new ImagePagerAdapter(this, room.getImages());
+            viewPager.setAdapter(adapter);
+        }
+
         tvTitle.setText(room.getTitle());
         tvAddress.setText(room.getAddress());
         tvContact.setText(room.getPhone() + " - " +  room.getHost());
@@ -108,11 +119,7 @@ public class RoomDetail extends AppCompatActivity {
                 + setUtilities(room.isHasFreeTime(), 3) + setUtilities(room.isHasKitchen(), 4) + setUtilities(room.isHasAirConditioner(), 5)
                 + setUtilities(room.isHasFridge(), 6) + setUtilities(room.isHasWashingMachine(), 7);
         tvUtilities.setText("Tiện ích phòng (" + num_utilities + ")");
-        // Set up ViewPager with images
-        if (room.getImages() != null && !room.getImages().isEmpty()) {
-            ImagePagerAdapter adapter = new ImagePagerAdapter(this, room.getImages());
-            viewPager.setAdapter(adapter);
-        }
+        tvInfor.setText(room.getDetail().replaceAll("\n", "<br>"));
     }
 
     private int setUtilities(boolean utiliy, int i){
