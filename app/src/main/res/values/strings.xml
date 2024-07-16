@@ -38,4 +38,6 @@
     <string name="utility7">Tủ lạnh</string>
     <string name="utility8">Máy giặt</string>
     <string name="detail">Mô tả chi tiết</string>
+    <string name="map">Bản đồ</string>
+    <string name="google_maps_key" translatable="false">AIzaSyC2LGBiafInNtVwzC7uWpz-llfA5bqMLAk</string>
 </resources>

@@ -4,12 +4,14 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
+import com.bumptech.glide.Glide;
 
 public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder> {
 
@@ -41,11 +43,13 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
 
     public class RoomViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
+        private ImageView imvImage;
         private TextView tvPrice, tvAddress, tvArea, tvTimePosted;
         private OnRoomClickListener onRoomClickListener;
 
         public RoomViewHolder(@NonNull View itemView, OnRoomClickListener onRoomClickListener) {
             super(itemView);
+            imvImage = itemView.findViewById(R.id.item_image);
             tvPrice = itemView.findViewById(R.id.tv_price);
             tvAddress = itemView.findViewById(R.id.tv_address);
             tvArea = itemView.findViewById(R.id.tv_area);
@@ -55,6 +59,12 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
         }
 
         public void bind(Room room) {
+            // Load the first image from the images list using Glide
+            if (room.getImages() != null && !room.getImages().isEmpty()) {
+                Glide.with(imvImage.getContext())
+                        .load(room.getImages().get(0))
+                        .into(imvImage);
+            }
             tvPrice.setText(room.getPrice());
             tvAddress.setText(room.getAddress());
             tvArea.setText("DT " + room.getArea() +" m2");
