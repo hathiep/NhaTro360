@@ -39,5 +39,8 @@
     <string name="utility8">Máy giặt</string>
     <string name="detail">Mô tả chi tiết</string>
     <string name="map">Bản đồ</string>
+    <string name="action_call">Gọi điện</string>
+    <string name="action_message">Nhắn tin</string>
+    <string name="action_directions">Chỉ đường</string>
     <string name="google_maps_key" translatable="false">AIzaSyC2LGBiafInNtVwzC7uWpz-llfA5bqMLAk</string>
 </resources>

@@ -5,12 +5,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.viewpager.widget.PagerAdapter;
 
-import java.util.List;
 import com.bumptech.glide.Glide;
+
+import java.util.List;
 
 public class ImagePagerAdapter extends PagerAdapter {
 
@@ -36,8 +38,17 @@ public class ImagePagerAdapter extends PagerAdapter {
     @Override
     public Object instantiateItem(@NonNull ViewGroup container, int position) {
         View view = LayoutInflater.from(context).inflate(R.layout.item_image, container, false);
+
         ImageView imageView = view.findViewById(R.id.image_view);
+        TextView tvImageCount = view.findViewById(R.id.tv_image_count);
+
+        // Load image using Glide
         Glide.with(context).load(imageUrls.get(position)).into(imageView);
+
+        // Set image count text
+        String imageCountText = (position + 1) + "/" + imageUrls.size();
+        tvImageCount.setText(imageCountText);
+
         container.addView(view);
         return view;
     }

@@ -1,10 +1,24 @@
 package com.example.nhatro360;
 
 import android.annotation.SuppressLint;
+import android.app.Dialog;
+import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.PopupMenu;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.text.Html;
 
@@ -24,6 +38,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -68,6 +83,16 @@ public class RoomDetail extends AppCompatActivity implements OnMapReadyCallback 
 
         // Add click event to open full screen map
         mapFragment.getView().setOnClickListener(v -> openFullScreenMap());
+
+        // Setup Floating Action Button
+        ImageView imvMenu = findViewById(R.id.imV_menu);
+        imvMenu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showMenuDialog(view);
+            }
+        });
+
     }
 
     // Initialize views
@@ -225,5 +250,69 @@ public class RoomDetail extends AppCompatActivity implements OnMapReadyCallback 
             mMap.addMarker(new MarkerOptions().position(roomLatLng).title("Room Location"));
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(roomLatLng, 15));
         }
+    }
+
+    private void showMenuDialog(View view) {
+        findViewById(R.id.overlay).setVisibility(View.VISIBLE);
+        // Create a dialog with custom menu layout
+        Dialog dialog = new Dialog(RoomDetail.this);
+        dialog.setContentView(R.layout.custom_menu);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+        // Set dialog width to match parent and height to wrap content
+        WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
+        layoutParams.copyFrom(dialog.getWindow().getAttributes());
+        layoutParams.width = WindowManager.LayoutParams.MATCH_PARENT;
+        layoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
+        layoutParams.gravity = Gravity.BOTTOM;
+        dialog.getWindow().setAttributes(layoutParams);
+
+        // Show dialog
+        dialog.show();
+
+        // Set click listeners for the menu items
+        dialog.findViewById(R.id.action_call).setOnClickListener(v -> {
+            makeCall();
+            dialog.dismiss();
+        });
+
+        dialog.findViewById(R.id.action_message).setOnClickListener(v -> {
+            sendMessage();
+            dialog.dismiss();
+        });
+
+        dialog.findViewById(R.id.action_directions).setOnClickListener(v -> {
+            getDirections();
+            dialog.dismiss();
+        });
+
+        dialog.setOnDismissListener(dialogInterface -> {
+            // Hide overlay when dialog is dismissed
+            findViewById(R.id.overlay).setVisibility(View.GONE);
+        });
+
+    }
+
+
+
+
+    private void makeCall() {
+        Intent intent = new Intent(Intent.ACTION_DIAL);
+        intent.setData(Uri.parse("tel:" + tvContact.getText().toString().split(" - ")[0]));
+        startActivity(intent);
+    }
+
+    private void sendMessage() {
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setData(Uri.parse("sms:" + tvContact.getText().toString().split(" - ")[0]));
+        intent.putExtra("sms_body", "I am interested in the room at " + tvAddress.getText().toString());
+        startActivity(intent);
+    }
+
+    private void getDirections() {
+        Uri gmmIntentUri = Uri.parse("google.navigation:q=" + Uri.encode(tvAddress.getText().toString()));
+        Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+        mapIntent.setPackage("com.google.android.apps.maps");
+        startActivity(mapIntent);
     }
 }
