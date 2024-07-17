@@ -106,6 +106,7 @@ public class RoomDetail extends AppCompatActivity implements OnMapReadyCallback 
         tvTimePosted = findViewById(R.id.tv_time_posted);
         tvUtilities = findViewById(R.id.tv_utilities);
         viewPager = findViewById(R.id.view_pager);
+        setViewPagerHeight();
         listImvUtilites.add(findViewById(R.id.imv_wifi));
         listImvUtilites.add(findViewById(R.id.imv_wc));
         listImvUtilites.add(findViewById(R.id.imv_parking));
@@ -183,6 +184,18 @@ public class RoomDetail extends AppCompatActivity implements OnMapReadyCallback 
         return 0;
     }
 
+    private void setViewPagerHeight() {
+        // Lấy chiều rộng của màn hình
+        int screenWidth = getResources().getDisplayMetrics().widthPixels;
+        // Tính chiều cao dựa trên tỉ lệ 16:9
+        int height = (int) (screenWidth * 10.0 / 16.0);
+
+        // Đặt chiều cao cho ViewPager
+        ViewGroup.LayoutParams params = viewPager.getLayoutParams();
+        params.height = height;
+        viewPager.setLayoutParams(params);
+    }
+
     private void getLatLngFromAddress(String address) {
         Log.d(TAG, "Fetching lat/lng for address: " + address);
 
@@ -253,7 +266,9 @@ public class RoomDetail extends AppCompatActivity implements OnMapReadyCallback 
     }
 
     private void showMenuDialog(View view) {
-        findViewById(R.id.overlay).setVisibility(View.VISIBLE);
+        View overlay = findViewById(R.id.overlay);
+        overlay.setVisibility(View.VISIBLE);
+
         // Create a dialog with custom menu layout
         Dialog dialog = new Dialog(RoomDetail.this);
         dialog.setContentView(R.layout.custom_menu);
@@ -288,13 +303,9 @@ public class RoomDetail extends AppCompatActivity implements OnMapReadyCallback 
 
         dialog.setOnDismissListener(dialogInterface -> {
             // Hide overlay when dialog is dismissed
-            findViewById(R.id.overlay).setVisibility(View.GONE);
+            overlay.setVisibility(View.GONE);
         });
-
     }
-
-
-
 
     private void makeCall() {
         Intent intent = new Intent(Intent.ACTION_DIAL);
@@ -305,7 +316,7 @@ public class RoomDetail extends AppCompatActivity implements OnMapReadyCallback 
     private void sendMessage() {
         Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.setData(Uri.parse("sms:" + tvContact.getText().toString().split(" - ")[0]));
-        intent.putExtra("sms_body", "I am interested in the room at " + tvAddress.getText().toString());
+        intent.putExtra("sms_body", "Tôi quan tâm đến nhà trọ của bạn ở địa chỉ " + tvAddress.getText().toString());
         startActivity(intent);
     }
 

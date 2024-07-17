@@ -26,7 +26,7 @@
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="1dp"
+        android:layout_height="2dp"
         android:layout_above="@id/bottom_navigation"
         android:background="@drawable/bottom_navigation_background" />
 
@@ -37,10 +37,11 @@
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="0dp"
         android:background="@color/white"
+        app:itemPaddingTop="0dp"
         app:itemIconSize="35dp"
         app:itemIconTint="@drawable/bottom_navigation_icon"
         app:itemTextColor="@drawable/bottom_navigation_icon"
-        app:itemBackground="@drawable/bottom_navigation_item_background"
+        app:itemBackground="@color/white"
         app:labelVisibilityMode="labeled"
         app:menu="@menu/menu_bottom_nav" />
 

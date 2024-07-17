@@ -5,13 +5,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.List;
 import com.bumptech.glide.Glide;
+
+import java.util.List;
 
 public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder> {
 
@@ -34,6 +36,15 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
     public void onBindViewHolder(@NonNull RoomViewHolder holder, int position) {
         Room room = roomList.get(position);
         holder.bind(room);
+
+        // Tính toán chiều cao cho RelativeLayout theo tỉ lệ 16:9
+        holder.itemView.post(() -> {
+            int width = holder.relativeLayout.getWidth();
+            int height = (int) (width * 10.0 / 16.0);
+            ViewGroup.LayoutParams layoutParams = holder.relativeLayout.getLayoutParams();
+            layoutParams.height = height;
+            holder.relativeLayout.setLayoutParams(layoutParams);
+        });
     }
 
     @Override
@@ -43,12 +54,14 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
 
     public class RoomViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
+        private RelativeLayout relativeLayout;
         private ImageView imvImage;
         private TextView tvPrice, tvAddress, tvArea, tvTimePosted;
         private OnRoomClickListener onRoomClickListener;
 
         public RoomViewHolder(@NonNull View itemView, OnRoomClickListener onRoomClickListener) {
             super(itemView);
+            relativeLayout = itemView.findViewById(R.id.relative_layout);
             imvImage = itemView.findViewById(R.id.item_image);
             tvPrice = itemView.findViewById(R.id.tv_price);
             tvAddress = itemView.findViewById(R.id.tv_address);
@@ -67,7 +80,7 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
             }
             tvPrice.setText(room.getPrice());
             tvAddress.setText(room.getAddress());
-            tvArea.setText("DT " + room.getArea() +" m2");
+            tvArea.setText("DT " + room.getArea() + " m2");
             tvTimePosted.setText(room.getTimePosted());
         }
 
@@ -80,6 +93,5 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
                 onRoomClickListener.onRoomClick(room);
             }
         }
-
     }
 }

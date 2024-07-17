@@ -13,8 +13,10 @@
         <item name="colorSecondaryVariant">@color/blue2</item>
         <item name="colorOnSecondary">@color/white</item>
         <!-- Button color. -->
-        <item name="buttonStyle">@style/Widget.AppCompat.Button.Colored</item>
+        <item name="bottomNavigationStyle">@style/Widget.MaterialComponents.BottomNavigationView</item>
     </style>
 
-    <style name="Theme.NhaTro360" parent="Base.Theme.NhaTro360" />
+    <style name="Theme.NhaTro360" parent="Base.Theme.NhaTro360">
+        <item name="bottomNavigationStyle">@style/Widget.MaterialComponents.BottomNavigationView</item>
+    </style>
 </resources>
