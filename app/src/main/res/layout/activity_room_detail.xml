@@ -207,8 +207,7 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:paddingHorizontal="20dp">
+                        android:orientation="horizontal">
 
                         <LinearLayout
                             android:layout_width="0dp"
@@ -219,7 +218,7 @@
                             <ImageView
                                 android:id="@+id/imv_wifi"
                                 android:layout_width="wrap_content"
-                                android:layout_height="50dp"
+                                android:layout_height="45dp"
                                 android:layout_gravity="center"
                                 android:src="@drawable/icon_wifi"
                                 app:tint="@color/black2" />
@@ -229,7 +228,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:text="@string/utility1"
-                                android:textSize="16sp"
+                                android:textSize="14sp"
                                 android:paddingTop="2dp"
                                 android:textAlignment="center"
                                 android:textColor="@color/black2" />
@@ -245,7 +244,7 @@
                             <ImageView
                                 android:id="@+id/imv_wc"
                                 android:layout_width="wrap_content"
-                                android:layout_height="50dp"
+                                android:layout_height="45dp"
                                 android:layout_gravity="center"
                                 android:src="@drawable/icon_wc"
                                 app:tint="@color/black2" />
@@ -255,7 +254,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:text="@string/utility2"
-                                android:textSize="16sp"
+                                android:textSize="14sp"
                                 android:paddingTop="2dp"
                                 android:textAlignment="center"
                                 android:textColor="@color/black2" />
@@ -271,7 +270,7 @@
                             <ImageView
                                 android:id="@+id/imv_parking"
                                 android:layout_width="wrap_content"
-                                android:layout_height="50dp"
+                                android:layout_height="45dp"
                                 android:layout_gravity="center"
                                 android:src="@drawable/icon_parking"
                                 app:tint="@color/black2" />
@@ -281,7 +280,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:text="@string/utility3"
-                                android:textSize="16sp"
+                                android:textSize="14sp"
                                 android:paddingTop="2dp"
                                 android:textAlignment="center"
                                 android:textColor="@color/black2" />
@@ -297,7 +296,7 @@
                             <ImageView
                                 android:id="@+id/imv_free_time"
                                 android:layout_width="wrap_content"
-                                android:layout_height="50dp"
+                                android:layout_height="45dp"
                                 android:layout_gravity="center"
                                 android:src="@drawable/icon_free_time"
                                 app:tint="@color/black2" />
@@ -307,7 +306,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:text="@string/utility4"
-                                android:textSize="16sp"
+                                android:textSize="14sp"
                                 android:paddingTop="2dp"
                                 android:textAlignment="center"
                                 android:textColor="@color/black2" />
@@ -320,8 +319,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
-                        android:layout_marginTop="10dp"
-                        android:paddingHorizontal="20dp">
+                        android:layout_marginTop="10dp">
 
                         <LinearLayout
                             android:layout_width="0dp"
@@ -332,7 +330,7 @@
                             <ImageView
                                 android:id="@+id/imv_kitchen"
                                 android:layout_width="wrap_content"
-                                android:layout_height="50dp"
+                                android:layout_height="45dp"
                                 android:layout_gravity="center"
                                 android:src="@drawable/icon_kitchen"
                                 app:tint="@color/black" />
@@ -342,7 +340,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:text="@string/utility5"
-                                android:textSize="16sp"
+                                android:textSize="14sp"
                                 android:paddingTop="2dp"
                                 android:textAlignment="center"
                                 android:textColor="@color/black" />
@@ -358,7 +356,7 @@
                             <ImageView
                                 android:id="@+id/imv_air_conditioner"
                                 android:layout_width="wrap_content"
-                                android:layout_height="50dp"
+                                android:layout_height="45dp"
                                 android:layout_gravity="center"
                                 android:src="@drawable/icon_air_conditioner"
                                 app:tint="@color/black2" />
@@ -368,7 +366,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:text="@string/utility6"
-                                android:textSize="16sp"
+                                android:textSize="14sp"
                                 android:paddingTop="2dp"
                                 android:textAlignment="center"
                                 android:textColor="@color/black2" />
@@ -384,7 +382,7 @@
                             <ImageView
                                 android:id="@+id/imv_fridge"
                                 android:layout_width="wrap_content"
-                                android:layout_height="50dp"
+                                android:layout_height="45dp"
                                 android:layout_gravity="center"
                                 android:src="@drawable/icon_fridge"
                                 app:tint="@color/black2" />
@@ -394,7 +392,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:text="@string/utility7"
-                                android:textSize="16sp"
+                                android:textSize="14sp"
                                 android:paddingTop="2dp"
                                 android:textAlignment="center"
                                 android:textColor="@color/black2" />
@@ -410,7 +408,7 @@
                             <ImageView
                                 android:id="@+id/imv_washing_machine"
                                 android:layout_width="wrap_content"
-                                android:layout_height="50dp"
+                                android:layout_height="45dp"
                                 android:layout_gravity="center"
                                 android:src="@drawable/icon_washing_machine"
                                 app:tint="@color/black2" />
@@ -420,7 +418,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:text="@string/utility8"
-                                android:textSize="16sp"
+                                android:textSize="14sp"
                                 android:paddingTop="2dp"
                                 android:textAlignment="center"
                                 android:textColor="@color/black2" />
