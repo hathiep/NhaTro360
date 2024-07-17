@@ -11,20 +11,48 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="5dp">
+        android:paddingHorizontal="5dp">
 
-        <!-- Thanh tìm kiếm -->
-        <EditText
-            android:id="@+id/search_bar"
+        <LinearLayout
+            android:id="@+id/header"
             android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:layout_marginBottom="0dp"
+            android:layout_height="56dp"
             android:background="@color/white"
-            android:drawableEnd="@drawable/icon_search"
-            android:hint="Tìm kiếm"
-            android:padding="12dp"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true" />
+            android:layout_alignParentTop="true">
+
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_gravity="center"
+                android:background="@color/white"
+                app:srcCompat="@drawable/icon_new_room" />
+
+            <TextView
+                android:id="@+id/tv_title"
+                android:layout_weight="1"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingHorizontal="5dp"
+                android:text="@string/new_room"
+                android:textSize="18sp"
+                android:textColor="@color/blue2"
+                android:fontFamily="sans-serif-medium"
+                android:gravity="center_vertical"
+                android:background="@color/white"/>
+
+            <TextView
+                android:id="@+id/tv_action"
+                android:layout_weight="2"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingHorizontal="5dp"
+                android:text="@string/more"
+                android:textSize="14sp"
+                android:textColor="@color/blue2"
+                android:gravity="center_vertical|right"
+                android:background="@color/white"/>
+
+        </LinearLayout>
 
         <!-- Grid view các mục -->
 
@@ -33,9 +61,9 @@
             android:id="@+id/recycler_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/search_bar"
+            android:layout_below="@id/header"
             android:layout_marginTop="5dp"
-            android:layout_marginHorizontal="1dp"
+            android:layout_marginHorizontal="2dp"
             android:scrollbars="vertical" />
 
         <com.google.android.material.bottomnavigation.BottomNavigationView

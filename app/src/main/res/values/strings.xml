@@ -29,6 +29,10 @@
     <string name="search">Tìm kiếm</string>
     <string name="post">Bài viết</string>
     <string name="account">Tài khoản</string>
+    <string name="new_room">Phòng mới đăng</string>
+    <string name="pairing_room">Phòng ở ghép, KTX</string>
+    <string name="general_room">Phòng tổng hợp</string>
+    <string name="more">Xem thêm</string>
     <string name="utility1">Wifi</string>
     <string name="utility2">WC riêng</string>
     <string name="utility3">Giữ xe</string>

@@ -10,15 +10,10 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.PopupMenu;
-import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.text.Html;
 
@@ -38,7 +33,6 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,6 +56,7 @@ public class RoomDetail extends AppCompatActivity implements OnMapReadyCallback 
     private GoogleMap mMap;
     private SupportMapFragment mapFragment;
     private LatLng roomLatLng;
+    private ImageView imvBack;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -93,6 +88,9 @@ public class RoomDetail extends AppCompatActivity implements OnMapReadyCallback 
             }
         });
 
+        // Setup back button
+        imvBack = findViewById(R.id.imV_back);
+        imvBack.setOnClickListener(v -> onBackPressed());
     }
 
     // Initialize views

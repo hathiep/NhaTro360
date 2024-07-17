@@ -9,7 +9,7 @@
     <LinearLayout
         android:id="@+id/header"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
+        android:layout_height="56dp"
         android:background="@color/white"
         android:layout_alignParentTop="true">
 
@@ -63,7 +63,8 @@
                 android:layout_height="wrap_content"
                 android:background="@color/white"
                 android:orientation="vertical"
-                android:padding="10dp">
+                android:paddingHorizontal="10dp"
+                android:layout_marginTop="10dp">
 
                 <TextView
                     android:id="@+id/tv_title"
@@ -193,7 +194,6 @@
                     android:layout_height="wrap_content"
                     android:text="Title"
                     android:textSize="16sp"
-                    android:paddingTop="8dp"
                     android:textColor="@color/blue2"
                     android:textStyle="bold"/>
 
@@ -475,7 +475,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="10dp"
                     android:paddingBottom="5dp"
-                    android:text=""
+                    android:text="Đang tải..."
                     android:textColor="@color/black"
                     android:textSize="16sp"
                     android:textIsSelectable="true"
