@@ -1,7 +1,10 @@
 package com.example.nhatro360;
 
 import android.content.DialogInterface;
+import android.os.Build;
 import android.os.Bundle;
+import android.view.View;
+import android.view.WindowInsetsController;
 import android.widget.TextView;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AlertDialog;
@@ -23,20 +26,51 @@ public class CreatePost extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_create_post);
 
-        tvCancel = findViewById(R.id.tv_cancel);
-        tvNext = findViewById(R.id.tv_next);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            getWindow().setDecorFitsSystemWindows(false);
+            final WindowInsetsController controller = getWindow().getInsetsController();
+            if (controller != null) {
+                controller.setSystemBarsAppearance(
+                        0,
+                        WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS | WindowInsetsController.APPEARANCE_LIGHT_NAVIGATION_BARS
+                );
+            }
+            getWindow().setStatusBarColor(getColor(R.color.blue2));
+            getWindow().setNavigationBarColor(getColor(R.color.blue2));
+        } else {
+            // For API < 30
+            int flags = View.SYSTEM_UI_FLAG_LAYOUT_STABLE |
+                    View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN |
+                    View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION;
+            getWindow().getDecorView().setSystemUiVisibility(flags);
+            getWindow().setStatusBarColor(getResources().getColor(R.color.blue2));
+            getWindow().setNavigationBarColor(getResources().getColor(R.color.blue2));
+        }
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, 0);
             return insets;
         });
+
+        tvCancel = findViewById(R.id.tv_cancel);
+        tvNext = findViewById(R.id.tv_next);
 
         if (savedInstanceState == null) {
             loadFragment(new FragmentAddress(), false);
         } else {
             updateButtons(); // Cập nhật nút khi Activity được tái tạo
         }
+        setOnclickHeader();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        updateButtons();
+    }
+
+    private void setOnclickHeader() {
 
         tvNext.setOnClickListener(v -> {
             Fragment currentFragment = getCurrentFragment();
@@ -59,12 +93,7 @@ public class CreatePost extends AppCompatActivity {
         });
 
         getSupportFragmentManager().addOnBackStackChangedListener(this::updateButtons);
-    }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        updateButtons();
     }
 
     private Fragment getCurrentFragment() {
