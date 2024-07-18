@@ -33,9 +33,11 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.Timestamp;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -164,13 +166,30 @@ public class RoomDetail extends AppCompatActivity implements OnMapReadyCallback 
         tvAddress.setText(room.getAddress());
         tvContact.setText(room.getPhone() + " - " +  room.getHost());
         tvArea.setText("DT " + room.getArea() +" m2");
-        tvTimePosted.setText(room.getTimePosted());
+
+        // Update tvTimePosted with calculated time
+        updatePostedTime(room.getTimePosted());
 
         int num_utilities = setUtilities(room.isHasWifi(), 0) + setUtilities(room.isHasPrivateWC(), 1) + setUtilities(room.isHasParking(), 2)
                 + setUtilities(room.isHasFreeTime(), 3) + setUtilities(room.isHasKitchen(), 4) + setUtilities(room.isHasAirConditioner(), 5)
                 + setUtilities(room.isHasFridge(), 6) + setUtilities(room.isHasWashingMachine(), 7);
         tvUtilities.setText("Tiện ích phòng (" + num_utilities + ")");
         tvInfor.setText(Html.fromHtml(room.getDetail().replaceAll("\n", "<br>")));
+    }
+
+    private void updatePostedTime(Timestamp timePosted) {
+        long timeDiff = Timestamp.now().getSeconds() - timePosted.getSeconds();
+
+        if (timeDiff < TimeUnit.HOURS.toSeconds(1)) {
+            long minutes = TimeUnit.SECONDS.toMinutes(timeDiff);
+            tvTimePosted.setText(minutes + " phút trước");
+        } else if (timeDiff < TimeUnit.DAYS.toSeconds(1)) {
+            long hours = TimeUnit.SECONDS.toHours(timeDiff);
+            tvTimePosted.setText(hours + " giờ trước");
+        } else {
+            long days = TimeUnit.SECONDS.toDays(timeDiff);
+            tvTimePosted.setText(days + " ngày trước");
+        }
     }
 
     private int setUtilities(boolean utiliy, int i){

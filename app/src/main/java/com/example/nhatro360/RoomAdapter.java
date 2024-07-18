@@ -12,8 +12,10 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.google.firebase.Timestamp;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder> {
 
@@ -81,7 +83,21 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
             tvPrice.setText(room.getPrice());
             tvAddress.setText(room.getAddress());
             tvArea.setText("DT " + room.getArea() + " m2");
-            tvTimePosted.setText(room.getTimePosted());
+
+            // Calculate time difference and set tvTimePosted
+            Timestamp timePosted = room.getTimePosted();
+            long timeDiff = Timestamp.now().getSeconds() - timePosted.getSeconds();
+
+            if (timeDiff < TimeUnit.HOURS.toSeconds(1)) {
+                long minutes = TimeUnit.SECONDS.toMinutes(timeDiff);
+                tvTimePosted.setText(minutes + " phút");
+            } else if (timeDiff < TimeUnit.DAYS.toSeconds(1)) {
+                long hours = TimeUnit.SECONDS.toHours(timeDiff);
+                tvTimePosted.setText(hours + " giờ");
+            } else {
+                long days = TimeUnit.SECONDS.toDays(timeDiff);
+                tvTimePosted.setText(days + " ngày");
+            }
         }
 
         @Override

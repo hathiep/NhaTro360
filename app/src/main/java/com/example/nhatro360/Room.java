@@ -1,15 +1,16 @@
 package com.example.nhatro360;
 
+import com.google.firebase.Timestamp;
 import java.util.List;
 
 public class Room {
-    private String id; // Thêm trường id
+    private String id;
     private String title;
     private String address;
     private String price;
     private String area;
-    private String timePosted;
-    private List<String> images; // Danh sách URL hình ảnh
+    private Timestamp timePosted;
+    private List<String> images; // List of image URLs
     private boolean hasWifi;
     private boolean hasPrivateWC;
     private boolean hasParking;
@@ -18,17 +19,19 @@ public class Room {
     private boolean hasAirConditioner;
     private boolean hasFridge;
     private boolean hasWashingMachine;
-    private String phone; // Số điện thoại liên hệ
-    private String host; // Chủ nhà
-    private String detail; // Chi tiết mô tả phòng
+    private String phone;
+    private String host;
+    private String detail;
+    private Integer roomType;
+    private Integer postType;
 
     public Room() {
-        // No-argument constructor required for Firestore deserialization
     }
 
-    public Room(String id, String title, String address, String price, String area, String timePosted, List<String> images,
+    public Room(String id, String title, String address, String price, String area, Timestamp timePosted, List<String> images,
                 boolean hasWifi, boolean hasPrivateWC, boolean hasParking, boolean hasFreeTime, boolean hasKitchen,
-                boolean hasAirConditioner, boolean hasFridge, boolean hasWashingMachine, String phone, String host, String detail) {
+                boolean hasAirConditioner, boolean hasFridge, boolean hasWashingMachine, String phone, String host,
+                String detail, Integer roomType, Integer postType) {
         this.id = id;
         this.title = title;
         this.address = address;
@@ -47,6 +50,8 @@ public class Room {
         this.phone = phone;
         this.host = host;
         this.detail = detail;
+        this.roomType = roomType;
+        this.postType = postType;
     }
 
     // Getter and setter methods
@@ -90,11 +95,11 @@ public class Room {
         this.area = area;
     }
 
-    public String getTimePosted() {
+    public Timestamp getTimePosted() {
         return timePosted;
     }
 
-    public void setTimePosted(String timePosted) {
+    public void setTimePosted(Timestamp timePosted) {
         this.timePosted = timePosted;
     }
 
@@ -192,5 +197,21 @@ public class Room {
 
     public void setDetail(String detail) {
         this.detail = detail;
+    }
+
+    public Integer getRoomType() {
+        return roomType;
+    }
+
+    public void setRoomType(Integer roomType) {
+        this.roomType = roomType;
+    }
+
+    public Integer getPostType() {
+        return postType;
+    }
+
+    public void setPostType(Integer postType) {
+        this.postType = postType;
     }
 }
