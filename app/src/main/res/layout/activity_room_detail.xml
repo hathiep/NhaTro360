@@ -220,7 +220,7 @@
                                 android:layout_height="45dp"
                                 android:layout_gravity="center"
                                 android:src="@drawable/icon_wifi"
-                                app:tint="@color/black2" />
+                                app:tint="@android:color/darker_gray" />
 
                             <TextView
                                 android:id="@+id/tv_wifi"
@@ -230,7 +230,7 @@
                                 android:textSize="14sp"
                                 android:paddingTop="2dp"
                                 android:textAlignment="center"
-                                android:textColor="@color/black2" />
+                                android:textColor="@android:color/darker_gray" />
 
                         </LinearLayout>
 
@@ -246,7 +246,7 @@
                                 android:layout_height="45dp"
                                 android:layout_gravity="center"
                                 android:src="@drawable/icon_wc"
-                                app:tint="@color/black2" />
+                                app:tint="@android:color/darker_gray" />
 
                             <TextView
                                 android:id="@+id/tv_wc"
@@ -256,7 +256,7 @@
                                 android:textSize="14sp"
                                 android:paddingTop="2dp"
                                 android:textAlignment="center"
-                                android:textColor="@color/black2" />
+                                android:textColor="@android:color/darker_gray" />
 
                         </LinearLayout>
 
@@ -272,7 +272,7 @@
                                 android:layout_height="45dp"
                                 android:layout_gravity="center"
                                 android:src="@drawable/icon_parking"
-                                app:tint="@color/black2" />
+                                app:tint="@android:color/darker_gray" />
 
                             <TextView
                                 android:id="@+id/tv_parking"
@@ -282,7 +282,7 @@
                                 android:textSize="14sp"
                                 android:paddingTop="2dp"
                                 android:textAlignment="center"
-                                android:textColor="@color/black2" />
+                                android:textColor="@android:color/darker_gray" />
 
                         </LinearLayout>
 
@@ -298,7 +298,7 @@
                                 android:layout_height="45dp"
                                 android:layout_gravity="center"
                                 android:src="@drawable/icon_free_time"
-                                app:tint="@color/black2" />
+                                app:tint="@android:color/darker_gray" />
 
                             <TextView
                                 android:id="@+id/tv_free_time"
@@ -308,7 +308,7 @@
                                 android:textSize="14sp"
                                 android:paddingTop="2dp"
                                 android:textAlignment="center"
-                                android:textColor="@color/black2" />
+                                android:textColor="@android:color/darker_gray" />
 
                         </LinearLayout>
 
@@ -332,7 +332,7 @@
                                 android:layout_height="45dp"
                                 android:layout_gravity="center"
                                 android:src="@drawable/icon_kitchen"
-                                app:tint="@color/black" />
+                                app:tint="@android:color/darker_gray" />
 
                             <TextView
                                 android:id="@+id/tv_kitchen"
@@ -342,7 +342,7 @@
                                 android:textSize="14sp"
                                 android:paddingTop="2dp"
                                 android:textAlignment="center"
-                                android:textColor="@color/black" />
+                                android:textColor="@android:color/darker_gray" />
 
                         </LinearLayout>
 
@@ -358,7 +358,7 @@
                                 android:layout_height="45dp"
                                 android:layout_gravity="center"
                                 android:src="@drawable/icon_air_conditioner"
-                                app:tint="@color/black2" />
+                                app:tint="@android:color/darker_gray" />
 
                             <TextView
                                 android:id="@+id/tv_air_conditioner"
@@ -368,7 +368,7 @@
                                 android:textSize="14sp"
                                 android:paddingTop="2dp"
                                 android:textAlignment="center"
-                                android:textColor="@color/black2" />
+                                android:textColor="@android:color/darker_gray" />
 
                         </LinearLayout>
 
@@ -384,7 +384,7 @@
                                 android:layout_height="45dp"
                                 android:layout_gravity="center"
                                 android:src="@drawable/icon_fridge"
-                                app:tint="@color/black2" />
+                                app:tint="@android:color/darker_gray" />
 
                             <TextView
                                 android:id="@+id/tv_fridge"
@@ -394,7 +394,7 @@
                                 android:textSize="14sp"
                                 android:paddingTop="2dp"
                                 android:textAlignment="center"
-                                android:textColor="@color/black2" />
+                                android:textColor="@android:color/darker_gray" />
 
                         </LinearLayout>
 
@@ -410,7 +410,7 @@
                                 android:layout_height="45dp"
                                 android:layout_gravity="center"
                                 android:src="@drawable/icon_washing_machine"
-                                app:tint="@color/black2" />
+                                app:tint="@android:color/darker_gray" />
 
                             <TextView
                                 android:id="@+id/tv_washing_machine"
@@ -420,7 +420,7 @@
                                 android:textSize="14sp"
                                 android:paddingTop="2dp"
                                 android:textAlignment="center"
-                                android:textColor="@color/black2" />
+                                android:textColor="@android:color/darker_gray" />
 
                         </LinearLayout>
                     </LinearLayout>

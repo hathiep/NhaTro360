@@ -24,20 +24,14 @@
         android:layout_below="@id/view_pager"
         android:layout_above="@id/bottom_navigation" />
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:layout_above="@id/bottom_navigation"
-        android:background="@drawable/bottom_navigation_background" />
-
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_navigation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="0dp"
-        android:background="@color/white"
-        app:itemPaddingTop="0dp"
+        android:background="@drawable/menu_background"
+        app:itemPaddingTop="1dp"
         app:itemIconSize="35dp"
         app:itemIconTint="@drawable/bottom_navigation_icon"
         app:itemTextColor="@drawable/bottom_navigation_icon"
