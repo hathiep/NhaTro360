@@ -182,13 +182,13 @@ public class RoomDetail extends AppCompatActivity implements OnMapReadyCallback 
 
         if (timeDiff < TimeUnit.HOURS.toSeconds(1)) {
             long minutes = TimeUnit.SECONDS.toMinutes(timeDiff);
-            tvTimePosted.setText(minutes + " phút trước");
+            tvTimePosted.setText(minutes + " phút");
         } else if (timeDiff < TimeUnit.DAYS.toSeconds(1)) {
             long hours = TimeUnit.SECONDS.toHours(timeDiff);
-            tvTimePosted.setText(hours + " giờ trước");
+            tvTimePosted.setText(hours + " giờ");
         } else {
             long days = TimeUnit.SECONDS.toDays(timeDiff);
-            tvTimePosted.setText(days + " ngày trước");
+            tvTimePosted.setText(days + " ngày");
         }
     }
 

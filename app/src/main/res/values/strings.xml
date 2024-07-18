@@ -33,6 +33,14 @@
     <string name="pairing_room">Phòng ở ghép, KTX</string>
     <string name="general_room">Phòng tổng hợp</string>
     <string name="more">Xem thêm</string>
+    <string name="cancel">Huỷ</string>
+    <string name="back">Quay lại</string>
+    <string name="next">Tiếp theo</string>
+    <string name="confirm">Đăng</string>
+    <string name="cancel_post_message">Bạn có chắc muốn huỷ tin đăng này?</string>
+    <string name="no">Không</string>
+    <string name="yes">Có</string>
+    <string name="create_post_title">Đăng tin</string>
     <string name="utility1">Wifi</string>
     <string name="utility2">WC riêng</string>
     <string name="utility3">Giữ xe</string>

@@ -1,178 +1,199 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
-    android:scrollbars="none">
+    android:orientation="vertical"
+    android:background="@color/white">
 
-<LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical">
-
-    <RelativeLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingHorizontal="5dp">
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        android:scrollbars="none">
 
         <LinearLayout
-            android:id="@+id/header_new_room"
             android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:background="@color/white"
-            android:layout_alignParentTop="true">
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-            <ImageView
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_gravity="center"
-                android:background="@color/white"
-                app:srcCompat="@drawable/icon_new_room" />
-
-            <TextView
-                android:id="@+id/tv_title_new_room"
-                android:layout_weight="1"
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:paddingHorizontal="5dp"
-                android:text="@string/new_room"
-                android:textSize="18sp"
-                android:textColor="@color/blue2"
-                android:fontFamily="sans-serif-medium"
-                android:gravity="center_vertical"
-                android:background="@color/white"/>
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="5dp">
 
-            <TextView
-                android:id="@+id/tv_action_new_room"
-                android:layout_weight="2"
+                <LinearLayout
+                    android:id="@+id/header_new_room"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:background="@color/white"
+                    android:layout_alignParentTop="true">
+
+                    <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_gravity="center"
+                        android:background="@color/white"
+                        app:srcCompat="@drawable/icon_new_room" />
+
+                    <TextView
+                        android:id="@+id/tv_title_new_room"
+                        android:layout_weight="1"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:paddingHorizontal="5dp"
+                        android:text="@string/new_room"
+                        android:textSize="18sp"
+                        android:textColor="@color/blue2"
+                        android:fontFamily="sans-serif-medium"
+                        android:gravity="center_vertical"
+                        android:background="@color/white"/>
+
+                    <TextView
+                        android:id="@+id/tv_action_new_room"
+                        android:layout_weight="2"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:paddingHorizontal="5dp"
+                        android:text="@string/more"
+                        android:textSize="14sp"
+                        android:textColor="@color/blue2"
+                        android:gravity="center_vertical|right"
+                        android:background="@color/white"/>
+
+                </LinearLayout>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recycler_view_new_room"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/header_new_room"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginHorizontal="2dp"
+                    android:scrollbars="vertical" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:paddingHorizontal="5dp"
-                android:text="@string/more"
-                android:textSize="14sp"
-                android:textColor="@color/blue2"
-                android:gravity="center_vertical|right"
-                android:background="@color/white"/>
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="5dp">
+
+                <LinearLayout
+                    android:id="@+id/header_paring_room"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:background="@color/white"
+                    android:layout_alignParentTop="true">
+
+                    <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="26dp"
+                        android:layout_gravity="center"
+                        android:background="@color/white"
+                        app:srcCompat="@drawable/icon_paring_room" />
+
+                    <TextView
+                        android:id="@+id/tv_title_paring_room"
+                        android:layout_weight="1"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:paddingHorizontal="5dp"
+                        android:text="@string/pairing_room"
+                        android:textSize="18sp"
+                        android:textColor="@color/blue2"
+                        android:fontFamily="sans-serif-medium"
+                        android:gravity="center_vertical"
+                        android:background="@color/white"/>
+
+                    <TextView
+                        android:id="@+id/tv_action_paring_room"
+                        android:layout_weight="2"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:paddingHorizontal="5dp"
+                        android:text="@string/more"
+                        android:textSize="14sp"
+                        android:textColor="@color/blue2"
+                        android:gravity="center_vertical|right"
+                        android:background="@color/white"/>
+
+                </LinearLayout>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recycler_view_paring_room"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/header_paring_room"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginHorizontal="2dp"
+                    android:scrollbars="vertical" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="5dp">
+
+                <LinearLayout
+                    android:id="@+id/header_general_room"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:background="@color/white"
+                    android:layout_alignParentTop="true">
+
+                    <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_gravity="center"
+                        android:background="@color/white"
+                        app:srcCompat="@drawable/icon_general_room" />
+
+                    <TextView
+                        android:id="@+id/tv_title_general_room"
+                        android:layout_weight="1"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:paddingHorizontal="5dp"
+                        android:text="@string/general_room"
+                        android:textSize="18sp"
+                        android:textColor="@color/blue2"
+                        android:fontFamily="sans-serif-medium"
+                        android:gravity="center_vertical"
+                        android:background="@color/white"/>
+
+                </LinearLayout>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recycler_view_general_room"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/header_general_room"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginHorizontal="2dp"
+                    android:scrollbars="vertical" />
+
+            </RelativeLayout>
 
         </LinearLayout>
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recycler_view_new_room"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/header_new_room"
-            android:layout_marginTop="5dp"
-            android:layout_marginHorizontal="2dp"
-            android:scrollbars="vertical" />
+    </ScrollView>
 
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingHorizontal="5dp">
-
-        <LinearLayout
-            android:id="@+id/header_paring_room"
-            android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:background="@color/white"
-            android:layout_alignParentTop="true">
-
-            <ImageView
-                android:layout_width="30dp"
-                android:layout_height="26dp"
-                android:layout_gravity="center"
-                android:background="@color/white"
-                app:srcCompat="@drawable/icon_paring_room" />
-
-            <TextView
-                android:id="@+id/tv_title_paring_room"
-                android:layout_weight="1"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:paddingHorizontal="5dp"
-                android:text="@string/pairing_room"
-                android:textSize="18sp"
-                android:textColor="@color/blue2"
-                android:fontFamily="sans-serif-medium"
-                android:gravity="center_vertical"
-                android:background="@color/white"/>
-
-            <TextView
-                android:id="@+id/tv_action_paring_room"
-                android:layout_weight="2"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:paddingHorizontal="5dp"
-                android:text="@string/more"
-                android:textSize="14sp"
-                android:textColor="@color/blue2"
-                android:gravity="center_vertical|right"
-                android:background="@color/white"/>
-
-        </LinearLayout>
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recycler_view_paring_room"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/header_paring_room"
-            android:layout_marginTop="5dp"
-            android:layout_marginHorizontal="2dp"
-            android:scrollbars="vertical" />
-
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingHorizontal="5dp">
-
-        <LinearLayout
-            android:id="@+id/header_general_room"
-            android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:background="@color/white"
-            android:layout_alignParentTop="true">
-
-            <ImageView
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_gravity="center"
-                android:background="@color/white"
-                app:srcCompat="@drawable/icon_general_room" />
-
-            <TextView
-                android:id="@+id/tv_title_general_room"
-                android:layout_weight="1"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:paddingHorizontal="5dp"
-                android:text="@string/general_room"
-                android:textSize="18sp"
-                android:textColor="@color/blue2"
-                android:fontFamily="sans-serif-medium"
-                android:gravity="center_vertical"
-                android:background="@color/white"/>
-
-        </LinearLayout>
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recycler_view_general_room"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/header_general_room"
-            android:layout_marginTop="5dp"
-            android:layout_marginHorizontal="2dp"
-            android:scrollbars="vertical" />
-
-    </RelativeLayout>
-
-</LinearLayout>
+    <ImageView
+        android:id="@+id/imV_create"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="110dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:elevation="10dp"
+        app:srcCompat="@drawable/icon_create" />
 
 
-</ScrollView>
+</RelativeLayout>
