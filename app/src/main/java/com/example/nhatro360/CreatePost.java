@@ -1,16 +1,30 @@
 package com.example.nhatro360;
 
+import android.animation.Animator;
+import android.animation.ValueAnimator;
+import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
+import android.graphics.drawable.LayerDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.view.WindowInsetsController;
+import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -27,7 +41,10 @@ public class CreatePost extends AppCompatActivity {
 
     private TextView tvCancel, tvNext;
     private List<TextView> listTv;
-    private List<ImageView> listImv;
+    private List<ImageView> listImv, listLine;
+    private LayerDrawable layerDrawable;
+    private Drawable newBackgroundDrawable;
+    private GradientDrawable gradientDrawable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,6 +98,7 @@ public class CreatePost extends AppCompatActivity {
     private void init() {
         listImv = new ArrayList<>();
         listTv = new ArrayList<>();
+        listLine = new ArrayList<>();
         tvCancel = findViewById(R.id.tv_cancel);
         tvNext = findViewById(R.id.tv_next);
         listTv.add(findViewById(R.id.tv_address));
@@ -91,6 +109,12 @@ public class CreatePost extends AppCompatActivity {
         listImv.add(findViewById(R.id.imv_information));
         listImv.add(findViewById(R.id.imv_image));
         listImv.add(findViewById(R.id.imv_confirm));
+        listLine.add(findViewById(R.id.line11));
+        listLine.add(findViewById(R.id.line21));
+        listLine.add(findViewById(R.id.line31));
+        listLine.add(findViewById(R.id.line12));
+        listLine.add(findViewById(R.id.line22));
+        listLine.add(findViewById(R.id.line32));
     }
 
     private void setOnclickHeader() {
@@ -149,47 +173,91 @@ public class CreatePost extends AppCompatActivity {
 
     private void setNextStep(int current, int complete) {
         listTv.get(complete).setTextColor(getResources().getColor(R.color.blue2));
-        setAnimation(complete, 1, 1);
-        new Handler().postDelayed(() -> setAnimation(current, 2, 1), 200);
+        setAnimationIcon(complete, 1, 1);
+        new Handler().postDelayed(() -> setAnimationLine(complete, 1), 400);
+        new Handler().postDelayed(() -> setAnimationIcon(current, 2, 1), 200);
     }
 
     private void setBackStep(int current, int inComplete) {
         listTv.get(current).setTextColor(getResources().getColor(R.color.black2));
-        setAnimation(inComplete, 3, 2);
-        new Handler().postDelayed(() -> setAnimation(current, 2, 2), 100);
+        setAnimationIcon(inComplete, 3, 2);
+        new Handler().postDelayed(() -> setAnimationLine(current, 2), 400);
+        new Handler().postDelayed(() -> setAnimationIcon(current, 2, 2), 200);
     }
-    private void setAnimation(int cnt, int i, int direction){
-        int time_delay = 100;
+
+    private void setAnimationIcon(int cnt, int i, int direction) {
+        int time_delay;
         ImageView imv = listImv.get(cnt);
         float scaleA, scaleB;
-        if(direction == 1) {
+
+        if (direction == 1) {
             scaleA = 0f;
             scaleB = 1f;
             listImv.get(cnt).setImageResource(0);
-            if(i == 1) imv.setImageResource(R.drawable.icon_completed_step);
-            else imv.setImageResource(R.drawable.icon_current_step);
+            if (i == 1) {
+                time_delay = 200;
+                imv.setImageResource(R.drawable.icon_completed_step);
+            } else { imv.setImageResource(R.drawable.icon_current_step); time_delay = 100; }
         } else {
+            time_delay = 200;
             scaleA = 1f;
             scaleB = 0f;
-            if(i == 3) {
-                listImv.get(cnt).setImageResource(0);
+            if (i == 3) {
                 imv.setImageResource(R.drawable.icon_current_step);
-            }
-            else {
+            } else {
                 imv.setImageResource(R.drawable.icon_completed_step);
             }
         }
+
         imv.setScaleX(scaleA);
         imv.setScaleY(scaleA);
+
         new Handler().postDelayed(() -> {
             ObjectAnimator scaleX = ObjectAnimator.ofFloat(imv, "scaleX", scaleA, scaleB);
             ObjectAnimator scaleY = ObjectAnimator.ofFloat(imv, "scaleY", scaleA, scaleB);
-            scaleX.setDuration(100); // Thời gian hiệu ứng (1 giây)
-            scaleY.setDuration(100);
-            scaleX.start();
-            scaleY.start();
-        }, time_delay);
-        if(direction == 2 && i == 2) new Handler().postDelayed(() ->  listImv.get(cnt).setImageResource(R.drawable.icon_current_step), 1000);
+            scaleX.setDuration(time_delay);
+            scaleY.setDuration(time_delay);
+
+            AnimatorSet animatorSet = new AnimatorSet();
+            animatorSet.playTogether(scaleX, scaleY);
+
+            if (direction == 2 && i == 2) {
+                animatorSet.addListener(new Animator.AnimatorListener() {
+                    @Override
+                    public void onAnimationStart(Animator animation) {}
+
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        imv.setImageResource(R.drawable.icon_current_step);
+                        ObjectAnimator scaleX = ObjectAnimator.ofFloat(imv, "scaleX", 0f, 1f);
+                        ObjectAnimator scaleY = ObjectAnimator.ofFloat(imv, "scaleY", 0f, 1f);
+                        scaleX.setDuration(100);
+                        scaleY.setDuration(100);
+                        AnimatorSet animatorSet2 = new AnimatorSet();
+                        animatorSet2.playTogether(scaleX, scaleY);
+                        animatorSet2.start();
+                    }
+
+                    @Override
+                    public void onAnimationCancel(Animator animation) {}
+
+                    @Override
+                    public void onAnimationRepeat(Animator animation) {}
+                });
+            }
+
+            animatorSet.start();
+        }, 200);
+    }
+
+    private void setAnimationLine(int i, int direction) {
+        if(direction == 2) {
+            listLine.get(i).setBackgroundResource(R.drawable.icon_line);
+            listLine.get(i+3).setBackgroundResource(R.drawable.icon_line);
+            return;
+        }
+        listLine.get(i).setBackgroundResource(R.drawable.icon_line2);
+        listLine.get(i+3).setBackgroundResource(R.drawable.icon_line2);
     }
 
     private void showCancelDialog() {
