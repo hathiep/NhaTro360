@@ -4,89 +4,109 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@color/white"
-    android:paddingHorizontal="10dp">
+    android:layout_margin="0dp">
 
-    <RelativeLayout
+    <!-- Các TextView làm nhãn -->
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="15dp"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/tv_choose_province"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingBottom="10dp"
+                android:text="@string/province"
+                android:textSize="16sp"
+                android:textColor="@color/black2"/>
+
+            <TextView
+                android:id="@+id/tv_current_location"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:text="@string/current_location"
+                android:textColor="@color/blue2"
+                android:paddingBottom="10dp"
+                android:textSize="16sp"/>
+        </RelativeLayout>
+
+        <EditText
+            android:id="@+id/edt_province"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:background="@drawable/border"
+            android:hint="@string/select_province"
+            android:paddingHorizontal="20dp"
+            android:textSize="16sp"
+            android:textColor="@color/black2"
+            android:clickable="true"
+            android:focusable="false"/>
 
         <TextView
-            android:id="@+id/tv_choose_province"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingBottom="10dp"
-            android:text="@string/choose_province"
+            android:layout_marginVertical="12dp"
+            android:text="@string/district"
             android:textSize="16sp"
             android:textColor="@color/black2"/>
 
+        <EditText
+            android:id="@+id/edt_district"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:background="@drawable/border"
+            android:hint="@string/select_district"
+            android:paddingHorizontal="20dp"
+            android:textSize="16sp"
+            android:textColor="@color/black2"
+            android:clickable="true"
+            android:focusable="false"/>
+
         <TextView
-            android:id="@+id/tv_current_location"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:text="@string/current_location"
-            android:textColor="@color/blue2"
-            android:paddingBottom="10dp"
-            android:textSize="16sp"/>
+            android:layout_marginVertical="12dp"
+            android:text="@string/ward"
+            android:textSize="16sp"
+            android:textColor="@color/black2"/>
 
-    </RelativeLayout>
+        <EditText
+            android:id="@+id/edt_ward"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:background="@drawable/border"
+            android:hint="@string/select_ward"
+            android:paddingHorizontal="20dp"
+            android:textSize="16sp"
+            android:textColor="@color/black2"
+            android:clickable="true"
+            android:focusable="false"/>
 
-    <Spinner
-        android:id="@+id/spinner_province"
-        android:layout_width="match_parent"
-        android:layout_height="45dp"
-        android:background="@drawable/border"
-        android:paddingHorizontal="15dp"
-        android:textColor="@color/black2"/>
+        <!-- TextView cho Street với EditText -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="12dp"
+            android:text="@string/street"
+            android:textSize="16sp"
+            android:textColor="@color/black2"/>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginVertical="12dp"
-        android:text="@string/choose_district"
-        android:textSize="16sp"
-        android:textColor="@color/black2"/>
+        <EditText
+            android:id="@+id/edt_street"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:background="@drawable/border"
+            android:hint="@string/fill_street"
+            android:paddingHorizontal="20dp"
+            android:textColor="@color/black2"
+            android:textSize="16sp" />
 
-    <Spinner
-        android:id="@+id/spinner_district"
-        android:layout_width="match_parent"
-        android:layout_height="45dp"
-        android:background="@drawable/border"
-        android:paddingHorizontal="15dp"
-        android:textColor="@color/black2"/>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginVertical="12dp"
-        android:text="@string/ward"
-        android:textSize="16sp"
-        android:textColor="@color/black2"/>
-
-    <Spinner
-        android:id="@+id/spinner_ward"
-        android:layout_width="match_parent"
-        android:layout_height="45dp"
-        android:background="@drawable/border"
-        android:paddingHorizontal="15dp"
-        android:textColor="@color/black2"/>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginVertical="12dp"
-        android:text="@string/street"
-        android:textSize="16sp"
-        android:textColor="@color/black2"/>
-
-    <EditText
-        android:id="@+id/edt_street"
-        android:layout_width="match_parent"
-        android:layout_height="45dp"
-        android:background="@drawable/border"
-        android:hint="@string/street"
-        android:paddingHorizontal="20dp"
-        android:textSize="16sp"
-        android:textColor="@color/black2"/>
-
+    </LinearLayout>
 </LinearLayout>
