@@ -45,6 +45,11 @@
     <string name="information">Thông tin</string>
     <string name="image">Hình ảnh</string>
     <string name="confirm">Xác nhận</string>
+    <string name="current_location">Vị trí hiện tại</string>
+    <string name="choose_province">Chọn Tỉnh/TP</string>
+    <string name="choose_district">Chọn Quận/Huyện</string>
+    <string name="ward">Phường/Xã</string>
+    <string name="street">Số nhà, tên đường</string>
     <string name="utility1">Wifi</string>
     <string name="utility2">WC riêng</string>
     <string name="utility3">Giữ xe</string>
