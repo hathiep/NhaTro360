@@ -1,5 +1,7 @@
 package com.example.nhatro360;
 
+import static android.os.Looper.getMainLooper;
+
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.pm.PackageManager;
@@ -24,6 +26,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
 
@@ -32,6 +37,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,6 +45,7 @@ import java.util.Locale;
 
 public class FragmentAddress extends Fragment {
 
+    private static final String TAG = "FragmentAddress";
     private Spinner spinnerProvince;
     private Spinner spinnerDistrict;
     private Spinner spinnerWard;
@@ -47,6 +54,7 @@ public class FragmentAddress extends Fragment {
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
     private List<String> provinceIds;
     private List<String> districtIds;
+    private List<String> wardIds;
     private JSONArray provincesArray;
     private JSONArray districtsArray;
     private JSONArray wardsArray;
@@ -65,6 +73,7 @@ public class FragmentAddress extends Fragment {
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(getActivity());
 
         tvCurrentLocation.setOnClickListener(v -> {
+            Log.d(TAG, "Current location TextView clicked");
             if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
                     != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
@@ -81,18 +90,32 @@ public class FragmentAddress extends Fragment {
 
     @SuppressLint("MissingPermission")
     private void getCurrentLocation() {
+        Log.d(TAG, "Attempting to get current location");
+
+        // Define location request
+        LocationRequest locationRequest = LocationRequest.create();
+        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        locationRequest.setInterval(10000); // Update interval in milliseconds
+
+        // Request location updates
         fusedLocationClient.getLastLocation()
                 .addOnSuccessListener(getActivity(), new OnSuccessListener<Location>() {
                     @Override
                     public void onSuccess(Location location) {
                         if (location != null) {
+                            Log.d(TAG, "Location obtained: " + location.toString());
                             double latitude = location.getLatitude();
                             double longitude = location.getLongitude();
                             updateAddressFields(latitude, longitude);
+                        } else {
+                            Log.d(TAG, "Location is null");
+                            // Request updates or inform the user
                         }
                     }
                 });
+
     }
+
 
     private void updateAddressFields(double latitude, double longitude) {
         Geocoder geocoder = new Geocoder(getActivity(), Locale.getDefault());
@@ -105,6 +128,7 @@ public class FragmentAddress extends Fragment {
                 String ward = address.getLocality();
                 String street = address.getThoroughfare();
 
+                // Update the UI
                 editTextStreet.setText(street);
 
                 if (province != null) {
@@ -127,11 +151,14 @@ public class FragmentAddress extends Fragment {
                         spinnerWard.setSelection(wardPosition);
                     }
                 }
+            } else {
+                Log.d(TAG, "No addresses found");
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (IOException e) {
+            Log.e(TAG, "Geocoder exception", e);
         }
     }
+
 
     private int findProvincePosition(String province) {
         ArrayAdapter<String> adapter = (ArrayAdapter<String>) spinnerProvince.getAdapter();
@@ -242,17 +269,15 @@ public class FragmentAddress extends Fragment {
 
     private void fetchWards(String districtId) {
         List<String> wardList = new ArrayList<>();
+        wardIds = new ArrayList<>();
 
         try {
             for (int i = 0; i < wardsArray.length(); i++) {
                 JSONObject wardObject = wardsArray.getJSONObject(i);
                 if (wardObject.getString("idDistrict").equals(districtId)) {
                     wardList.add(wardObject.getString("name"));
+                    wardIds.add(wardObject.getString("idWard"));
                 }
-            }
-
-            if (wardList.isEmpty()) {
-                Toast.makeText(getActivity(), "No wards found for the selected district", Toast.LENGTH_SHORT).show();
             }
 
             ArrayAdapter<String> wardAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, wardList);
@@ -270,8 +295,9 @@ public class FragmentAddress extends Fragment {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 getCurrentLocation();
             } else {
-                Toast.makeText(getActivity(), "Location permission denied", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "Permission denied", Toast.LENGTH_SHORT).show();
             }
         }
     }
+
 }
