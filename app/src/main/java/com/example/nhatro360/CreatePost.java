@@ -33,6 +33,8 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import android.os.Handler;
 
+import com.example.nhatro360.models.Address;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,9 +44,7 @@ public class CreatePost extends AppCompatActivity {
     private TextView tvCancel, tvNext;
     private List<TextView> listTv;
     private List<ImageView> listImv, listLine;
-    private LayerDrawable layerDrawable;
-    private Drawable newBackgroundDrawable;
-    private GradientDrawable gradientDrawable;
+    private Address address;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -122,8 +122,12 @@ public class CreatePost extends AppCompatActivity {
         tvNext.setOnClickListener(v -> {
             Fragment currentFragment = getCurrentFragment();
             if (currentFragment instanceof FragmentAddress) {
-                loadFragment(new FragmentInformation(), true);
-                setNextStep(1, 0);
+                if (validateAddress()) {
+                    loadFragment(new FragmentInformation(), true);
+                    setNextStep(1, 0);
+                } else {
+                    showErrorDialog("Vui lòng điền đầy đủ thông tin địa chỉ");
+                }
             } else if (currentFragment instanceof FragmentInformation) {
                 loadFragment(new FragmentImage(), true);
                 setNextStep(2, 1);
@@ -301,4 +305,35 @@ public class CreatePost extends AppCompatActivity {
             tvNext.setText(R.string.next);
         }
     }
+
+    private boolean validateAddress() {
+        FragmentAddress fragmentAddress = (FragmentAddress) getCurrentFragment();
+
+        String province = fragmentAddress.getProvince();
+        String district = fragmentAddress.getDistrict();
+        String ward = fragmentAddress.getWard();
+        String street = fragmentAddress.getStreet();
+
+        // Kiểm tra thông tin địa chỉ hợp lệ
+        if (province != null && !province.isEmpty() &&
+                district != null && !district.isEmpty() &&
+                ward != null && !ward.isEmpty() &&
+                street != null && !street.isEmpty()) {
+
+            // Tạo đối tượng Address
+            address = new Address(province, district, ward, street);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private void showErrorDialog(String message) {
+        new AlertDialog.Builder(this)
+                .setMessage(message)
+                .setPositiveButton("OK", null)
+                .show();
+    }
+
+
 }

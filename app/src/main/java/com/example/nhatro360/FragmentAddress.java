@@ -51,18 +51,11 @@ import java.util.Locale;
 public class FragmentAddress extends Fragment {
 
     private static final String TAG = "FragmentAddress";
-    private EditText edtProvince;
-    private EditText edtDistrict;
-    private EditText edtWard;
-    private EditText edtStreet;
+    private EditText edtProvince, edtDistrict, edtWard, edtStreet;
     private FusedLocationProviderClient fusedLocationClient;
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
-    private List<String> provinceIds;
-    private List<String> districtIds;
-    private List<String> wardIds;
-    private JSONArray provincesArray;
-    private JSONArray districtsArray;
-    private JSONArray wardsArray;
+    private List<String> provinceIds, districtIds, wardIds;
+    private JSONArray provincesArray, districtsArray, wardsArray;
     private String provinceId, districtId, wardId;
 
     @Nullable
@@ -89,6 +82,8 @@ public class FragmentAddress extends Fragment {
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(getActivity());
 
+        setupPopupMenus();
+
         tvCurrentLocation.setOnClickListener(v -> {
             Log.d(TAG, "Current location TextView clicked");
             if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
@@ -99,8 +94,6 @@ public class FragmentAddress extends Fragment {
                 getCurrentLocation();
             }
         });
-
-        setupPopupMenus();
 
         return view;
     }
@@ -120,6 +113,12 @@ public class FragmentAddress extends Fragment {
 
     @SuppressLint("MissingPermission")
     private void getCurrentLocation() {
+        edtProvince.setText("");
+        edtDistrict.setText("");
+        edtWard.setText("");
+        provinceId = "";
+        districtId = "";
+        wardId = "";
         Log.d(TAG, "Attempting to get current location");
 
         LocationRequest locationRequest = LocationRequest.create();
@@ -146,39 +145,31 @@ public class FragmentAddress extends Fragment {
             if (addresses != null && !addresses.isEmpty()) {
                 Address address = addresses.get(0);
                 String province = address.getAdminArea();
-                Toast.makeText(getActivity(), province, Toast.LENGTH_SHORT).show();
                 String district = address.getSubAdminArea();
-                Toast.makeText(getActivity(), "*" + district + "*", Toast.LENGTH_SHORT).show();
                 String ward = address.getLocality();
-                Toast.makeText(getActivity(), ward, Toast.LENGTH_SHORT).show();
                 String street = address.getThoroughfare();
-                Toast.makeText(getActivity(), street, Toast.LENGTH_SHORT).show();
 
                 edtStreet.setText(street);
+                provinceIds = new ArrayList<>();
                 for (int i = 0; i < provincesArray.length(); i++) {
                     JSONObject provinceObject = provincesArray.getJSONObject(i);
                     provinceIds.add(provinceObject.getString("idProvince"));
                 }
-                for (int i = 0; i < districtsArray.length(); i++) {
-                    JSONObject districtObject = districtsArray.getJSONObject(i);
-                    districtIds.add(districtObject.getString("idDistrict"));
-                }
-                for (int i = 0; i < wardsArray.length(); i++) {
-                    JSONObject wardsObject = wardsArray.getJSONObject(i);
-                    wardIds.add(wardsObject.getString("idWard"));
-                }
-
                 if (province != null) {
                     int provincePosition = findProvincePosition(province.trim());
                     if (provincePosition >= 0) {
                         edtProvince.setText(province);
                         provinceId = provinceIds.get(provincePosition);
-                        Log.e(TAG, "Province is " + provincePosition);
+                        fetchDistricts(provinceId);
                     } else {
                         Log.e(TAG, "Province not found or index out of bounds " + provincePosition);
                     }
                 }
-
+                districtIds = new ArrayList<>();
+                for (int i = 0; i < districtsArray.length(); i++) {
+                    JSONObject districtObject = districtsArray.getJSONObject(i);
+                    districtIds.add(districtObject.getString("idDistrict"));
+                }
                 if (district != null) {
                     int districtPosition = findDistrictPosition(district.trim());
                     if (districtPosition >= 0) {
@@ -189,10 +180,14 @@ public class FragmentAddress extends Fragment {
                         Log.e(TAG, "District not found or index out of bounds " + districtPosition);
                     }
                 }
-
+                wardIds = new ArrayList<>();
+                for (int i = 0; i < wardsArray.length(); i++) {
+                    JSONObject wardsObject = wardsArray.getJSONObject(i);
+                    wardIds.add(wardsObject.getString("idWard"));
+                }
                 if (ward != null) {
                     int wardPosition = findWardPosition(ward.trim());
-                    if (wardPosition >= 0 && wardPosition < wardIds.size()) {
+                    if (wardPosition >= 0) {
                         edtWard.setText(ward);
                         wardId = wardIds.get(wardPosition);
                     } else {
@@ -249,10 +244,6 @@ public class FragmentAddress extends Fragment {
     private void setupPopupMenus() {
         List<String> provinces = new ArrayList<>();
         provinceIds = new ArrayList<>();
-        List<String> districts = new ArrayList<>();
-        districtIds = new ArrayList<>();
-        List<String> wards = new ArrayList<>();
-        wardIds = new ArrayList<>();
 
         try {
             for (int i = 0; i < provincesArray.length(); i++) {
@@ -266,19 +257,37 @@ public class FragmentAddress extends Fragment {
                 provinceId = provinceIds.get(position);
                 edtDistrict.setText("");
                 edtWard.setText("");
+                districtIds = new ArrayList<>();
+                wardIds = new ArrayList<>();
                 districtId = "";
                 wardId = "";
                 fetchDistricts(provinceId);
+                fetchWards("-1");
             }));
 
             edtDistrict.setOnClickListener(v -> {
                 if (provinceId.equals("")) {
-                    Toast.makeText(getActivity(), "Vui lòng chọn Tỉnh/Tp", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), "Vui lòng chọn Tỉnh/TP", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                showListViewPopup(v, districts, (position) -> {
-                    edtDistrict.setText(districts.get(position));
+                List<String> districtList = new ArrayList<>();
+                districtIds = new ArrayList<>(); // Ensure this is cleared and repopulated correctly
+                try {
+                    for (int i = 0; i < districtsArray.length(); i++) {
+                        JSONObject districtObject = districtsArray.getJSONObject(i);
+                        if (districtObject.getString("idProvince").equals(provinceId)) {
+                            districtList.add(districtObject.getString("name"));
+                            districtIds.add(districtObject.getString("idDistrict")); // Add district IDs corresponding to province
+                        }
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                showListViewPopup(v, districtList, (position) -> {
+                    edtDistrict.setText(districtList.get(position));
                     districtId = districtIds.get(position);
+
+                    // Clear the ward field and reset its listener
                     edtWard.setText("");
                     wardId = "";
                     fetchWards(districtId);
@@ -287,15 +296,33 @@ public class FragmentAddress extends Fragment {
 
             edtWard.setOnClickListener(v -> {
                 if (provinceId.equals("")) {
-                    Toast.makeText(getActivity(), "Vui lòng chọn Tỉnh/Tp", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), "Vui lòng chọn Tỉnh/TP", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                if (districtId.equals("")) {
+                if (districtId.equals("") || districtId.equals("-1")) {
                     Toast.makeText(getActivity(), "Vui lòng chọn Quận/Huyện", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                showListViewPopup(v, wards, (position) -> {
-                    edtWard.setText(wards.get(position));
+                Toast.makeText(getActivity(), "Huyện1 " + districtId, Toast.LENGTH_LONG).show();
+                List<String> wardList = new ArrayList<>();
+                wardIds = new ArrayList<>(); // Ensure this is cleared and repopulated correctly
+                try {
+                    for (int i = 0; i < wardsArray.length(); i++) {
+                        JSONObject wardObject = wardsArray.getJSONObject(i);
+                        if (wardObject.getString("idDistrict").equals(districtId)) {
+                            wardList.add(wardObject.getString("name"));
+                            wardIds.add(wardObject.getString("idWard")); // Add ward IDs corresponding to district
+                        }
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                showListViewPopup(v, wardList, (position) -> {
+                    if(districtId.equals("-1")){
+                        Toast.makeText(getActivity(), "Vui lòng chọn Quận/Huyện", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    edtWard.setText(wardList.get(position));
                     wardId = wardIds.get(position);
                 });
             });
@@ -305,7 +332,88 @@ public class FragmentAddress extends Fragment {
         }
     }
 
+    private void fetchDistricts(String provinceId) throws JSONException {
+        List<String> districtList = new ArrayList<>();
+        districtIds = new ArrayList<>();
+        wardIds = new ArrayList<>();
+        wardId = "";
+
+        if (provinceId.equals("")) {
+            Toast.makeText(getActivity(), "Vui lòng chọn Tỉnh/TP", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        for (int i = 0; i < districtsArray.length(); i++) {
+            JSONObject districtObject = districtsArray.getJSONObject(i);
+            if (districtObject.getString("idProvince").equals(provinceId)) {
+                districtList.add(districtObject.getString("name"));
+                districtIds.add(districtObject.getString("idDistrict"));
+            }
+        }
+
+        edtDistrict.setOnClickListener(v -> showListViewPopup(v, districtList, (position) -> {
+            districtIds.clear();
+            for (int i = 0; i < districtsArray.length(); i++) {
+                JSONObject districtObject = districtsArray.getJSONObject(i);
+                if (districtObject.getString("idProvince").equals(provinceId)) {
+                    districtList.add(districtObject.getString("name"));
+                    districtIds.add(districtObject.getString("idDistrict"));
+                }
+            }
+            edtDistrict.setText(districtList.get(position));
+            districtId = districtIds.get(position);
+            edtWard.setText("");
+            wardId = "";
+            fetchWards(districtId);
+        }));
+
+    }
+
+    private void fetchWards(String districtId) throws JSONException {
+        List<String> wardList = new ArrayList<>();
+        wardIds = new ArrayList<>();
+
+        if (provinceId.equals("")) {
+            Toast.makeText(getActivity(), "Vui lòng chọn Tỉnh/TP", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (districtId.equals("")) {
+            Toast.makeText(getActivity(), "Vui lòng chọn Quận/Huyện", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        for (int i = 0; i < wardsArray.length(); i++) {
+            JSONObject wardObject = wardsArray.getJSONObject(i);
+            if (wardObject.getString("idDistrict").equals(districtId)) {
+                wardList.add(wardObject.getString("name"));
+                wardIds.add(wardObject.getString("idWard"));
+            }
+        }
+
+        edtWard.setOnClickListener(v -> showListViewPopup(v, wardList, (position) -> {
+            if(districtId.equals("-1")){
+                Toast.makeText(getActivity(), "Vui lòng chọn Quận/Huyện", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            wardIds.clear();
+            for (int i = 0; i < wardsArray.length(); i++) {
+                JSONObject wardObject = wardsArray.getJSONObject(i);
+                if (wardObject.getString("idDistrict").equals(districtId)) {
+                    wardList.add(wardObject.getString("name"));
+                    wardIds.add(wardObject.getString("idWard"));
+                }
+            }
+            edtWard.setText(wardList.get(position));
+            wardId = wardIds.get(position);
+        }));
+
+    }
+
     private void showListViewPopup(View anchor, List<String> items, OnItemClickListener listener) {
+        if(items.size() == 0){
+            Toast.makeText(getActivity(), "Vui lòng chọn Quận/Huyện", Toast.LENGTH_SHORT).show();
+            return;
+        }
         // Create a new dialog
         Dialog dialog = new Dialog(getActivity());
         dialog.setContentView(R.layout.popup_list);
@@ -315,7 +423,11 @@ public class FragmentAddress extends Fragment {
         listView.setAdapter(adapter);
 
         listView.setOnItemClickListener((parent, view, position, id) -> {
-            listener.onItemClick(position);
+            try {
+                listener.onItemClick(position);
+            } catch (JSONException e) {
+                throw new RuntimeException(e);
+            }
             dialog.dismiss();
         });
 
@@ -337,67 +449,22 @@ public class FragmentAddress extends Fragment {
         dialog.show();
     }
 
-    private void fetchDistricts(String provinceId) {
-        List<String> districtList = new ArrayList<>();
-        districtIds = new ArrayList<>();
-
-        try {
-            if(districtsArray.length() == 0){
-                Toast.makeText(getActivity(), "Vui lòng chọn Tỉnh/Tp", Toast.LENGTH_SHORT).show();
-                return;
-            }
-            for (int i = 0; i < districtsArray.length(); i++) {
-                JSONObject districtObject = districtsArray.getJSONObject(i);
-                if (districtObject.getString("idProvince").equals(provinceId)) {
-                    districtList.add(districtObject.getString("name"));
-                    districtIds.add(districtObject.getString("idDistrict"));
-                }
-            }
-
-            edtDistrict.setOnClickListener(v -> showListViewPopup(v, districtList, (position) -> {
-                edtDistrict.setText(districtList.get(position));
-                districtId = districtIds.get(position);
-                edtWard.setText("");
-                wardId = "";
-                fetchWards(districtId);
-            }));
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+    public String getProvince() {
+        return edtProvince.getText().toString().trim();
     }
 
-    private void fetchWards(String districtId) {
-        List<String> wardList = new ArrayList<>();
-        wardIds = new ArrayList<>();
-
-        try {
-            if(districtsArray.length() == 0){
-                Toast.makeText(getActivity(), "Vui lòng chọn Tỉnh/TP", Toast.LENGTH_SHORT).show();
-                return;
-            }
-            if(wardsArray.length() == 0){
-                Toast.makeText(getActivity(), "Vui lòng chọn Quận/Huyện", Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            for (int i = 0; i < wardsArray.length(); i++) {
-                JSONObject wardObject = wardsArray.getJSONObject(i);
-                if (wardObject.getString("idDistrict").equals(districtId)) {
-                    wardList.add(wardObject.getString("name"));
-                    wardIds.add(wardObject.getString("idWard"));
-                }
-            }
-
-            edtWard.setOnClickListener(v -> showListViewPopup(v, wardList, (position) -> {
-                edtWard.setText(wardList.get(position));
-                wardId = wardIds.get(position);
-            }));
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+    public String getDistrict() {
+        return edtDistrict.getText().toString().trim();
     }
+
+    public String getWard() {
+        return edtWard.getText().toString().trim();
+    }
+
+    public String getStreet() {
+        return edtStreet.getText().toString().trim();
+    }
+
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -411,7 +478,6 @@ public class FragmentAddress extends Fragment {
     }
 
     interface OnItemClickListener {
-        void onItemClick(int position);
+        void onItemClick(int position) throws JSONException;
     }
 }
-//Sửa lại để nếu người dùng chưa chọn Tỉnh/Tp mà click vào chọn Quận/Huyện, chọn Xã/Phường thì thông báo Vui lòng chọn Tỉnh/Tp, nếu đã chọn Tỉnh/TP mà chưa chọn Quận/Huyện nhưng lại click vào chọn Xã/Phường thì thông báo Vui lòng chọn Quận/Huyện
