@@ -11,14 +11,7 @@ public class Room {
     private String area;
     private Timestamp timePosted;
     private List<String> images; // List of image URLs
-    private boolean hasWifi;
-    private boolean hasPrivateWC;
-    private boolean hasParking;
-    private boolean hasFreeTime;
-    private boolean hasKitchen;
-    private boolean hasAirConditioner;
-    private boolean hasFridge;
-    private boolean hasWashingMachine;
+    private List<Boolean> utilities;
     private String phone;
     private String host;
     private String detail;
@@ -28,10 +21,7 @@ public class Room {
     public Room() {
     }
 
-    public Room(String id, String title, String address, String price, String area, Timestamp timePosted, List<String> images,
-                boolean hasWifi, boolean hasPrivateWC, boolean hasParking, boolean hasFreeTime, boolean hasKitchen,
-                boolean hasAirConditioner, boolean hasFridge, boolean hasWashingMachine, String phone, String host,
-                String detail, Integer roomType, Integer postType) {
+    public Room(String id, String title, String address, String price, String area, Timestamp timePosted, List<String> images, List<Boolean> utitlities, String phone, String host, String detail, Integer roomType, Integer postType) {
         this.id = id;
         this.title = title;
         this.address = address;
@@ -39,14 +29,7 @@ public class Room {
         this.area = area;
         this.timePosted = timePosted;
         this.images = images;
-        this.hasWifi = hasWifi;
-        this.hasPrivateWC = hasPrivateWC;
-        this.hasParking = hasParking;
-        this.hasFreeTime = hasFreeTime;
-        this.hasKitchen = hasKitchen;
-        this.hasAirConditioner = hasAirConditioner;
-        this.hasFridge = hasFridge;
-        this.hasWashingMachine = hasWashingMachine;
+        this.utilities = utitlities;
         this.phone = phone;
         this.host = host;
         this.detail = detail;
@@ -54,7 +37,6 @@ public class Room {
         this.postType = postType;
     }
 
-    // Getter and setter methods
     public String getId() {
         return id;
     }
@@ -111,68 +93,12 @@ public class Room {
         this.images = images;
     }
 
-    public boolean isHasWifi() {
-        return hasWifi;
+    public List<Boolean> getUtilities() {
+        return utilities;
     }
 
-    public void setHasWifi(boolean hasWifi) {
-        this.hasWifi = hasWifi;
-    }
-
-    public boolean isHasPrivateWC() {
-        return hasPrivateWC;
-    }
-
-    public void setHasPrivateWC(boolean hasPrivateWC) {
-        this.hasPrivateWC = hasPrivateWC;
-    }
-
-    public boolean isHasParking() {
-        return hasParking;
-    }
-
-    public void setHasParking(boolean hasParking) {
-        this.hasParking = hasParking;
-    }
-
-    public boolean isHasFreeTime() {
-        return hasFreeTime;
-    }
-
-    public void setHasFreeTime(boolean hasFreeTime) {
-        this.hasFreeTime = hasFreeTime;
-    }
-
-    public boolean isHasKitchen() {
-        return hasKitchen;
-    }
-
-    public void setHasKitchen(boolean hasKitchen) {
-        this.hasKitchen = hasKitchen;
-    }
-
-    public boolean isHasAirConditioner() {
-        return hasAirConditioner;
-    }
-
-    public void setHasAirConditioner(boolean hasAirConditioner) {
-        this.hasAirConditioner = hasAirConditioner;
-    }
-
-    public boolean isHasFridge() {
-        return hasFridge;
-    }
-
-    public void setHasFridge(boolean hasFridge) {
-        this.hasFridge = hasFridge;
-    }
-
-    public boolean isHasWashingMachine() {
-        return hasWashingMachine;
-    }
-
-    public void setHasWashingMachine(boolean hasWashingMachine) {
-        this.hasWashingMachine = hasWashingMachine;
+    public void setUtilities(List<Boolean> utilities) {
+        this.utilities = utilities;
     }
 
     public String getPhone() {

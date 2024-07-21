@@ -59,6 +59,7 @@ public class RoomDetail extends AppCompatActivity implements OnMapReadyCallback 
     private SupportMapFragment mapFragment;
     private LatLng roomLatLng;
     private ImageView imvBack;
+    private static Room room;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -106,6 +107,7 @@ public class RoomDetail extends AppCompatActivity implements OnMapReadyCallback 
         tvTimePosted = findViewById(R.id.tv_time_posted);
         tvUtilities = findViewById(R.id.tv_utilities);
         viewPager = findViewById(R.id.view_pager);
+        room = new Room();
         setViewPagerHeight();
         listImvUtilites.add(findViewById(R.id.imv_wifi));
         listImvUtilites.add(findViewById(R.id.imv_wc));
@@ -133,10 +135,10 @@ public class RoomDetail extends AppCompatActivity implements OnMapReadyCallback 
                 .get()
                 .addOnSuccessListener(documentSnapshot -> {
                     if (documentSnapshot.exists()) {
-                        Room room = documentSnapshot.toObject(Room.class);
+                        room = documentSnapshot.toObject(Room.class);
                         if (room != null) {
                             // Hiển thị thông tin phòng lên các TextView
-                            updateUI(room);
+                            updateUI();
 
                             // Lấy tọa độ từ địa chỉ
                             getLatLngFromAddress(room.getAddress());
@@ -152,7 +154,7 @@ public class RoomDetail extends AppCompatActivity implements OnMapReadyCallback 
                 });
     }
 
-    private void updateUI(Room room) {
+    private void updateUI() {
         // Set text views
         tvPrice.setText(room.getPrice() + "/tháng");
 
@@ -170,9 +172,10 @@ public class RoomDetail extends AppCompatActivity implements OnMapReadyCallback 
         // Update tvTimePosted with calculated time
         updatePostedTime(room.getTimePosted());
 
-        int num_utilities = setUtilities(room.isHasWifi(), 0) + setUtilities(room.isHasPrivateWC(), 1) + setUtilities(room.isHasParking(), 2)
-                + setUtilities(room.isHasFreeTime(), 3) + setUtilities(room.isHasKitchen(), 4) + setUtilities(room.isHasAirConditioner(), 5)
-                + setUtilities(room.isHasFridge(), 6) + setUtilities(room.isHasWashingMachine(), 7);
+        int num_utilities = 0;
+        for(int i=0; i<7; i++){
+            num_utilities+= setUtilities(i);
+        }
         tvUtilities.setText("Tiện ích phòng (" + num_utilities + ")");
         tvInfor.setText(Html.fromHtml(room.getDetail().replaceAll("\n", "<br>")));
     }
@@ -192,8 +195,8 @@ public class RoomDetail extends AppCompatActivity implements OnMapReadyCallback 
         }
     }
 
-    private int setUtilities(boolean utiliy, int i){
-        if(utiliy){
+    private int setUtilities(int i){
+        if(room.getUtilities().get(i)){
             listImvUtilites.get(i).setColorFilter(ContextCompat.getColor(listImvUtilites.get(i).getContext(), R.color.blue2), PorterDuff.Mode.SRC_IN);
             listTvUtilites.get(i).setTextColor(ContextCompat.getColor(listTvUtilites.get(i).getContext(), R.color.blue2));
             return 1;

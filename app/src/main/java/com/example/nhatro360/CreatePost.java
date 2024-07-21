@@ -1,35 +1,17 @@
 package com.example.nhatro360;
 
-import static android.content.ContentValues.TAG;
-
-import static com.google.android.material.internal.ContextUtils.getActivity;
-
 import android.animation.Animator;
-import android.animation.ValueAnimator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.PorterDuff;
-import android.graphics.Rect;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.GradientDrawable;
-import android.graphics.drawable.LayerDrawable;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.WindowInsetsController;
-import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -41,6 +23,7 @@ import android.widget.Toast;
 
 import com.example.nhatro360.models.Address;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -51,6 +34,7 @@ public class CreatePost extends AppCompatActivity {
     private List<TextView> listTv;
     private List<ImageView> listImv, listLine;
     private Address address;
+    private Room room;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,6 +86,7 @@ public class CreatePost extends AppCompatActivity {
     }
 
     private void init() {
+        room = new Room();
         listImv = new ArrayList<>();
         listTv = new ArrayList<>();
         listLine = new ArrayList<>();
@@ -133,11 +118,13 @@ public class CreatePost extends AppCompatActivity {
                     setNextStep(1, 0);
                     Toast.makeText(CreatePost.this, address.getAddress(), Toast.LENGTH_SHORT).show();
                 } else {
-                    showErrorDialog("Vui lòng điền đầy đủ thông tin địa chỉ");
+                    showError("Vui lòng điền đầy đủ thông tin địa chỉ");
                 }
             } else if (currentFragment instanceof FragmentInformation) {
-                loadFragment(new FragmentImage(), true);
-                setNextStep(2, 1);
+                if (validateInformation()){
+                    loadFragment(new FragmentImage(), true);
+                    setNextStep(2, 1);
+                }
             } else if (currentFragment instanceof FragmentImage) {
                 loadFragment(new FragmentConfirm(), true);
                 setNextStep(3,2);
@@ -329,17 +316,57 @@ public class CreatePost extends AppCompatActivity {
 
             // Tạo đối tượng Address
             address = new Address(province, district, ward, street);
+            room.setAddress(address.getAddress());
             return true;
         } else {
             return false;
         }
     }
 
-    private void showErrorDialog(String message) {
-        new AlertDialog.Builder(this)
-                .setMessage(message)
-                .setPositiveButton("OK", null)
-                .show();
+    private Boolean validateInformation(){
+        FragmentInformation fragmentInformation = (FragmentInformation) getCurrentFragment();
+        String roomPrice = fragmentInformation.getRoomPrice();
+        String roomArea = fragmentInformation.getRoomArea();
+        List<Boolean> utilities = fragmentInformation.getUtilities();
+        if(roomPrice.equals("")){
+            showError("Vui lòng nhập giá phòng!");
+            return false;
+        }
+        if(Integer.parseInt(roomPrice)<100000){
+            showError("Giá phòng phải trên 100.000 VND!");
+            return false;
+        }
+        if(roomArea.equals("")){
+            showError("Vui lòng nhập diện tích phòng!");
+            return false;
+        }
+        if(Integer.parseInt(roomArea)<5){
+            showError("Diện tích phòng phải trên 5 m2!");
+            return false;
+        }
+        if(!utilities.contains(true)){
+            showError("Chọn tối thiểu một tiện ích");
+            return false;
+        }
+        room.setPrice(formatPrice(roomPrice));
+        room.setArea(roomArea);
+        room.setRoomType(fragmentInformation.getRoomType());
+        room.setPostType(fragmentInformation.getPostType());
+        room.setUtilities(utilities);
+        return true;
+    }
+    private String formatPrice(String price){
+        DecimalFormat decimalFormat = new DecimalFormat("#,###.##");
+        double millions = Integer.parseInt(price) / 1_000_000.0;
+        return decimalFormat.format(millions) + " triệu";
+    }
+
+    private void showError(String message) {
+        Toast.makeText(CreatePost.this, message, Toast.LENGTH_SHORT).show();
+//        new AlertDialog.Builder(this)
+//                .setMessage(message)
+//                .setPositiveButton("OK", null)
+//                .show();
     }
 
 
