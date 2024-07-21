@@ -171,7 +171,7 @@ public class FragmentAddress extends Fragment {
                     districtIds.add(districtObject.getString("idDistrict"));
                 }
                 if (district != null) {
-                    int districtPosition = findDistrictPosition(district.trim());
+                    int districtPosition = findDistrictPosition(district.trim(), provinceId);
                     if (districtPosition >= 0) {
                         edtDistrict.setText(district);
                         districtId = districtIds.get(districtPosition);
@@ -186,7 +186,7 @@ public class FragmentAddress extends Fragment {
                     wardIds.add(wardsObject.getString("idWard"));
                 }
                 if (ward != null) {
-                    int wardPosition = findWardPosition(ward.trim());
+                    int wardPosition = findWardPosition(ward.trim(), districtId);
                     if (wardPosition >= 0) {
                         edtWard.setText(ward);
                         wardId = wardIds.get(wardPosition);
@@ -215,10 +215,10 @@ public class FragmentAddress extends Fragment {
         return -1;
     }
 
-    private int findDistrictPosition(String district) {
+    private int findDistrictPosition(String district, String provinceId) {
         for (int i = 0; i < districtsArray.length(); i++) {
             try {
-                if (districtsArray.getJSONObject(i).getString("name").equals(district)) {
+                if (districtsArray.getJSONObject(i).getString("idProvince").equals(provinceId) && districtsArray.getJSONObject(i).getString("name").equals(district)) {
                     return i;
                 }
             } catch (JSONException e) {
@@ -228,10 +228,10 @@ public class FragmentAddress extends Fragment {
         return -1;
     }
 
-    private int findWardPosition(String ward) {
+    private int findWardPosition(String ward, String districtId) {
         for (int i = 0; i < wardsArray.length(); i++) {
             try {
-                if (wardsArray.getJSONObject(i).getString("name").equals(ward)) {
+                if (wardsArray.getJSONObject(i).getString("idDistrict").equals(districtId) && wardsArray.getJSONObject(i).getString("name").equals(ward)) {
                     return i;
                 }
             } catch (JSONException e) {

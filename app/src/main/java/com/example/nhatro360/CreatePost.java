@@ -1,5 +1,9 @@
 package com.example.nhatro360;
 
+import static android.content.ContentValues.TAG;
+
+import static com.google.android.material.internal.ContextUtils.getActivity;
+
 import android.animation.Animator;
 import android.animation.ValueAnimator;
 import android.animation.AnimatorSet;
@@ -15,6 +19,7 @@ import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.LayerDrawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowInsetsController;
 import android.view.animation.LinearInterpolator;
@@ -32,6 +37,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import android.os.Handler;
+import android.widget.Toast;
 
 import com.example.nhatro360.models.Address;
 
@@ -125,6 +131,7 @@ public class CreatePost extends AppCompatActivity {
                 if (validateAddress()) {
                     loadFragment(new FragmentInformation(), true);
                     setNextStep(1, 0);
+                    Toast.makeText(CreatePost.this, address.getAddress(), Toast.LENGTH_SHORT).show();
                 } else {
                     showErrorDialog("Vui lòng điền đầy đủ thông tin địa chỉ");
                 }

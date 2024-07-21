@@ -33,6 +33,8 @@
     <string name="pairing_room">Phòng ở ghép, KTX</string>
     <string name="general_room">Phòng tổng hợp</string>
     <string name="more">Xem thêm</string>
+
+    // Create Post
     <string name="cancel">Huỷ</string>
     <string name="back">Quay lại</string>
     <string name="next">Tiếp theo</string>
@@ -45,15 +47,39 @@
     <string name="information">Thông tin</string>
     <string name="image">Hình ảnh</string>
     <string name="confirm">Xác nhận</string>
-    <string name="current_location">Vị trí hiện tại</string>
-    <string name="province">Tỉnh/TP</string>
-    <string name="district">Quận/Huyện</string>
-    <string name="ward">Phường/Xã</string>
-    <string name="select_province">Chọn Tỉnh/TP</string>
-    <string name="select_district">Chọn Quận/Huyện</string>
-    <string name="select_ward">Chọn Phường/Xã</string>
-    <string name="street">Số nhà, tên đường</string>
-    <string name="fill_street">Nhập số nhà, tên đường</string>
+
+    // Fragment Address
+        <string name="current_location">Vị trí hiện tại</string>
+        <string name="province">Tỉnh/TP</string>
+        <string name="district">Quận/Huyện</string>
+        <string name="ward">Phường/Xã</string>
+        <string name="select_province">Chọn Tỉnh/TP</string>
+        <string name="select_district">Chọn Quận/Huyện</string>
+        <string name="select_ward">Chọn Phường/Xã</string>
+        <string name="street">Số nhà, tên đường</string>
+        <string name="fill_street">Nhập số nhà, tên đường</string>
+
+    // Fragment Information
+        <string name="post_type">Loại tin</string>
+        <string name="rent_room">Cho thuê</string>
+        <string name="share_room">Tìm người ở ghép</string>
+        <string name="room_type">Loại phòng</string>
+        <string name="room">Phòng</string>
+        <string name="apartment">Căn hộ</string>
+        <string name="mini_apartment">Căn hộ mini</string>
+        <string name="house">Nguyên căn</string>
+        <string name="room_price">Giá phòng (VND)</string>
+        <string name="room_price_hint">3000000</string>
+        <string name="room_area">Diện tích (m2)</string>
+        <string name="room_area_hint">20</string>
+        <string name="electic_price">Giá điện (VND/số)</string>
+        <string name="electic_price_hint">3500</string>
+        <string name="water_price">Giá nước (VND/khối)</string>
+        <string name="water_price_hint">20000</string>
+        <string name="room_utilities">Tiện ích phòng</string>
+
+
+
     <string name="utility1">Wifi</string>
     <string name="utility2">WC riêng</string>
     <string name="utility3">Giữ xe</string>
