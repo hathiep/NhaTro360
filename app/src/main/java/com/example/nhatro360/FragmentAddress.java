@@ -77,6 +77,14 @@ public class FragmentAddress extends Fragment {
         provinceId = "";
         districtId = "";
         wardId = "";
+        try {
+            getArray();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+
         TextView tvCurrentLocation = view.findViewById(R.id.tv_current_location);
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(getActivity());
@@ -95,6 +103,19 @@ public class FragmentAddress extends Fragment {
         setupPopupMenus();
 
         return view;
+    }
+
+    private void getArray() throws IOException, JSONException {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(getActivity().getAssets().open("provinces.json")));
+        StringBuilder jsonBuilder = new StringBuilder();
+        String line;
+        while ((line = reader.readLine()) != null) {
+            jsonBuilder.append(line);
+        }
+        JSONObject jsonObject = new JSONObject(jsonBuilder.toString());
+        provincesArray = jsonObject.getJSONArray("province");
+        districtsArray = jsonObject.getJSONArray("district");
+        wardsArray = jsonObject.getJSONArray("ward");
     }
 
     @SuppressLint("MissingPermission")
@@ -125,47 +146,63 @@ public class FragmentAddress extends Fragment {
             if (addresses != null && !addresses.isEmpty()) {
                 Address address = addresses.get(0);
                 String province = address.getAdminArea();
+                Toast.makeText(getActivity(), province, Toast.LENGTH_SHORT).show();
                 String district = address.getSubAdminArea();
+                Toast.makeText(getActivity(), "*" + district + "*", Toast.LENGTH_SHORT).show();
                 String ward = address.getLocality();
+                Toast.makeText(getActivity(), ward, Toast.LENGTH_SHORT).show();
                 String street = address.getThoroughfare();
+                Toast.makeText(getActivity(), street, Toast.LENGTH_SHORT).show();
 
                 edtStreet.setText(street);
+                for (int i = 0; i < provincesArray.length(); i++) {
+                    JSONObject provinceObject = provincesArray.getJSONObject(i);
+                    provinceIds.add(provinceObject.getString("idProvince"));
+                }
+                for (int i = 0; i < districtsArray.length(); i++) {
+                    JSONObject districtObject = districtsArray.getJSONObject(i);
+                    districtIds.add(districtObject.getString("idDistrict"));
+                }
+                for (int i = 0; i < wardsArray.length(); i++) {
+                    JSONObject wardsObject = wardsArray.getJSONObject(i);
+                    wardIds.add(wardsObject.getString("idWard"));
+                }
 
                 if (province != null) {
-                    int provincePosition = findProvincePosition(province);
-                    if (provincePosition >= 0 && provincePosition < provinceIds.size()) {
+                    int provincePosition = findProvincePosition(province.trim());
+                    if (provincePosition >= 0) {
                         edtProvince.setText(province);
                         provinceId = provinceIds.get(provincePosition);
-                        fetchDistricts(provinceId);
+                        Log.e(TAG, "Province is " + provincePosition);
                     } else {
-                        Log.e(TAG, "Province not found or index out of bounds");
+                        Log.e(TAG, "Province not found or index out of bounds " + provincePosition);
                     }
                 }
 
                 if (district != null) {
-                    int districtPosition = findDistrictPosition(district);
-                    if (districtPosition >= 0 && districtPosition < districtIds.size()) {
+                    int districtPosition = findDistrictPosition(district.trim());
+                    if (districtPosition >= 0) {
                         edtDistrict.setText(district);
                         districtId = districtIds.get(districtPosition);
                         fetchWards(districtId);
                     } else {
-                        Log.e(TAG, "District not found or index out of bounds");
+                        Log.e(TAG, "District not found or index out of bounds " + districtPosition);
                     }
                 }
 
                 if (ward != null) {
-                    int wardPosition = findWardPosition(ward);
+                    int wardPosition = findWardPosition(ward.trim());
                     if (wardPosition >= 0 && wardPosition < wardIds.size()) {
                         edtWard.setText(ward);
                         wardId = wardIds.get(wardPosition);
                     } else {
-                        Log.e(TAG, "Ward not found or index out of bounds");
+                        Log.e(TAG, "Ward not found or index out of bounds " + wardPosition);
                     }
                 }
             } else {
                 Log.d(TAG, "No addresses found");
             }
-        } catch (IOException e) {
+        } catch (IOException | JSONException e) {
             Log.e(TAG, "Geocoder exception", e);
         }
     }
@@ -218,17 +255,6 @@ public class FragmentAddress extends Fragment {
         wardIds = new ArrayList<>();
 
         try {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(getActivity().getAssets().open("provinces.json")));
-            StringBuilder jsonBuilder = new StringBuilder();
-            String line;
-            while ((line = reader.readLine()) != null) {
-                jsonBuilder.append(line);
-            }
-            JSONObject jsonObject = new JSONObject(jsonBuilder.toString());
-            provincesArray = jsonObject.getJSONArray("province");
-            districtsArray = jsonObject.getJSONArray("district");
-            wardsArray = jsonObject.getJSONArray("ward");
-
             for (int i = 0; i < provincesArray.length(); i++) {
                 JSONObject provinceObject = provincesArray.getJSONObject(i);
                 provinces.add(provinceObject.getString("name"));
