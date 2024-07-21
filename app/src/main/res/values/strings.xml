@@ -78,7 +78,9 @@
         <string name="water_price_hint">20000</string>
         <string name="room_utilities">Tiện ích phòng</string>
 
-
+    // Fragment Image
+        <string name="upload_image">Chọn ảnh</string>
+        <string name="number">0/6</string>
 
     <string name="utility1">Wifi</string>
     <string name="utility2">WC riêng</string>

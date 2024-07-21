@@ -1,15 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@color/white"
+    android:paddingHorizontal="10dp">
 
-    <!-- Your layout for image fragment -->
-    <!-- Example layout for image fragment -->
-    <TextView
-        android:layout_width="wrap_content"
+    <RelativeLayout
+        android:id="@+id/add_image_layout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Fragment Image" />
+        android:layout_marginBottom="10dp"
+        android:gravity="center_vertical">
 
-    <!-- Add your input fields here -->
+        <ImageView
+            android:id="@+id/icon_add_image"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:src="@drawable/icon_add_image"/>
+
+        <TextView
+            android:id="@+id/text_add_image"
+            android:layout_toRightOf="@id/icon_add_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_centerVertical="true"
+            android:text="Upload Image"
+            android:textSize="16sp"
+            android:textColor="@color/blue2"/>
+
+        <TextView
+            android:id="@+id/tv_number"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:text="@string/number"
+            android:textSize="16sp"
+            android:textColor="@color/gray3"/>
+
+    </RelativeLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/border"
+        android:padding="4dp"/>
+
 </LinearLayout>
