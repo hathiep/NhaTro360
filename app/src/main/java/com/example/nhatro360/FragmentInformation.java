@@ -91,7 +91,7 @@ public class FragmentInformation extends Fragment {
         updatePostType((room.getPostType() == 0) ? tvRentRoom : tvShareRoom,
                 (room.getPostType() == 0) ? tvShareRoom : tvRentRoom);
         updateRoomType(listTvRoomType.get(room.getRoomType()));
-        for(int i=0; i<7; i++){
+        for(int i=0; i<8; i++){
             updateUtilityUI(listImvUtilites.get(i), listTvUtilites.get(i), utilities.get(i));
         }
     }
@@ -136,7 +136,7 @@ public class FragmentInformation extends Fragment {
     }
 
     private void onClickUtilities(){
-        for(int i=0; i<7; i++){
+        for(int i=0; i<8; i++){
             ImageView imv = listImvUtilites.get(i);
             TextView tv = listTvUtilites.get(i);
             int index = i;
