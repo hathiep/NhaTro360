@@ -24,7 +24,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import android.graphics.Color;
 
 public class FragmentImage extends Fragment {
@@ -69,7 +68,7 @@ public class FragmentImage extends Fragment {
                 if (position == mRepresentativeImagePosition) {
                     mRepresentativeImagePosition = -1; // Nếu ảnh bị xóa là ảnh đại diện
                 } else if (position < mRepresentativeImagePosition) {
-                    mRepresentativeImagePosition--; // Cập nhật vị trí ảnh đại diện khi xóa ảnh trước đó
+                    mRepresentativeImagePosition-= 1; // Cập nhật vị trí ảnh đại diện khi xóa ảnh trước đó
                 }
                 mImageList.remove(position);
                 mAdapter.notifyItemRemoved(position);
@@ -136,6 +135,13 @@ public class FragmentImage extends Fragment {
                     Toast.makeText(getContext(), "Bạn chỉ được thêm tối đa 6 ảnh", Toast.LENGTH_SHORT).show();
                 }
             }
+
+            // Đặt nhãn "Ảnh đại diện" cho ảnh đầu tiên
+            if (mRepresentativeImagePosition == -1 && !mImageList.isEmpty()) {
+                mRepresentativeImagePosition = 0;
+                mAdapter.setRepresentativeImagePosition(mRepresentativeImagePosition);
+            }
+
             mAdapter.notifyDataSetChanged();
             updateImageCount();
         } else {
@@ -145,6 +151,22 @@ public class FragmentImage extends Fragment {
 
     private void updateImageCount() {
         mTvNumber.setText(String.valueOf(mImageList.size()));
+    }
+
+    // Getter và setter cho danh sách ảnh
+    public List<String> getImageList() {
+        return mImageList;
+    }
+
+    public void setImageList(List<String> imageList) {
+        if (imageList != null) {
+            mImageList = imageList;
+            if (mAdapter != null) {
+                mAdapter.setImageList(mImageList);
+                mAdapter.notifyDataSetChanged();
+                updateImageCount();
+            }
+        }
     }
 
     @Override

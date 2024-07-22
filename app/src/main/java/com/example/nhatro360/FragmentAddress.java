@@ -303,7 +303,6 @@ public class FragmentAddress extends Fragment {
                     Toast.makeText(getActivity(), "Vui lòng chọn Quận/Huyện", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                Toast.makeText(getActivity(), "Huyện1 " + districtId, Toast.LENGTH_LONG).show();
                 List<String> wardList = new ArrayList<>();
                 wardIds = new ArrayList<>(); // Ensure this is cleared and repopulated correctly
                 try {

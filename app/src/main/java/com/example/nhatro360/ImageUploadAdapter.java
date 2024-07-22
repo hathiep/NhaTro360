@@ -100,9 +100,9 @@ public class ImageUploadAdapter extends RecyclerView.Adapter<ImageUploadAdapter.
                 .into(holder.imageView);
 
         if (position == mRepresentativeImagePosition) {
-            holder.representativeLabel.setVisibility(View.VISIBLE);
+            holder.representativeLabel.setVisibility(View.VISIBLE); // Hiển thị nhãn nếu đây là ảnh đại diện
         } else {
-            holder.representativeLabel.setVisibility(View.GONE);
+            holder.representativeLabel.setVisibility(View.GONE); // Ẩn nhãn nếu không phải là ảnh đại diện
         }
     }
 

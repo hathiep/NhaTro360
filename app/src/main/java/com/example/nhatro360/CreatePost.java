@@ -18,6 +18,8 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.ViewModelProvider;
+
 import android.os.Handler;
 import android.widget.Toast;
 
@@ -35,6 +37,7 @@ public class CreatePost extends AppCompatActivity {
     private List<ImageView> listImv, listLine;
     private Address address;
     private Room room;
+    private CreatPostViewModel viewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,7 +89,8 @@ public class CreatePost extends AppCompatActivity {
     }
 
     private void init() {
-        room = new Room();
+        viewModel = new ViewModelProvider(this).get(CreatPostViewModel.class);
+        room = viewModel.getRoom();
         listImv = new ArrayList<>();
         listTv = new ArrayList<>();
         listLine = new ArrayList<>();
@@ -116,18 +120,19 @@ public class CreatePost extends AppCompatActivity {
                 if (validateAddress()) {
                     loadFragment(new FragmentInformation(), true);
                     setNextStep(1, 0);
-                    Toast.makeText(CreatePost.this, address.getAddress(), Toast.LENGTH_SHORT).show();
                 } else {
-                    showError("Vui lòng điền đầy đủ thông tin địa chỉ");
+                    showError("Vui lòng điền đầy đủ thông tin địa chỉ!");
                 }
             } else if (currentFragment instanceof FragmentInformation) {
-                if (validateInformation()){
+                if (validateInformation()) {
                     loadFragment(new FragmentImage(), true);
                     setNextStep(2, 1);
                 }
             } else if (currentFragment instanceof FragmentImage) {
+                FragmentImage fragmentImage = (FragmentImage) currentFragment;
+                room.setImages(fragmentImage.getImageList()); // Lưu danh sách ảnh vào room
                 loadFragment(new FragmentConfirm(), true);
-                setNextStep(3,2);
+                setNextStep(3, 2);
             }
         });
 
@@ -136,13 +141,14 @@ public class CreatePost extends AppCompatActivity {
             if (currentFragment instanceof FragmentAddress) {
                 showCancelDialog();
             } else {
-                if(currentFragment instanceof FragmentConfirm) {
+                if (currentFragment instanceof FragmentConfirm) {
                     setBackStep(2, 3);
-                }
-                else if(currentFragment instanceof FragmentImage) {
+                } else if (currentFragment instanceof FragmentImage) {
+                    FragmentImage fragmentImage = (FragmentImage) currentFragment;
+                    room.setImages(fragmentImage.getImageList()); // Lưu danh sách ảnh vào room
                     setBackStep(1, 2);
-                }
-                else if(currentFragment instanceof FragmentInformation) {
+                } else if (currentFragment instanceof FragmentInformation) {
+                        viewModel.setRoom(((FragmentInformation) getCurrentFragment()).getRoom());
                     setBackStep(0, 1);
                 }
                 getSupportFragmentManager().popBackStack();
@@ -150,14 +156,15 @@ public class CreatePost extends AppCompatActivity {
         });
 
         getSupportFragmentManager().addOnBackStackChangedListener(this::updateButtons);
-
-    }
-
-    private Fragment getCurrentFragment() {
-        return getSupportFragmentManager().findFragmentById(R.id.fragment_container);
     }
 
     private void loadFragment(Fragment fragment, boolean addToBackStack) {
+        if (fragment instanceof FragmentImage) {
+            ((FragmentImage) fragment).setImageList(room.getImages());
+        }
+        if (fragment instanceof FragmentImage) {
+            ((FragmentImage) fragment).setImageList(room.getImages());
+        }
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.fragment_container, fragment);
@@ -167,6 +174,11 @@ public class CreatePost extends AppCompatActivity {
         fragmentTransaction.commit();
         fragmentManager.executePendingTransactions(); // Đảm bảo transaction hoàn tất
         updateButtons(); // Cập nhật nút sau khi fragment thay đổi
+    }
+
+
+    private Fragment getCurrentFragment() {
+        return getSupportFragmentManager().findFragmentById(R.id.fragment_container);
     }
 
     private void setNextStep(int current, int complete) {
@@ -325,9 +337,9 @@ public class CreatePost extends AppCompatActivity {
 
     private Boolean validateInformation(){
         FragmentInformation fragmentInformation = (FragmentInformation) getCurrentFragment();
-        String roomPrice = fragmentInformation.getRoomPrice();
-        String roomArea = fragmentInformation.getRoomArea();
-        List<Boolean> utilities = fragmentInformation.getUtilities();
+        Room roomInfor = fragmentInformation.getRoom();
+        String roomPrice = roomInfor.getPrice();
+        String roomArea = roomInfor.getArea();
         if(roomPrice.equals("")){
             showError("Vui lòng nhập giá phòng!");
             return false;
@@ -344,15 +356,11 @@ public class CreatePost extends AppCompatActivity {
             showError("Diện tích phòng phải trên 5 m2!");
             return false;
         }
-        if(!utilities.contains(true)){
+        if(!roomInfor.getUtilities().contains(true)){
             showError("Chọn tối thiểu một tiện ích");
             return false;
         }
-        room.setPrice(formatPrice(roomPrice));
-        room.setArea(roomArea);
-        room.setRoomType(fragmentInformation.getRoomType());
-        room.setPostType(fragmentInformation.getPostType());
-        room.setUtilities(utilities);
+        viewModel.setRoom(roomInfor);
         return true;
     }
     private String formatPrice(String price){
@@ -369,8 +377,8 @@ public class CreatePost extends AppCompatActivity {
 //                .show();
     }
 
-    public Room getRoom(){
-        return room;
+    public CreatPostViewModel getViewModel(){
+        return viewModel;
     }
 
 }

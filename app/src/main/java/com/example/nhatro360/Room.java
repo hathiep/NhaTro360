@@ -1,6 +1,9 @@
 package com.example.nhatro360;
 
 import com.google.firebase.Timestamp;
+
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class Room {
@@ -33,6 +36,13 @@ public class Room {
         this.phone = phone;
         this.host = host;
         this.detail = detail;
+        this.roomType = roomType;
+        this.postType = postType;
+    }
+
+    public Room(List<String> images, List<Boolean> utitlities, Integer roomType, Integer postType) {
+        this.images = images;
+        this.utilities = utitlities;
         this.roomType = roomType;
         this.postType = postType;
     }
