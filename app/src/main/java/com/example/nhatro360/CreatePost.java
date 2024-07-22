@@ -1,10 +1,15 @@
 package com.example.nhatro360;
 
+import java.io.File;
 import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
+import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.view.View;
 import android.view.WindowInsetsController;
 import android.widget.ImageView;
@@ -24,10 +29,16 @@ import android.os.Handler;
 import android.widget.Toast;
 
 import com.example.nhatro360.models.Address;
+import com.google.firebase.firestore.FieldValue;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 public class CreatePost extends AppCompatActivity {
@@ -120,8 +131,6 @@ public class CreatePost extends AppCompatActivity {
                 if (validateAddress()) {
                     loadFragment(new FragmentInformation(), true);
                     setNextStep(1, 0);
-                } else {
-                    showError("Vui lòng điền đầy đủ thông tin địa chỉ!");
                 }
             } else if (currentFragment instanceof FragmentInformation) {
                 if (validateInformation()) {
@@ -137,6 +146,11 @@ public class CreatePost extends AppCompatActivity {
                 }
                 else {
                     showError("Vui lòng chọn hình ảnh cho bài đăng!");
+                }
+            }
+            else if (currentFragment instanceof FragmentConfirm) {
+                if(validateConfirm()){
+                    showConfirmDialog();
                 }
             }
         });
@@ -181,9 +195,97 @@ public class CreatePost extends AppCompatActivity {
         updateButtons(); // Cập nhật nút sau khi fragment thay đổi
     }
 
-
     private Fragment getCurrentFragment() {
         return getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+    }
+
+    private void saveRoomToFireStoreDatabase() {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        StorageReference storageRef = storage.getReference();
+
+        // Create a new room with the fields specified
+        Map<String, Object> roomData = new HashMap<>();
+        roomData.put("address", room.getAddress());
+        roomData.put("area", room.getArea());
+        roomData.put("detail", room.getDetail());
+        roomData.put("host", room.getHost());
+        roomData.put("phone", room.getPhone());
+        roomData.put("postType", room.getPostType());
+        roomData.put("price", formatPrice(room.getPrice()));
+        roomData.put("roomType", room.getRoomType());
+        roomData.put("timePosted", FieldValue.serverTimestamp());
+        roomData.put("title", room.getTitle());
+        roomData.put("utilities", room.getUtilities());
+
+        // Add a new document with a generated ID
+        db.collection("rooms")
+                .add(roomData)
+                .addOnSuccessListener(documentReference -> {
+                    String documentId = documentReference.getId();
+                    // Call the method to upload images and save their URLs
+                    uploadImagesAndSaveUrls(documentId, room.getImages());
+                })
+                .addOnFailureListener(e -> {
+                    // Failed to add room
+                    Toast.makeText(CreatePost.this, "Error posting room: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                });
+    }
+
+
+    private void uploadImagesAndSaveUrls(String documentId, List<String> imagePaths) {
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        StorageReference storageRef = storage.getReference().child("rooms/" + documentId);
+
+        List<String> imageUrls = new ArrayList<>();
+        for (String imagePath : imagePaths) {
+            Uri fileUri = Uri.parse(imagePath); // Chuyển đổi đường dẫn thành Uri
+            StorageReference imageRef = storageRef.child(getFileName(fileUri)); // Lấy tên file từ Uri
+
+            imageRef.putFile(fileUri)
+                    .addOnSuccessListener(taskSnapshot -> imageRef.getDownloadUrl()
+                            .addOnSuccessListener(uri -> {
+                                imageUrls.add(uri.toString());
+                                if (imageUrls.size() == imagePaths.size()) {
+                                    saveImageUrlsToFirestore(documentId, imageUrls);
+                                }
+                            }))
+                    .addOnFailureListener(e -> {
+                        // Failed to upload image
+                        Toast.makeText(CreatePost.this, "Error uploading image: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    });
+        }
+    }
+
+    private String getFileName(Uri uri) {
+        String[] projection = { MediaStore.Images.Media.DISPLAY_NAME };
+        Cursor cursor = getContentResolver().query(uri, projection, null, null, null);
+        if (cursor != null) {
+            cursor.moveToFirst();
+            int nameIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DISPLAY_NAME);
+            String fileName = cursor.getString(nameIndex);
+            cursor.close();
+            return fileName;
+        }
+        return uri.getLastPathSegment();
+    }
+
+
+    private void saveImageUrlsToFirestore(String documentId, List<String> imageUrls) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("rooms").document(documentId)
+                .update("images", imageUrls)
+                .addOnSuccessListener(aVoid -> {
+                    // Successfully updated room with image URLs
+                    Toast.makeText(CreatePost.this, "Room posted successfully", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(this, MainActivity.class);
+                    startActivity(intent);
+                    finish();
+                })
+                .addOnFailureListener(e -> {
+                    // Failed to update room with image URLs
+                    Toast.makeText(CreatePost.this, "Error updating room with images: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                });
     }
 
     private void setNextStep(int current, int complete) {
@@ -275,27 +377,6 @@ public class CreatePost extends AppCompatActivity {
         listLine.get(i+3).setBackgroundResource(R.drawable.icon_line2);
     }
 
-    private void showCancelDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this)
-                .setMessage(R.string.cancel_post_message)
-                .setPositiveButton(R.string.yes, null)
-                .setNegativeButton(R.string.no, null);
-
-        AlertDialog dialog = builder.create();
-
-        dialog.setOnShowListener(dialogInterface -> {
-            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.red));
-            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setAllCaps(true);
-            dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setAllCaps(true);
-
-            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(v -> {
-                finish();
-            });
-        });
-
-        dialog.show();
-    }
-
     private void updateButtons() {
         if (tvCancel == null || tvNext == null) {
             return; // Tránh lỗi NullPointerException
@@ -325,22 +406,30 @@ public class CreatePost extends AppCompatActivity {
         String ward = fragmentAddress.getWard();
         String street = fragmentAddress.getStreet();
 
-        // Kiểm tra thông tin địa chỉ hợp lệ
-        if (province != null && !province.isEmpty() &&
-                district != null && !district.isEmpty() &&
-                ward != null && !ward.isEmpty() &&
-                street != null && !street.isEmpty()) {
-
-            // Tạo đối tượng Address
-            address = new Address(province, district, ward, street);
-            room.setAddress(address.getAddress());
-            return true;
-        } else {
+        if(province == null || province.isEmpty()){
+            showError("Vui lòng chọn Tỉnh/TP!");
             return false;
         }
+        if(district == null || district.isEmpty()){
+            showError("Vui lòng chọn Quận/Huyện!");
+            return false;
+        }
+        if(ward == null || ward.isEmpty()){
+            showError("Vui lòng chọn Phường/Xã!");
+            return false;
+        }
+        if(street == null || street.isEmpty()){
+            showError("Vui lòng điền Số nhà, tên đường!");
+            return false;
+        }
+
+        address = new Address(province, district, ward, street);
+        room.setAddress(address.getAddress());
+        viewModel.setRoom(room);
+        return true;
     }
 
-    private Boolean validateInformation(){
+    private boolean validateInformation(){
         FragmentInformation fragmentInformation = (FragmentInformation) getCurrentFragment();
         Room roomInfor = fragmentInformation.getRoom();
         String roomPrice = roomInfor.getPrice();
@@ -368,10 +457,65 @@ public class CreatePost extends AppCompatActivity {
         viewModel.setRoom(roomInfor);
         return true;
     }
+
+    private boolean validateConfirm(){
+        FragmentConfirm fragmentConfirm = (FragmentConfirm) getCurrentFragment();
+        Room roomInfor = fragmentConfirm.getRoom();
+        if(roomInfor.getTitle().equals("") || roomInfor.getHost().equals("") ||
+                roomInfor.getPhone().equals("") || roomInfor.getDetail().equals("") ){
+            showError("Vui lòng nhập đầy đủ thông tin!");
+            return false;
+        }
+        viewModel.setRoom(roomInfor);
+        return true;
+    }
+
     private String formatPrice(String price){
         DecimalFormat decimalFormat = new DecimalFormat("#,###.##");
         double millions = Integer.parseInt(price) / 1_000_000.0;
         return decimalFormat.format(millions) + " triệu";
+    }
+
+    private void showConfirmDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this)
+                .setMessage(R.string.confirm_message)
+                .setPositiveButton(R.string.yes, null)
+                .setNegativeButton(R.string.no, null);
+
+        AlertDialog dialog = builder.create();
+
+        dialog.setOnShowListener(dialogInterface -> {
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.red));
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setAllCaps(true);
+            dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setAllCaps(true);
+
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(v -> {
+                saveRoomToFireStoreDatabase();
+            });
+        });
+
+        dialog.show();
+    }
+
+    private void showCancelDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this)
+                .setMessage(R.string.cancel_post_message)
+                .setPositiveButton(R.string.yes, null)
+                .setNegativeButton(R.string.no, null);
+
+        AlertDialog dialog = builder.create();
+
+        dialog.setOnShowListener(dialogInterface -> {
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.red));
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setAllCaps(true);
+            dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setAllCaps(true);
+
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(v -> {
+                finish();
+            });
+        });
+
+        dialog.show();
     }
 
     private void showError(String message) {
@@ -380,10 +524,6 @@ public class CreatePost extends AppCompatActivity {
 //                .setMessage(message)
 //                .setPositiveButton("OK", null)
 //                .show();
-    }
-
-    public CreatPostViewModel getViewModel(){
-        return viewModel;
     }
 
 }

@@ -84,6 +84,20 @@
         <string name="add_image_hint">Thêm ảnh vào bài đăng\nBạn được thêm tối đa 6 ảnh</string>
         <string name="select_image_hint">Nhấn vào ảnh để chọn làm ảnh đại diện</string>
 
+    // Fragment Confirm
+        <string name="title">Tiêu đề bài đăng</string>
+        <string name="title_hint">Nhập tiêu đề bài đăng</string>
+        <string name="host">Liên hệ với chủ</string>
+        <string name="host_hint">Nhập họ và tên chủ</string>
+        <string name="phone_number">Số điện thoại (liên lạc)</string>
+        <string name="phone_number_hint">Nhập số điện thoại của bạn</string>
+        <string name="warning">* Bằng việc tiếp tục đăng tin nghĩa là bạn đã đồng ý với Điều khoản và Chính sách của chúng tôi.</string>
+        <string name="limitTitle">50</string>
+        <string name="limitDetail">1000</string>
+        <string name="term_policy_url">https://www.youtube.com/</string>
+        <string name="confirm_message">Bạn chắc chắn muốn tạo phòng</string>
+
+
     <string name="utility1">Wifi</string>
     <string name="utility2">WC riêng</string>
     <string name="utility3">Giữ xe</string>
