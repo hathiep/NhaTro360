@@ -1,6 +1,8 @@
 package com.example.nhatro360;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -11,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -19,24 +22,29 @@ import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.List;
-import android.graphics.Color;
 
 public class FragmentImage extends Fragment {
     private static final int PICK_IMAGE_REQUEST = 1;
     private static final int STORAGE_PERMISSION_CODE = 123;
 
-    private ImageView mAddImage;
+    private RelativeLayout mButtonAddImage;
     private TextView mTvNumber;
     private RecyclerView mRecyclerView;
     private ImageUploadAdapter mAdapter;
+    private TextView mEmptyImageMessage, tvSelectImageHint;
     private List<String> mImageList;
+    private Room room;
+    private CreatPostViewModel viewModel;
     private int mRepresentativeImagePosition = -1; // Vị trí của ảnh đại diện
 
+
+    @SuppressLint("MissingInflatedId")
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -47,16 +55,11 @@ public class FragmentImage extends Fragment {
             ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, STORAGE_PERMISSION_CODE);
         }
 
-        mAddImage = view.findViewById(R.id.icon_add_image);
+        mButtonAddImage = view.findViewById(R.id.add_image_layout);
         mTvNumber = view.findViewById(R.id.tv_number);
         mRecyclerView = view.findViewById(R.id.recyclerView);
-
-        if (savedInstanceState == null) {
-            mImageList = new ArrayList<>();
-        } else {
-            mImageList = savedInstanceState.getStringArrayList("imageList");
-            mRepresentativeImagePosition = savedInstanceState.getInt("representativeImagePosition", -1);
-        }
+        mEmptyImageMessage = view.findViewById(R.id.empty_image_message);
+        tvSelectImageHint = view.findViewById(R.id.tv_select_image_hint);
 
         mRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
         mAdapter = new ImageUploadAdapter(getContext(), mImageList, mRepresentativeImagePosition);
@@ -65,24 +68,43 @@ public class FragmentImage extends Fragment {
         mAdapter.setOnImageClickListener(new ImageUploadAdapter.OnImageClickListener() {
             @Override
             public void onDeleteClick(int position) {
+                if (mImageList.isEmpty()) return;
+
+                // Xóa ảnh đại diện nếu vị trí trùng với ảnh được xóa
                 if (position == mRepresentativeImagePosition) {
-                    mRepresentativeImagePosition = -1; // Nếu ảnh bị xóa là ảnh đại diện
+                    mImageList.remove(position);
+
+                    // Đặt nhãn đại diện cho ảnh đầu tiên trong danh sách nếu còn ảnh
+                    if (!mImageList.isEmpty()) {
+                        mRepresentativeImagePosition = 0;
+                        room.setAvatar(mRepresentativeImagePosition); // Cập nhật vào ViewModel
+                    } else {
+                        mRepresentativeImagePosition = -1;
+                        room.setAvatar(-1); // Cập nhật vào ViewModel
+                    }
                 } else if (position < mRepresentativeImagePosition) {
-                    mRepresentativeImagePosition-= 1; // Cập nhật vị trí ảnh đại diện khi xóa ảnh trước đó
+                    mImageList.remove(position);
+                    mRepresentativeImagePosition -= 1; // Cập nhật vị trí ảnh đại diện khi xóa ảnh trước đó
+                    room.setAvatar(mRepresentativeImagePosition); // Cập nhật vào ViewModel
+                } else {
+                    mImageList.remove(position);
                 }
-                mImageList.remove(position);
-                mAdapter.notifyItemRemoved(position);
+
+                mAdapter.setImageList(mImageList);
+                mAdapter.setRepresentativeImagePosition(mRepresentativeImagePosition);
+                mAdapter.notifyDataSetChanged();
                 updateImageCount();
             }
 
             @Override
             public void onImageClick(int position) {
                 mRepresentativeImagePosition = position;
+                room.setAvatar(mRepresentativeImagePosition); // Cập nhật vào ViewModel
                 mAdapter.setRepresentativeImagePosition(position);
             }
         });
 
-        mAddImage.setOnClickListener(new View.OnClickListener() {
+        mButtonAddImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 openFileChooser();
@@ -92,6 +114,21 @@ public class FragmentImage extends Fragment {
         updateImageCount();
 
         return view;
+    }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        viewModel = new ViewModelProvider(requireActivity()).get(CreatPostViewModel.class);
+        room = viewModel.getRoom();
+        if (room.getImages() != null) {
+            mImageList = new ArrayList<>(room.getImages());
+        } else {
+            mImageList = new ArrayList<>();
+        }
+
+        // Đặt nhãn ảnh đại diện khi Fragment được gán
+        mRepresentativeImagePosition = room.getAvatar();
     }
 
     private void openFileChooser() {
@@ -136,9 +173,10 @@ public class FragmentImage extends Fragment {
                 }
             }
 
-            // Đặt nhãn "Ảnh đại diện" cho ảnh đầu tiên
+            // Đặt nhãn "Ảnh đại diện" cho ảnh đầu tiên nếu chưa có ảnh đại diện
             if (mRepresentativeImagePosition == -1 && !mImageList.isEmpty()) {
                 mRepresentativeImagePosition = 0;
+                room.setAvatar(mRepresentativeImagePosition); // Cập nhật vào ViewModel
                 mAdapter.setRepresentativeImagePosition(mRepresentativeImagePosition);
             }
 
@@ -150,7 +188,14 @@ public class FragmentImage extends Fragment {
     }
 
     private void updateImageCount() {
-        mTvNumber.setText(String.valueOf(mImageList.size()));
+        mTvNumber.setText(String.valueOf(mImageList.size()) + "/6");
+        if (mImageList.isEmpty()) {
+            mEmptyImageMessage.setVisibility(View.VISIBLE);
+            tvSelectImageHint.setVisibility(View.GONE);
+        } else {
+            mEmptyImageMessage.setVisibility(View.GONE);
+            tvSelectImageHint.setVisibility(View.VISIBLE);
+        }
     }
 
     // Getter và setter cho danh sách ảnh

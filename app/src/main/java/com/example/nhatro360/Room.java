@@ -20,11 +20,12 @@ public class Room {
     private String detail;
     private Integer roomType;
     private Integer postType;
+    private Integer avatar;
 
     public Room() {
     }
 
-    public Room(String id, String title, String address, String price, String area, Timestamp timePosted, List<String> images, List<Boolean> utitlities, String phone, String host, String detail, Integer roomType, Integer postType) {
+    public Room(String id, String title, String address, String price, String area, Timestamp timePosted, List<String> images, List<Boolean> utilities, String phone, String host, String detail, Integer roomType, Integer postType, Integer avatar) {
         this.id = id;
         this.title = title;
         this.address = address;
@@ -32,19 +33,21 @@ public class Room {
         this.area = area;
         this.timePosted = timePosted;
         this.images = images;
-        this.utilities = utitlities;
+        this.utilities = utilities;
         this.phone = phone;
         this.host = host;
         this.detail = detail;
         this.roomType = roomType;
         this.postType = postType;
+        this.avatar = avatar;
     }
 
-    public Room(List<String> images, List<Boolean> utitlities, Integer roomType, Integer postType) {
+    public Room(List<String> images, List<Boolean> utitlities, Integer roomType, Integer postType, Integer avatar) {
         this.images = images;
         this.utilities = utitlities;
         this.roomType = roomType;
         this.postType = postType;
+        this.avatar = avatar;
     }
 
     public String getId() {
@@ -149,5 +152,13 @@ public class Room {
 
     public void setPostType(Integer postType) {
         this.postType = postType;
+    }
+
+    public Integer getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(Integer avatar) {
+        this.avatar = avatar;
     }
 }

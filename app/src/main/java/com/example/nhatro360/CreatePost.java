@@ -129,10 +129,15 @@ public class CreatePost extends AppCompatActivity {
                     setNextStep(2, 1);
                 }
             } else if (currentFragment instanceof FragmentImage) {
-                FragmentImage fragmentImage = (FragmentImage) currentFragment;
-                room.setImages(fragmentImage.getImageList()); // Lưu danh sách ảnh vào room
-                loadFragment(new FragmentConfirm(), true);
-                setNextStep(3, 2);
+                if (!((FragmentImage) currentFragment).getImageList().isEmpty()){
+                    room.setImages(((FragmentImage) currentFragment).getImageList());
+                    viewModel.setRoom(room);
+                    loadFragment(new FragmentConfirm(), true);
+                    setNextStep(3, 2);
+                }
+                else {
+                    showError("Vui lòng chọn hình ảnh cho bài đăng!");
+                }
             }
         });
 
@@ -144,8 +149,8 @@ public class CreatePost extends AppCompatActivity {
                 if (currentFragment instanceof FragmentConfirm) {
                     setBackStep(2, 3);
                 } else if (currentFragment instanceof FragmentImage) {
-                    FragmentImage fragmentImage = (FragmentImage) currentFragment;
-                    room.setImages(fragmentImage.getImageList()); // Lưu danh sách ảnh vào room
+                    room.setImages(((FragmentImage) currentFragment).getImageList());
+                    viewModel.setRoom(room);
                     setBackStep(1, 2);
                 } else if (currentFragment instanceof FragmentInformation) {
                         viewModel.setRoom(((FragmentInformation) getCurrentFragment()).getRoom());
@@ -184,15 +189,15 @@ public class CreatePost extends AppCompatActivity {
     private void setNextStep(int current, int complete) {
         listTv.get(complete).setTextColor(getResources().getColor(R.color.blue2));
         setAnimationIcon(complete, 1, 1);
-        new Handler().postDelayed(() -> setAnimationLine(complete, 1), 400);
-        new Handler().postDelayed(() -> setAnimationIcon(current, 2, 1), 200);
+        new Handler().postDelayed(() -> setAnimationLine(complete, 1), 200);
+        new Handler().postDelayed(() -> setAnimationIcon(current, 2, 1), 100);
     }
 
     private void setBackStep(int current, int inComplete) {
         listTv.get(current).setTextColor(getResources().getColor(R.color.black2));
         setAnimationIcon(inComplete, 3, 2);
-        new Handler().postDelayed(() -> setAnimationLine(current, 2), 400);
-        new Handler().postDelayed(() -> setAnimationIcon(current, 2, 2), 200);
+        new Handler().postDelayed(() -> setAnimationLine(current, 2), 200);
+        new Handler().postDelayed(() -> setAnimationIcon(current, 2, 2), 100);
     }
 
     private void setAnimationIcon(int cnt, int i, int direction) {
@@ -205,11 +210,11 @@ public class CreatePost extends AppCompatActivity {
             scaleB = 1f;
             listImv.get(cnt).setImageResource(0);
             if (i == 1) {
-                time_delay = 200;
+                time_delay = 100;
                 imv.setImageResource(R.drawable.icon_completed_step);
             } else { imv.setImageResource(R.drawable.icon_current_step); time_delay = 100; }
         } else {
-            time_delay = 200;
+            time_delay = 100;
             scaleA = 1f;
             scaleB = 0f;
             if (i == 3) {
@@ -257,7 +262,7 @@ public class CreatePost extends AppCompatActivity {
             }
 
             animatorSet.start();
-        }, 200);
+        }, 100);
     }
 
     private void setAnimationLine(int i, int direction) {

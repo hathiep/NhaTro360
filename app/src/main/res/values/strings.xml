@@ -81,6 +81,8 @@
     // Fragment Image
         <string name="upload_image">Chọn ảnh</string>
         <string name="number">0/6</string>
+        <string name="add_image_hint">Thêm ảnh vào bài đăng\nBạn được thêm tối đa 6 ảnh</string>
+        <string name="select_image_hint">Nhấn vào ảnh để chọn làm ảnh đại diện</string>
 
     <string name="utility1">Wifi</string>
     <string name="utility2">WC riêng</string>
