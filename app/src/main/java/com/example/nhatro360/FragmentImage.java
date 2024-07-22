@@ -25,6 +25,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.graphics.Color;
+
 public class FragmentImage extends Fragment {
     private static final int PICK_IMAGE_REQUEST = 1;
     private static final int STORAGE_PERMISSION_CODE = 123;
@@ -34,6 +36,7 @@ public class FragmentImage extends Fragment {
     private RecyclerView mRecyclerView;
     private ImageUploadAdapter mAdapter;
     private List<String> mImageList;
+    private int mRepresentativeImagePosition = -1; // Vị trí của ảnh đại diện
 
     @Nullable
     @Override
@@ -53,18 +56,30 @@ public class FragmentImage extends Fragment {
             mImageList = new ArrayList<>();
         } else {
             mImageList = savedInstanceState.getStringArrayList("imageList");
+            mRepresentativeImagePosition = savedInstanceState.getInt("representativeImagePosition", -1);
         }
 
         mRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
-        mAdapter = new ImageUploadAdapter(getContext(), mImageList);
+        mAdapter = new ImageUploadAdapter(getContext(), mImageList, mRepresentativeImagePosition);
         mRecyclerView.setAdapter(mAdapter);
 
         mAdapter.setOnImageClickListener(new ImageUploadAdapter.OnImageClickListener() {
             @Override
             public void onDeleteClick(int position) {
+                if (position == mRepresentativeImagePosition) {
+                    mRepresentativeImagePosition = -1; // Nếu ảnh bị xóa là ảnh đại diện
+                } else if (position < mRepresentativeImagePosition) {
+                    mRepresentativeImagePosition--; // Cập nhật vị trí ảnh đại diện khi xóa ảnh trước đó
+                }
                 mImageList.remove(position);
                 mAdapter.notifyItemRemoved(position);
                 updateImageCount();
+            }
+
+            @Override
+            public void onImageClick(int position) {
+                mRepresentativeImagePosition = position;
+                mAdapter.setRepresentativeImagePosition(position);
             }
         });
 
@@ -136,6 +151,7 @@ public class FragmentImage extends Fragment {
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putStringArrayList("imageList", new ArrayList<>(mImageList));
+        outState.putInt("representativeImagePosition", mRepresentativeImagePosition);
     }
 
     @Override
@@ -143,8 +159,10 @@ public class FragmentImage extends Fragment {
         super.onViewStateRestored(savedInstanceState);
         if (savedInstanceState != null) {
             mImageList = savedInstanceState.getStringArrayList("imageList");
+            mRepresentativeImagePosition = savedInstanceState.getInt("representativeImagePosition", -1);
             if (mImageList != null) {
                 mAdapter.setImageList(mImageList);
+                mAdapter.setRepresentativeImagePosition(mRepresentativeImagePosition);
                 updateImageCount();
             }
         }

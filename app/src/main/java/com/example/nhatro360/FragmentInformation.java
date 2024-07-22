@@ -28,8 +28,9 @@ public class FragmentInformation extends Fragment {
     private EditText edtRoomPrice, edtRoomArea, edtElectricPrice, edtWaterPrice;
     private List<ImageView> listImvUtilites = new ArrayList<>();
     private List<TextView> listTvUtilites = new ArrayList<>();
-    private static List<Boolean> utilities;
+    private List<Boolean> utilities;
     private Integer postType, roomType;
+    private Room room;
 
     @Nullable
     @Override

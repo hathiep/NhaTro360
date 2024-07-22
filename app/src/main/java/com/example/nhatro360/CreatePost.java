@@ -369,5 +369,8 @@ public class CreatePost extends AppCompatActivity {
 //                .show();
     }
 
+    public Room getRoom(){
+        return room;
+    }
 
 }
