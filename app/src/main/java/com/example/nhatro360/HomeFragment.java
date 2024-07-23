@@ -18,6 +18,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Date;
 import com.google.firebase.Timestamp;
@@ -82,8 +84,11 @@ public class HomeFragment extends Fragment implements OnRoomClickListener {
                         for (QueryDocumentSnapshot document : task.getResult()) {
                             String roomId = document.getId(); // Lấy ID của tài liệu Firestore
                             Room room = document.toObject(Room.class);
-                            room.setId(roomId); // Đặt ID của tài liệu vào Room
-
+                            room.setId(roomId);
+                            listGeneralRoom.add(room);
+                        }
+                        sortRoomsByTimePosted(listGeneralRoom);
+                        for (Room room : listGeneralRoom){
                             // Kiểm tra thời gian đăng
                             Timestamp timePosted = room.getTimePosted();
                             if (timePosted != null) {
@@ -95,12 +100,10 @@ public class HomeFragment extends Fragment implements OnRoomClickListener {
                                     newRoomCount++;
                                 }
                             }
-
                             // Kiểm tra loại tin
-                            if (room.getPostType() == 2 && newRoomCount < 6) {
+                            if (room.getPostType() == 2 && paringRoomCount < 6) {
                                 listParingRoom.add(room);
                             }
-                            listGeneralRoom.add(room);
                         }
                         adapterNewRoom.notifyDataSetChanged();
                         adapterParingRoom.notifyDataSetChanged();
@@ -109,6 +112,18 @@ public class HomeFragment extends Fragment implements OnRoomClickListener {
                         Log.w(TAG, "Error getting documents.", task.getException());
                     }
                 });
+    }
+
+    private void sortRoomsByTimePosted(List<Room> rooms) {
+        Collections.sort(rooms, new Comparator<Room>() {
+            @Override
+            public int compare(Room room1, Room room2) {
+                if (room1.getTimePosted() == null || room2.getTimePosted() == null) {
+                    return 0;
+                }
+                return room2.getTimePosted().compareTo(room1.getTimePosted());
+            }
+        });
     }
 
     private void onClickCreatePost(){

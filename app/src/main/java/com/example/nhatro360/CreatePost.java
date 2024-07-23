@@ -295,15 +295,15 @@ public class CreatePost extends AppCompatActivity {
     private void setNextStep(int current, int complete) {
         listTv.get(complete).setTextColor(getResources().getColor(R.color.blue2));
         setAnimationIcon(complete, 1, 1);
-        new Handler().postDelayed(() -> setAnimationLine(complete, 1), 200);
-        new Handler().postDelayed(() -> setAnimationIcon(current, 2, 1), 100);
+        new Handler().postDelayed(() -> setAnimationLine(complete, 1), 100);
+        new Handler().postDelayed(() -> setAnimationIcon(current, 2, 1), 50);
     }
 
     private void setBackStep(int current, int inComplete) {
         listTv.get(current).setTextColor(getResources().getColor(R.color.black2));
         setAnimationIcon(inComplete, 3, 2);
-        new Handler().postDelayed(() -> setAnimationLine(current, 2), 200);
-        new Handler().postDelayed(() -> setAnimationIcon(current, 2, 2), 100);
+        new Handler().postDelayed(() -> setAnimationLine(current, 2), 100);
+        new Handler().postDelayed(() -> setAnimationIcon(current, 2, 2), 50);
     }
 
     private void setAnimationIcon(int cnt, int i, int direction) {
@@ -316,11 +316,11 @@ public class CreatePost extends AppCompatActivity {
             scaleB = 1f;
             listImv.get(cnt).setImageResource(0);
             if (i == 1) {
-                time_delay = 100;
+                time_delay = 50;
                 imv.setImageResource(R.drawable.icon_completed_step);
-            } else { imv.setImageResource(R.drawable.icon_current_step); time_delay = 100; }
+            } else { imv.setImageResource(R.drawable.icon_current_step); time_delay = 50; }
         } else {
-            time_delay = 100;
+            time_delay = 50;
             scaleA = 1f;
             scaleB = 0f;
             if (i == 3) {
@@ -352,8 +352,8 @@ public class CreatePost extends AppCompatActivity {
                         imv.setImageResource(R.drawable.icon_current_step);
                         ObjectAnimator scaleX = ObjectAnimator.ofFloat(imv, "scaleX", 0f, 1f);
                         ObjectAnimator scaleY = ObjectAnimator.ofFloat(imv, "scaleY", 0f, 1f);
-                        scaleX.setDuration(100);
-                        scaleY.setDuration(100);
+                        scaleX.setDuration(50);
+                        scaleY.setDuration(50);
                         AnimatorSet animatorSet2 = new AnimatorSet();
                         animatorSet2.playTogether(scaleX, scaleY);
                         animatorSet2.start();
@@ -368,7 +368,7 @@ public class CreatePost extends AppCompatActivity {
             }
 
             animatorSet.start();
-        }, 100);
+        }, 50);
     }
 
     private void setAnimationLine(int i, int direction) {
