@@ -98,8 +98,7 @@
         <string name="confirm_message">Bạn chắc chắn muốn tạo phòng</string>
 
     // Search Fragment
-    <string name="find_location">Tìm quận, thành phố...</string>
-
+    <string name="search_location">Tìm quận, thành phố...</string>
 
     <string name="utility1">Wifi</string>
     <string name="utility2">WC riêng</string>

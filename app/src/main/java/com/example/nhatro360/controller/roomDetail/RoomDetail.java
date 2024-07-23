@@ -88,7 +88,7 @@ public class RoomDetail extends AppCompatActivity implements OnMapReadyCallback 
         imvMenu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showMenuDialog(view);
+                showMenuDialog();
             }
         });
 
@@ -286,7 +286,7 @@ public class RoomDetail extends AppCompatActivity implements OnMapReadyCallback 
         }
     }
 
-    private void showMenuDialog(View view) {
+    private void showMenuDialog() {
         View overlay = findViewById(R.id.overlay);
         overlay.setVisibility(View.VISIBLE);
 

@@ -107,8 +107,9 @@ public class HomeFragment extends Fragment implements OnRoomClickListener {
                                 }
                             }
                             // Kiểm tra loại tin
-                            if (room.getPostType() == 2 && paringRoomCount < 6) {
+                            if (room.getPostType() == 1 && paringRoomCount < 6) {
                                 listParingRoom.add(room);
+                                paringRoomCount++;
                             }
                         }
                         adapterNewRoom.notifyDataSetChanged();
