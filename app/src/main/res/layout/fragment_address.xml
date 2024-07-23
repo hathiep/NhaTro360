@@ -112,7 +112,10 @@
             android:hint="@string/fill_street"
             android:paddingHorizontal="20dp"
             android:textColor="@color/black2"
-            android:textSize="16sp" />
+            android:textSize="16sp"
+            android:scrollHorizontally="true"
+            android:singleLine="true"
+            android:ellipsize="end"/>
 
     </LinearLayout>
 </LinearLayout>

@@ -23,7 +23,7 @@
                 android:layout_height="wrap_content"
                 android:paddingBottom="10dp"
                 android:text="@string/title"
-                android:textColor="@color/gray3"
+                android:textColor="@color/black2"
                 android:textSize="16sp" />
 
             <TextView
@@ -57,7 +57,7 @@
             android:layout_height="wrap_content"
             android:layout_marginVertical="12dp"
             android:text="@string/host"
-            android:textColor="@color/gray3"
+            android:textColor="@color/black2"
             android:textSize="16sp" />
 
         <EditText
@@ -77,7 +77,7 @@
             android:layout_height="wrap_content"
             android:layout_marginVertical="12dp"
             android:text="@string/phone_number"
-            android:textColor="@color/gray3"
+            android:textColor="@color/black2"
             android:textSize="16sp" />
 
         <EditText
@@ -120,7 +120,7 @@
         <EditText
             android:id="@+id/edt_detail"
             android:layout_width="match_parent"
-            android:layout_height="150dp"
+            android:layout_height="200dp"
             android:background="@drawable/border"
             android:padding="10dp"
             android:gravity="top|start"

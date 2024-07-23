@@ -1,6 +1,9 @@
 package com.example.nhatro360;
 
 import java.io.File;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
@@ -208,6 +211,7 @@ public class CreatePost extends AppCompatActivity {
         Map<String, Object> roomData = new HashMap<>();
         roomData.put("address", room.getAddress());
         roomData.put("area", room.getArea());
+        roomData.put("avatar", room.getAvatar());
         roomData.put("detail", room.getDetail());
         roomData.put("host", room.getHost());
         roomData.put("phone", room.getPhone());
@@ -232,44 +236,43 @@ public class CreatePost extends AppCompatActivity {
                 });
     }
 
-
     private void uploadImagesAndSaveUrls(String documentId, List<String> imagePaths) {
         FirebaseStorage storage = FirebaseStorage.getInstance();
         StorageReference storageRef = storage.getReference().child("rooms/" + documentId);
 
-        List<String> imageUrls = new ArrayList<>();
-        for (String imagePath : imagePaths) {
-            Uri fileUri = Uri.parse(imagePath); // Chuyển đổi đường dẫn thành Uri
-            StorageReference imageRef = storageRef.child(getFileName(fileUri)); // Lấy tên file từ Uri
+        ConcurrentHashMap<Integer, String> imageUrlsMap = new ConcurrentHashMap<>();
+        ExecutorService executor = Executors.newFixedThreadPool(4); // Số lượng tiến trình song song, có thể tùy chỉnh
+        for (int i = 0; i < imagePaths.size(); i++) {
+            String imagePath = imagePaths.get(i);
+            int index = i; // Tạo một biến final cho chỉ số hiện tại
+            executor.execute(() -> {
+                try {
+                    Uri fileUri = Uri.parse(imagePath); // Chuyển đổi đường dẫn thành Uri
+                    StorageReference imageRef = storageRef.child("image_" + index + ".jpg"); // Đặt tên tệp theo thứ tự
 
-            imageRef.putFile(fileUri)
-                    .addOnSuccessListener(taskSnapshot -> imageRef.getDownloadUrl()
-                            .addOnSuccessListener(uri -> {
-                                imageUrls.add(uri.toString());
-                                if (imageUrls.size() == imagePaths.size()) {
-                                    saveImageUrlsToFirestore(documentId, imageUrls);
-                                }
-                            }))
-                    .addOnFailureListener(e -> {
-                        // Failed to upload image
-                        Toast.makeText(CreatePost.this, "Error uploading image: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                    });
+                    imageRef.putFile(fileUri)
+                            .addOnSuccessListener(taskSnapshot -> imageRef.getDownloadUrl()
+                                    .addOnSuccessListener(uri -> {
+                                        imageUrlsMap.put(index, uri.toString());
+                                        if (imageUrlsMap.size() == imagePaths.size()) {
+                                            List<String> sortedImageUrls = new ArrayList<>(imagePaths.size());
+                                            for (int j = 0; j < imagePaths.size(); j++) {
+                                                sortedImageUrls.add(imageUrlsMap.get(j));
+                                            }
+                                            saveImageUrlsToFirestore(documentId, sortedImageUrls);
+                                        }
+                                    }))
+                            .addOnFailureListener(e -> {
+                                // Failed to upload image
+                                runOnUiThread(() -> Toast.makeText(CreatePost.this, "Error uploading image: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+                            });
+                } catch (Exception e) {
+                    runOnUiThread(() -> Toast.makeText(CreatePost.this, "Error uploading image: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+                }
+            });
         }
+        executor.shutdown(); // Đảm bảo tất cả các tiến trình đều hoàn tất
     }
-
-    private String getFileName(Uri uri) {
-        String[] projection = { MediaStore.Images.Media.DISPLAY_NAME };
-        Cursor cursor = getContentResolver().query(uri, projection, null, null, null);
-        if (cursor != null) {
-            cursor.moveToFirst();
-            int nameIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DISPLAY_NAME);
-            String fileName = cursor.getString(nameIndex);
-            cursor.close();
-            return fileName;
-        }
-        return uri.getLastPathSegment();
-    }
-
 
     private void saveImageUrlsToFirestore(String documentId, List<String> imageUrls) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -279,7 +282,7 @@ public class CreatePost extends AppCompatActivity {
                     // Successfully updated room with image URLs
                     Toast.makeText(CreatePost.this, "Room posted successfully", Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(this, MainActivity.class);
-                    startActivity(intent);
+                    new Handler().postDelayed(() -> startActivity(intent), Toast.LENGTH_SHORT);
                     finish();
                 })
                 .addOnFailureListener(e -> {
@@ -287,6 +290,7 @@ public class CreatePost extends AppCompatActivity {
                     Toast.makeText(CreatePost.this, "Error updating room with images: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 });
     }
+
 
     private void setNextStep(int current, int complete) {
         listTv.get(complete).setTextColor(getResources().getColor(R.color.blue2));

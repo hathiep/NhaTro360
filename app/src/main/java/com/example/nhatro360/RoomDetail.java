@@ -53,7 +53,6 @@ public class RoomDetail extends AppCompatActivity implements OnMapReadyCallback 
     private List<TextView> listTvUtilites = new ArrayList<>();
     private List<ImageView> listImvUtilites = new ArrayList<>();
     private ViewPager viewPager;
-
     private FirebaseFirestore db;
     private GoogleMap mMap;
     private SupportMapFragment mapFragment;
@@ -173,7 +172,7 @@ public class RoomDetail extends AppCompatActivity implements OnMapReadyCallback 
         updatePostedTime(room.getTimePosted());
 
         int num_utilities = 0;
-        for(int i=0; i<7; i++){
+        for(int i=0; i<8; i++){
             num_utilities+= setUtilities(i);
         }
         tvUtilities.setText("Tiện ích phòng (" + num_utilities + ")");

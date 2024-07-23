@@ -77,7 +77,7 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
             // Load the first image from the images list using Glide
             if (room.getImages() != null && !room.getImages().isEmpty()) {
                 Glide.with(imvImage.getContext())
-                        .load(room.getImages().get(0))
+                        .load(room.getImages().get(room.getAvatar()))
                         .into(imvImage);
             }
             tvPrice.setText(room.getPrice());
