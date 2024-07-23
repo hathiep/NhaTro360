@@ -115,12 +115,14 @@ public class HomeFragment extends Fragment implements OnRoomClickListener {
         imvCreate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Log.d(TAG, "Create button clicked");
                 Intent intent = new Intent(getActivity(), CreatePost.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                 startActivity(intent);
             }
         });
     }
+
 
     @Override
     public void onRoomClick(Room room) {
