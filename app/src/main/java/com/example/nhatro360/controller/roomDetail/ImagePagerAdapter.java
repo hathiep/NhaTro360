@@ -1,4 +1,4 @@
-package com.example.nhatro360;
+package com.example.nhatro360.controller.roomDetail;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.viewpager.widget.PagerAdapter;
 
 import com.bumptech.glide.Glide;
+import com.example.nhatro360.R;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package com.example.nhatro360;
+package com.example.nhatro360.controller.mainActivity.fragmentHome.creatPost;
 
 import android.content.Context;
 import android.net.Uri;
@@ -13,8 +13,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.nhatro360.R;
 
-import java.io.File;
 import java.util.List;
 
 public class ImageUploadAdapter extends RecyclerView.Adapter<ImageUploadAdapter.ImageViewHolder> {

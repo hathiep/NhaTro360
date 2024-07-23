@@ -1,6 +1,5 @@
-package com.example.nhatro360;
+package com.example.nhatro360.controller.mainActivity.fragmentHome.creatPost;
 
-import java.io.File;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -8,11 +7,9 @@ import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Intent;
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.view.View;
 import android.view.WindowInsetsController;
 import android.widget.ImageView;
@@ -31,6 +28,9 @@ import androidx.lifecycle.ViewModelProvider;
 import android.os.Handler;
 import android.widget.Toast;
 
+import com.example.nhatro360.controller.mainActivity.MainActivity;
+import com.example.nhatro360.R;
+import com.example.nhatro360.models.Room;
 import com.example.nhatro360.models.Address;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;

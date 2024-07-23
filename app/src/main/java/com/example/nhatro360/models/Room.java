@@ -1,12 +1,14 @@
-package com.example.nhatro360;
+package com.example.nhatro360.models;
+
+import android.os.Parcel;
+import android.os.Parcelable;
 
 import com.google.firebase.Timestamp;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
-public class Room {
+public class Room implements Parcelable {
     private String id;
     private String title;
     private String address;
@@ -48,6 +50,86 @@ public class Room {
         this.roomType = roomType;
         this.postType = postType;
         this.avatar = avatar;
+    }
+
+    protected Room(Parcel in) {
+        id = in.readString();
+        title = in.readString();
+        address = in.readString();
+        price = in.readString();
+        area = in.readString();
+        timePosted = in.readParcelable(Timestamp.class.getClassLoader());
+        images = in.createStringArrayList();
+        utilities = new ArrayList<>();
+        in.readList(utilities, Boolean.class.getClassLoader());
+        phone = in.readString();
+        host = in.readString();
+        detail = in.readString();
+        if (in.readByte() == 0) {
+            roomType = null;
+        } else {
+            roomType = in.readInt();
+        }
+        if (in.readByte() == 0) {
+            postType = null;
+        } else {
+            postType = in.readInt();
+        }
+        if (in.readByte() == 0) {
+            avatar = null;
+        } else {
+            avatar = in.readInt();
+        }
+    }
+
+    public static final Creator<Room> CREATOR = new Creator<Room>() {
+        @Override
+        public Room createFromParcel(Parcel in) {
+            return new Room(in);
+        }
+
+        @Override
+        public Room[] newArray(int size) {
+            return new Room[size];
+        }
+    };
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(id);
+        dest.writeString(title);
+        dest.writeString(address);
+        dest.writeString(price);
+        dest.writeString(area);
+        dest.writeParcelable(timePosted, flags);
+        dest.writeStringList(images);
+        dest.writeList(utilities);
+        dest.writeString(phone);
+        dest.writeString(host);
+        dest.writeString(detail);
+        if (roomType == null) {
+            dest.writeByte((byte) 0);
+        } else {
+            dest.writeByte((byte) 1);
+            dest.writeInt(roomType);
+        }
+        if (postType == null) {
+            dest.writeByte((byte) 0);
+        } else {
+            dest.writeByte((byte) 1);
+            dest.writeInt(postType);
+        }
+        if (avatar == null) {
+            dest.writeByte((byte) 0);
+        } else {
+            dest.writeByte((byte) 1);
+            dest.writeInt(avatar);
+        }
     }
 
     public String getId() {

@@ -1,4 +1,4 @@
-package com.example.nhatro360;
+package com.example.nhatro360.controller.mainActivity.fragmentHome;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,6 +14,10 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.nhatro360.R;
+import com.example.nhatro360.models.Room;
+import com.example.nhatro360.controller.mainActivity.fragmentHome.creatPost.CreatePost;
+import com.example.nhatro360.controller.roomDetail.RoomDetail;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
@@ -66,7 +70,9 @@ public class HomeFragment extends Fragment implements OnRoomClickListener {
         revNewRoom.setAdapter(adapterNewRoom);
         revParingRoom.setAdapter(adapterParingRoom);
         revGeneralRoom.setAdapter(adapterGeneralRoom);
-        imvCreate = view.findViewById(R.id.imV_create);
+        imvCreate = view.findViewById(R.id.imv_create);
+        imvCreate.setImageResource(R.drawable.icon_create);
+        imvCreate.setVisibility(View.VISIBLE);
     }
 
     private void fetchRoomsFromFirestore() {

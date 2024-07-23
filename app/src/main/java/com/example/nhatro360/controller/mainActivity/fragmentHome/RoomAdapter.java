@@ -1,4 +1,4 @@
-package com.example.nhatro360;
+package com.example.nhatro360.controller.mainActivity.fragmentHome;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,6 +12,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.nhatro360.R;
+import com.example.nhatro360.models.Room;
 import com.google.firebase.Timestamp;
 
 import java.util.List;

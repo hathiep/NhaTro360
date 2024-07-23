@@ -1,9 +1,13 @@
-package com.example.nhatro360;
+package com.example.nhatro360.controller.mainActivity.fragmentHome;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
+
+import com.example.nhatro360.controller.mainActivity.fragmentAccount.AccountFragment;
+import com.example.nhatro360.PostFragment;
+import com.example.nhatro360.controller.mainActivity.fragmentSearch.SearchFragment;
 
 public class ViewPagerAdapter extends FragmentStatePagerAdapter {
     public ViewPagerAdapter(@NonNull FragmentManager fm, int behavior) {

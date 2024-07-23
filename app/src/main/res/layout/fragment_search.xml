@@ -1,16 +1,65 @@
-<?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/yellow">
-    
-    <TextView
-        android:layout_width="wrap_content"
+    android:padding="5dp"
+    android:background="@color/white">
+
+    <ImageView
+        android:id="@+id/imv_filter"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="110dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:elevation="10dp"
+        android:visibility="gone"
+        app:srcCompat="@drawable/icon_filter" />
+
+    <LinearLayout
+        android:id="@+id/layout_search"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:text="Search Fragment"
-        android:textColor="@color/black"
-        android:textSize="30sp"/>
-    
+        android:orientation="horizontal"
+        android:padding="5dp"
+        android:gravity="center"
+        android:background="@drawable/border">
+
+        <EditText
+            android:id="@+id/edt_search"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:background="@drawable/border_white"
+            android:hint="@string/find_location"
+            android:paddingHorizontal="10dp"
+            android:textColor="@color/black2"
+            android:textSize="16sp"
+            android:scrollHorizontally="true"
+            android:singleLine="true"
+            android:inputType="text"
+            android:imeOptions="actionSearch"
+            android:ellipsize="end"/>
+
+        <ImageView
+            android:id="@+id/imv_drop"
+            android:layout_width="40dp"
+            android:layout_height="30dp"
+            android:src="@drawable/icon_drop"/>
+
+    </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/fragment_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="40dp"
+        android:layout_below="@+id/layout_search"/>
 
 </RelativeLayout>

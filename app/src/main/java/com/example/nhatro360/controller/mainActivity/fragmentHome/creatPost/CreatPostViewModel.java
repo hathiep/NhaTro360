@@ -1,6 +1,8 @@
-package com.example.nhatro360;
+package com.example.nhatro360.controller.mainActivity.fragmentHome.creatPost;
 
 import androidx.lifecycle.ViewModel;
+
+import com.example.nhatro360.models.Room;
 
 import java.util.ArrayList;
 import java.util.Collections;

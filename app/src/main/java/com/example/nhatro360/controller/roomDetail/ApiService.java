@@ -1,4 +1,4 @@
-package com.example.nhatro360;
+package com.example.nhatro360.controller.roomDetail;
 
 import java.util.List;
 

@@ -1,12 +1,11 @@
-package com.example.nhatro360;
+package com.example.nhatro360.controller.mainActivity;
 
-import android.annotation.SuppressLint;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowInsetsController;
-import android.widget.Toast;
+import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -16,12 +15,16 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 
+import com.example.nhatro360.controller.mainActivity.fragmentHome.CustomViewPager;
+import com.example.nhatro360.controller.mainActivity.fragmentHome.HomeFragment;
+import com.example.nhatro360.R;
+import com.example.nhatro360.controller.mainActivity.fragmentHome.ViewPagerAdapter;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MainActivity extends AppCompatActivity {
 
     private BottomNavigationView bottomNavigationView;
-    private CustomViewPager viewPager; // Use CustomViewPager
+    private CustomViewPager viewPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void init(){
-        viewPager = findViewById(R.id.view_pager); // Cast to CustomViewPager is not necessary
+        viewPager = findViewById(R.id.view_pager);
         bottomNavigationView = findViewById(R.id.bottom_navigation);
     }
 
@@ -106,4 +109,5 @@ public class MainActivity extends AppCompatActivity {
                 .addToBackStack(null)
                 .commit();
     }
+
 }

@@ -1,4 +1,4 @@
-package com.example.nhatro360;
+package com.example.nhatro360.controller.roomDetail;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
@@ -23,6 +23,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.viewpager.widget.ViewPager;
 
+import com.example.nhatro360.R;
+import com.example.nhatro360.models.Room;
 import com.example.nhatro360.models.GeocodingResponse;
 import com.example.nhatro360.models.GeocodingResult;
 import com.example.nhatro360.models.Location;

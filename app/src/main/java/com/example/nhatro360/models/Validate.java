@@ -1,4 +1,4 @@
-package com.example.nhatro360;
+package com.example.nhatro360.models;
 
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -177,13 +177,11 @@ public class Validate {
         progressDialog.setMessage(s);
         progressDialog.show();
 
-        // Sử dụng Handler để gửi một tin nhắn hoạt động sau một khoảng thời gian
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                // Ẩn Dialog sau khi đã qua một khoảng thời gian nhất định
                 progressDialog.dismiss();
             }
-        }, time * 1000); // Số milliseconds bạn muốn Dialog biến mất sau đó
+        }, time * 1000);
     }
 }

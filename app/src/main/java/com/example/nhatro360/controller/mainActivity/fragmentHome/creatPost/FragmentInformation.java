@@ -1,6 +1,5 @@
-package com.example.nhatro360;
+package com.example.nhatro360.controller.mainActivity.fragmentHome.creatPost;
 
-import android.annotation.SuppressLint;
 import android.content.res.ColorStateList;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
@@ -16,11 +15,11 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import java.text.DecimalFormat;
+import com.example.nhatro360.R;
+import com.example.nhatro360.models.Room;
+
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class FragmentInformation extends Fragment {

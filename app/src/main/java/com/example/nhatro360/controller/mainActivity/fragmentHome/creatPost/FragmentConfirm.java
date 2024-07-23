@@ -1,4 +1,4 @@
-package com.example.nhatro360;
+package com.example.nhatro360.controller.mainActivity.fragmentHome.creatPost;
 
 import android.content.Intent;
 import android.net.Uri;
@@ -9,7 +9,6 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.text.Editable;
-import android.text.InputFilter;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextPaint;
@@ -22,7 +21,9 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ScrollView;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import com.example.nhatro360.R;
+import com.example.nhatro360.models.Room;
 
 public class FragmentConfirm extends Fragment {
 
