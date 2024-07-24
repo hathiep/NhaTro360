@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.nhatro360.R;
+import com.example.nhatro360.controller.mainActivity.fragmentHome.OnRoomClickListener;
 import com.example.nhatro360.models.Room;
 import com.google.firebase.Timestamp;
 
@@ -115,9 +116,5 @@ public class RoomAdapterSingle extends RecyclerView.Adapter<RoomAdapterSingle.Ro
                 onRoomClickListener.onRoomClick(room);
             }
         }
-    }
-
-    public interface OnRoomClickListener {
-        void onRoomClick(Room room);
     }
 }

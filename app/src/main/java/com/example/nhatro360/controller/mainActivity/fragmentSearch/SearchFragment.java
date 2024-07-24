@@ -5,6 +5,7 @@ import static android.content.ContentValues.TAG;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -34,6 +35,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.example.nhatro360.R;
+import com.example.nhatro360.controller.mainActivity.fragmentHome.OnRoomClickListener;
 import com.example.nhatro360.controller.mainActivity.fragmentHome.creatPost.FragmentAddress;
 import com.example.nhatro360.controller.roomDetail.RoomDetail;
 import com.example.nhatro360.models.Room;
@@ -50,7 +52,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SearchFragment extends Fragment {
+public class SearchFragment extends Fragment  {
     private EditText edtSearch, edtProvince, edtDistrict;
     private ImageView imvDrop, imvFilter;
     private FragmentSingleListRoom fragmentSingleListRoom;
@@ -137,7 +139,9 @@ public class SearchFragment extends Fragment {
                     if (task.isSuccessful()) {
                         List<Room> rooms = new ArrayList<>();
                         for (QueryDocumentSnapshot document : task.getResult()) {
+                            String roomId = document.getId(); // Lấy ID của tài liệu Firestore
                             Room room = document.toObject(Room.class);
+                            room.setId(roomId);
                             rooms.add(room);
                         }
                         // Lọc kết quả tìm kiếm trên thiết bị
@@ -392,8 +396,8 @@ public class SearchFragment extends Fragment {
         }
     }
 
-
     interface OnItemClickListener {
         void onItemClick(int position) throws JSONException;
     }
+
 }

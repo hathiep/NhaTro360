@@ -1,9 +1,13 @@
 package com.example.nhatro360.controller.mainActivity.fragmentSearch;
 
+import static android.content.ContentValues.TAG;
+
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,12 +20,14 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.nhatro360.R;
+import com.example.nhatro360.controller.mainActivity.fragmentHome.OnRoomClickListener;
+import com.example.nhatro360.controller.roomDetail.RoomDetail;
 import com.example.nhatro360.models.Room;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class FragmentSingleListRoom extends Fragment {
+public class FragmentSingleListRoom extends Fragment implements OnRoomClickListener {
 
     private RecyclerView recyclerView;
     private RoomAdapterSingle adapter;
@@ -41,9 +47,7 @@ public class FragmentSingleListRoom extends Fragment {
         recyclerView.addItemDecoration(divider);
 
         roomList = new ArrayList<>();
-        adapter = new RoomAdapterSingle(roomList, room -> {
-            // Handle room click
-        });
+        adapter = new RoomAdapterSingle(roomList, this);
         recyclerView.setAdapter(adapter);
 
         // Load search results if available
@@ -67,4 +71,20 @@ public class FragmentSingleListRoom extends Fragment {
             adapter.notifyDataSetChanged();
         }
     }
+
+    public void setAdapter(RoomAdapterSingle adapter) {
+        recyclerView.setAdapter(adapter);
+    }
+
+    @Override
+    public void onRoomClick(Room room) {
+        Log.d(TAG, "Room clicked: " + room.getAddress());
+        Log.d(TAG, "Room ID: " + room.getId()); // Thêm dòng này để kiểm tra ID
+
+        Intent intent = new Intent(getActivity(), RoomDetail.class);
+        intent.putExtra("roomId", room.getId()); // Truyền ID của document qua intent
+        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+        startActivity(intent);
+    }
+
 }
