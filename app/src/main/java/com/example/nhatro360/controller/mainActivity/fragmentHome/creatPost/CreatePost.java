@@ -530,4 +530,8 @@ public class CreatePost extends AppCompatActivity {
 //                .show();
     }
 
+    @Override
+    public void onBackPressed(){
+        showCancelDialog();
+    }
 }

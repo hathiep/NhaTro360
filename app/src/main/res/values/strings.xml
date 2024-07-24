@@ -25,6 +25,8 @@
     <string name="new_password">Mật khẩu mới</string>
     <string name="new_password_again">Nhập lại mật khẩu mới</string>
     <string name="save_profile">Lưu thông tin</string>
+
+
     <string name="home">Nhà Trọ 360</string>
     <string name="search">Tìm kiếm</string>
     <string name="posts">Bài viết</string>
@@ -33,6 +35,7 @@
     <string name="pairing_room">Phòng ở ghép, KTX</string>
     <string name="general_room">Phòng tổng hợp</string>
     <string name="more">Xem thêm</string>
+    <string name="cancel_app">Bạn có chắc chắn muốn thoát ứng dụng không?</string>
 
     // Create Post
     <string name="cancel">Huỷ</string>

@@ -1,5 +1,6 @@
 package com.example.nhatro360.controller.mainActivity;
 
+import android.content.DialogInterface;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -8,6 +9,7 @@ import android.view.WindowInsetsController;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -108,6 +110,28 @@ public class MainActivity extends AppCompatActivity {
                 .replace(R.id.fragment_container, fragment)
                 .addToBackStack(null)
                 .commit();
+    }
+
+    @Override
+    public void onBackPressed() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this)
+                .setMessage(R.string.cancel_app)
+                .setPositiveButton(R.string.yes, null)
+                .setNegativeButton(R.string.no, null);
+
+        AlertDialog dialog = builder.create();
+
+        dialog.setOnShowListener(dialogInterface -> {
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.red));
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setAllCaps(true);
+            dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setAllCaps(true);
+
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(v -> {
+                finish();
+            });
+        });
+
+        dialog.show();
     }
 
 }
