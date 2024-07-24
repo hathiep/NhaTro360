@@ -122,13 +122,15 @@ public class SearchFragment extends Fragment  {
 
         loadSearchHistory(view);
 
-        // Lắng nghe sự kiện khi nhấn Enter (Search) trên bàn phím
         edtSearch.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                    performSearch(edtSearch.getText().toString());
-                    imvFilter.setVisibility(View.VISIBLE);
+                    String searchText = edtSearch.getText().toString().trim();
+                    if (!searchText.isEmpty()) {
+                        performSearch(searchText);
+                        imvFilter.setVisibility(View.VISIBLE);
+                    }
                     return true;
                 }
                 return false;

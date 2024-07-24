@@ -6,6 +6,7 @@ import java.util.concurrent.Executors;
 import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
@@ -52,6 +53,7 @@ public class CreatePost extends AppCompatActivity {
     private Address address;
     private Room room;
     private CreatPostViewModel viewModel;
+    private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -203,6 +205,8 @@ public class CreatePost extends AppCompatActivity {
     }
 
     private void saveRoomToFireStoreDatabase() {
+        showProgressDialog("Đang lưu dữ liệu...");
+
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         FirebaseStorage storage = FirebaseStorage.getInstance();
         StorageReference storageRef = storage.getReference();
@@ -232,6 +236,7 @@ public class CreatePost extends AppCompatActivity {
                 })
                 .addOnFailureListener(e -> {
                     // Failed to add room
+                    progressDialog.dismiss();
                     Toast.makeText(CreatePost.this, "Error posting room: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 });
     }
@@ -264,10 +269,16 @@ public class CreatePost extends AppCompatActivity {
                                     }))
                             .addOnFailureListener(e -> {
                                 // Failed to upload image
-                                runOnUiThread(() -> Toast.makeText(CreatePost.this, "Error uploading image: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+                                runOnUiThread(() -> {
+                                    progressDialog.dismiss();
+                                    Toast.makeText(CreatePost.this, "Error uploading image: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                });
                             });
                 } catch (Exception e) {
-                    runOnUiThread(() -> Toast.makeText(CreatePost.this, "Error uploading image: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+                    runOnUiThread(() -> {
+                        progressDialog.dismiss();
+                        Toast.makeText(CreatePost.this, "Error uploading image: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    });
                 }
             });
         }
@@ -280,17 +291,20 @@ public class CreatePost extends AppCompatActivity {
                 .update("images", imageUrls)
                 .addOnSuccessListener(aVoid -> {
                     // Successfully updated room with image URLs
-                    Toast.makeText(CreatePost.this, "Room posted successfully", Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(this, MainActivity.class);
-                    new Handler().postDelayed(() -> startActivity(intent), Toast.LENGTH_SHORT);
-                    finish();
+                    progressDialog.setMessage("Hoàn tất tạo mới phòng. Vui lòng chờ được chờ xét duyệt.");
+                    new Handler().postDelayed(() -> {
+                        progressDialog.dismiss();
+                        Intent intent = new Intent(this, MainActivity.class);
+                        startActivity(intent);
+                        finish();
+                    }, 2000); // Chờ 2 giây trước khi chuyển sang MainActivity
                 })
                 .addOnFailureListener(e -> {
                     // Failed to update room with image URLs
+                    progressDialog.dismiss();
                     Toast.makeText(CreatePost.this, "Error updating room with images: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 });
     }
-
 
     private void setNextStep(int current, int complete) {
         listTv.get(complete).setTextColor(getResources().getColor(R.color.blue2));
@@ -495,10 +509,18 @@ public class CreatePost extends AppCompatActivity {
 
             dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(v -> {
                 saveRoomToFireStoreDatabase();
+                dialog.dismiss();
             });
         });
 
         dialog.show();
+    }
+
+    private void showProgressDialog(String message) {
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage(message);
+        progressDialog.setCancelable(false);
+        progressDialog.show();
     }
 
     private void showCancelDialog() {
@@ -524,10 +546,6 @@ public class CreatePost extends AppCompatActivity {
 
     private void showError(String message) {
         Toast.makeText(CreatePost.this, message, Toast.LENGTH_SHORT).show();
-//        new AlertDialog.Builder(this)
-//                .setMessage(message)
-//                .setPositiveButton("OK", null)
-//                .show();
     }
 
     @Override

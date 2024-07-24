@@ -166,8 +166,14 @@ public class FragmentAddress extends Fragment {
                 Address address = addresses.get(0);
                 String province = address.getAdminArea();
                 String district = address.getSubAdminArea();
-                String ward = address.getLocality();
-                String street = address.getThoroughfare();
+                String ward = address.getSubLocality();
+                String houseNumber = address.getFeatureName();
+
+                // Nếu không có số nhà, sử dụng tọa độ
+                if (houseNumber == null || houseNumber.isEmpty()) {
+                    houseNumber = latitude + ", " + longitude;
+                }
+                String street = houseNumber + ", " + address.getThoroughfare();
 
                 edtStreet.setText(street);
                 provinceIds = new ArrayList<>();
