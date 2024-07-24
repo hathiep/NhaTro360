@@ -2,45 +2,52 @@ package com.example.nhatro360.controller.mainActivity.fragmentSearch;
 
 import static android.content.ContentValues.TAG;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
-import android.view.Display;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.example.nhatro360.R;
-import com.example.nhatro360.controller.mainActivity.fragmentHome.OnRoomClickListener;
-import com.example.nhatro360.controller.mainActivity.fragmentHome.creatPost.FragmentAddress;
-import com.example.nhatro360.controller.roomDetail.RoomDetail;
 import com.example.nhatro360.models.Room;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
@@ -52,15 +59,25 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 
 public class SearchFragment extends Fragment  {
     private EditText edtSearch, edtProvince, edtDistrict;
     private ImageView imvDrop, imvFilter;
     private FragmentSingleListRoom fragmentSingleListRoom;
+    private FrameLayout layoutListRoom;
     private FirebaseFirestore db;
     private View overlay;
     private Dialog dialog;
+    private FusedLocationProviderClient fusedLocationClient;
+    private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
+    private TextView tvSearchAround;
+    private LinearLayout layoutHistory;
+    private ListView historyListView;
     private List<String> provinceIds, districtIds;
     private JSONArray provincesArray, districtsArray;
     private String provinceId, districtId, province, district;
@@ -70,17 +87,40 @@ public class SearchFragment extends Fragment  {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_search, container, false);
+
+        init(view);
+
+        return view;
+    }
+
+    private void init(View view){
         edtSearch = view.findViewById(R.id.edt_search);
+        tvSearchAround = view.findViewById(R.id.tv_search_around);
+        layoutHistory = view.findViewById(R.id.layout_history);
+        historyListView = view.findViewById(R.id.lv_history);
+        layoutListRoom = view.findViewById(R.id.container_list_room);
         imvDrop = view.findViewById(R.id.imv_drop);
         overlay = view.findViewById(R.id.overlay);
         province = district = provinceId = districtId = "";
         imvFilter = view.findViewById(R.id.imv_filter);
         imvFilter.setVisibility(View.GONE);
-        // Initialize Firestore
+
         db = FirebaseFirestore.getInstance();
 
-        // Initialize fragmentSingleListRoom
-        fragmentSingleListRoom = new FragmentSingleListRoom();
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(getActivity());
+
+        tvSearchAround.setOnClickListener(v -> {
+            Log.d(TAG, "Current location TextView clicked");
+            if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
+                    != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                        LOCATION_PERMISSION_REQUEST_CODE);
+            } else {
+                getCurrentLocation();
+            }
+        });
+
+        loadSearchHistory(view);
 
         // Lắng nghe sự kiện khi nhấn Enter (Search) trên bàn phím
         edtSearch.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -95,6 +135,27 @@ public class SearchFragment extends Fragment  {
             }
         });
 
+        // Lắng nghe sự kiện thay đổi văn bản trong EditText
+        edtSearch.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                // Không cần sử dụng trong trường hợp này
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                // Không cần sử dụng trong trường hợp này
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                // Kiểm tra nếu EditText trống và thực hiện hàm x()
+                if (s.length() == 0) {
+                    loadSearchHistory(view);
+                }
+            }
+        });
+
         imvDrop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -106,16 +167,95 @@ public class SearchFragment extends Fragment  {
                 setupPopupMenus();
             }
         });
+    }
 
-        return view;
+    @SuppressLint("MissingPermission")
+    private void getCurrentLocation() {
+        LocationRequest locationRequest = LocationRequest.create();
+        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        locationRequest.setInterval(10000);
+
+        fusedLocationClient.getLastLocation()
+                .addOnSuccessListener(getActivity(), location -> {
+                    if (location != null) {
+                        Log.d(TAG, "Location obtained: " + location.toString());
+                        double latitude = location.getLatitude();
+                        double longitude = location.getLongitude();
+                        updateAddressFields(latitude, longitude);
+                    } else {
+                        Log.d(TAG, "Location is null");
+                    }
+                });
+    }
+
+    private void updateAddressFields(double latitude, double longitude) {
+        Geocoder geocoder = new Geocoder(getActivity(), Locale.getDefault());
+        try {
+            List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
+            if (addresses != null && !addresses.isEmpty()) {
+                Address address = addresses.get(0);
+                String province = address.getAdminArea();
+                String district = address.getSubAdminArea();
+                String str = district + ", " + province;
+                if(district.equals("")) str = province;
+                performSearch(str);
+            } else {
+                Log.d(TAG, "No addresses found");
+            }
+        } catch (IOException e) {
+            Log.e(TAG, "Geocoder exception", e);
+        }
+    }
+
+    private void loadSearchHistory(View view) {
+        layoutHistory.setVisibility(View.VISIBLE);
+        layoutListRoom.setVisibility(View.GONE);
+        if (getContext() != null) {
+            SharedPreferences sharedPreferences = getActivity().getSharedPreferences("search_history", Context.MODE_PRIVATE);
+            String history = sharedPreferences.getString("history", "");
+
+            if (!history.isEmpty()) {
+                String[] historyArray = history.split(";");
+
+                // Chỉ lấy 5 mục gần nhất
+                List<String> historyList = Arrays.asList(historyArray);
+                if (historyList.size() > 5) {
+                    historyList = historyList.subList(0, 5);
+                }
+
+                // Tạo một ArrayAdapter
+                ArrayAdapter<String> adapter = new ArrayAdapter<>(
+                        getContext(),
+                        R.layout.item_list_history_search, R.id.text,
+                        historyList
+                );
+
+                historyListView.setAdapter(adapter);
+
+                // Đặt OnItemClickListener cho ListView
+                historyListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        String query = (String) parent.getItemAtPosition(position);
+                        edtSearch.setText(query);
+                        performSearch(query);
+                    }
+                });
+            }
+        }
     }
 
     private void performSearch(String query) {
+        saveSearchHistory(query);
+        edtSearch.setText(query);
+        layoutListRoom.setVisibility(View.VISIBLE);
         View view = getView();
         if (view != null) {
             InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
+
+        fragmentSingleListRoom = new FragmentSingleListRoom();
 
         searchRooms(query, new FirestoreCallback() {
             @Override
@@ -127,7 +267,7 @@ public class SearchFragment extends Fragment  {
 
                 // Hiển thị fragmentSingleListRoom trong SearchFragment
                 FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-                transaction.replace(R.id.fragment_container1, fragmentSingleListRoom);
+                transaction.replace(R.id.container_list_room, fragmentSingleListRoom);
                 transaction.addToBackStack(null);
                 transaction.commit();
             }
@@ -236,9 +376,9 @@ public class SearchFragment extends Fragment  {
                 dialog.dismiss();
                 province = edtProvince.getText().toString();
                 district = edtDistrict.getText().toString();
-                if(district.equals("")) edtSearch.setText(province);
-                else edtSearch.setText(district + ", " + province);
-                performSearch(district + ", " + province);
+                String str = district + ", " + province;
+                if(district.equals("")) str = province;
+                performSearch(str);
                 imvFilter.setVisibility(View.VISIBLE);
             }
         });
@@ -252,6 +392,36 @@ public class SearchFragment extends Fragment  {
 
     }
 
+    private void saveSearchHistory(String query) {
+        layoutHistory.setVisibility(View.GONE);
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("search_history", Context.MODE_PRIVATE);
+        String history = sharedPreferences.getString("history", "");
+
+        List<String> historyList;
+        if (!history.isEmpty()) {
+            historyList = new ArrayList<>(Arrays.asList(history.split(";")));
+        } else {
+            historyList = new ArrayList<>();
+        }
+
+        // Kiểm tra nếu truy vấn đã tồn tại trong danh sách lịch sử
+        if (!historyList.contains(query)) {
+            // Thêm mục mới vào đầu danh sách
+            historyList.add(0, query);
+
+            // Giới hạn số lượng mục trong danh sách
+            if (historyList.size() > 5) {
+                historyList = historyList.subList(0, 5);
+            }
+
+            // Lưu danh sách lịch sử vào SharedPreferences
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putString("history", String.join(";", historyList));
+            editor.apply();
+        }
+    }
+
+
     private void getArray() throws IOException, JSONException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(getActivity().getAssets().open("provinces.json")));
         StringBuilder jsonBuilder = new StringBuilder();
@@ -260,8 +430,30 @@ public class SearchFragment extends Fragment  {
             jsonBuilder.append(line);
         }
         JSONObject jsonObject = new JSONObject(jsonBuilder.toString());
-        provincesArray = jsonObject.getJSONArray("province");
-        districtsArray = jsonObject.getJSONArray("district");
+        provincesArray = sortArray(jsonObject.getJSONArray("province"), true);
+        districtsArray = sortArray(jsonObject.getJSONArray("district"), false);
+    }
+
+    private JSONArray sortArray(JSONArray arr, boolean prov) throws JSONException {
+        List<JSONObject> list = new ArrayList<>();
+        int x = 0;
+        if(prov) x = 5; // 5 Thành phố trực thuộc trung ương ưu tiên lên đầu không sắp xếp
+        for (int i = x; i < arr.length(); i++) {
+            list.add(arr.getJSONObject(i));
+        }
+        Collections.sort(list, new Comparator<JSONObject>() {
+            @Override
+            public int compare(JSONObject a, JSONObject b) {
+                String valA = a.optString("name");
+                String valB = b.optString("name");
+                return valA.compareTo(valB);
+            }
+        });
+
+        JSONArray sortedJsonArray = new JSONArray();
+        if(prov) for(int i=0; i<5; i++) sortedJsonArray.put(arr.get(i));
+        for (JSONObject object : list) sortedJsonArray.put(object);
+        return sortedJsonArray;
     }
 
     private int findProvincePosition(String province) {
@@ -330,7 +522,7 @@ public class SearchFragment extends Fragment  {
         ListView listView = dialog.findViewById(R.id.list_view_popup);
         ArrayAdapter<String> adapter = new ArrayAdapter<>(
                 getActivity(),
-                R.layout.list_seach_address_item,  // Sử dụng layout của bạn
+                R.layout.item_list_seach_address,  // Sử dụng layout của bạn
                 items
         );
         adapter.notifyDataSetChanged();

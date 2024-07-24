@@ -57,7 +57,7 @@
         android:overScrollMode="always"
         android:visibility="gone"
         android:divider="@color/blue2"
-        android:dividerHeight="1dp"/>
+        android:dividerHeight="0.5dp"/>
 
     <Button
         android:id="@+id/btn_search"

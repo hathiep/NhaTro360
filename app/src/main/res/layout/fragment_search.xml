@@ -54,8 +54,47 @@
 
     </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/layout_history"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/layout_search"
+        android:paddingHorizontal="10dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_search_around"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingVertical="10dp"
+            android:text="@string/search_around"
+            android:textColor="@color/black2"
+            android:textSize="18sp"
+            android:fontFamily="sans-serif-medium"/>
+
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingVertical="10dp"
+            android:text="@string/history_search"
+            android:textColor="@color/black2"
+            android:textSize="18sp"
+            android:fontFamily="sans-serif-medium"/>
+
+        <ListView
+            android:id="@+id/lv_history"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/layout_search"
+            android:layout_marginBottom="40dp"
+            android:divider="@color/gray"
+            android:dividerHeight="0.5dp"/>
+
+    </LinearLayout>
+
     <FrameLayout
-        android:id="@+id/fragment_container1"
+        android:id="@+id/container_list_room"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginBottom="40dp"

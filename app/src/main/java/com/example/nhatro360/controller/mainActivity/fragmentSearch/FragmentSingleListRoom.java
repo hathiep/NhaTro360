@@ -64,18 +64,6 @@ public class FragmentSingleListRoom extends Fragment implements OnRoomClickListe
         return view;
     }
 
-    public void updateRoomList(List<Room> newRooms) {
-        if (newRooms != null) {
-            roomList.clear();
-            roomList.addAll(newRooms);
-            adapter.notifyDataSetChanged();
-        }
-    }
-
-    public void setAdapter(RoomAdapterSingle adapter) {
-        recyclerView.setAdapter(adapter);
-    }
-
     @Override
     public void onRoomClick(Room room) {
         Log.d(TAG, "Room clicked: " + room.getAddress());

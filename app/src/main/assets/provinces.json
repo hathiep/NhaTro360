@@ -1,7 +1,7 @@
 {
   "province": [
     { "idProvince": "01", "name": "Hà Nội" },
-    { "idProvince": "79", "name": "Hồ Chí Minh" },
+    { "idProvince": "79", "name": "TP Hồ Chí Minh" },
     { "idProvince": "31", "name": "Hải Phòng" },
     { "idProvince": "48", "name": "Đà Nẵng" },
     { "idProvince": "92", "name": "Cần Thơ" },

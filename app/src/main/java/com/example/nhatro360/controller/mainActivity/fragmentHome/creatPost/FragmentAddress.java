@@ -40,6 +40,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 
@@ -101,10 +103,33 @@ public class FragmentAddress extends Fragment {
             jsonBuilder.append(line);
         }
         JSONObject jsonObject = new JSONObject(jsonBuilder.toString());
-        provincesArray = jsonObject.getJSONArray("province");
-        districtsArray = jsonObject.getJSONArray("district");
-        wardsArray = jsonObject.getJSONArray("ward");
+        provincesArray = sortArray(jsonObject.getJSONArray("province"), true);
+        districtsArray = sortArray(jsonObject.getJSONArray("district"), false);
+        wardsArray = sortArray(jsonObject.getJSONArray("ward"), false);
     }
+
+    private JSONArray sortArray(JSONArray arr, boolean prov) throws JSONException {
+        List<JSONObject> list = new ArrayList<>();
+        int x = 0;
+        if(prov) x = 5; // 5 Thành phố trực thuộc trung ương ưu tiên lên đầu không sắp xếp
+        for (int i = x; i < arr.length(); i++) {
+            list.add(arr.getJSONObject(i));
+        }
+        Collections.sort(list, new Comparator<JSONObject>() {
+            @Override
+            public int compare(JSONObject a, JSONObject b) {
+                String valA = a.optString("name");
+                String valB = b.optString("name");
+                return valA.compareTo(valB);
+            }
+        });
+
+        JSONArray sortedJsonArray = new JSONArray();
+        if(prov) for(int i=0; i<5; i++) sortedJsonArray.put(arr.get(i));
+        for (JSONObject object : list) sortedJsonArray.put(object);
+        return sortedJsonArray;
+    }
+
 
     @SuppressLint("MissingPermission")
     private void getCurrentLocation() {
