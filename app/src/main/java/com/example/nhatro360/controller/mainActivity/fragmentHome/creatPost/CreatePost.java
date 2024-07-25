@@ -219,9 +219,9 @@ public class CreatePost extends AppCompatActivity {
         roomData.put("detail", room.getDetail());
         roomData.put("host", room.getHost());
         roomData.put("phone", room.getPhone());
-        roomData.put("postType", room.getPostType());
-        roomData.put("price", formatPrice(room.getPrice()));
-        roomData.put("roomType", room.getRoomType());
+        roomData.put("postType", room.getPostType() + 1);
+        roomData.put("price", room.getPrice());
+        roomData.put("roomType", room.getRoomType() + 1);
         roomData.put("timePosted", FieldValue.serverTimestamp());
         roomData.put("title", room.getTitle());
         roomData.put("utilities", room.getUtilities());
@@ -486,12 +486,6 @@ public class CreatePost extends AppCompatActivity {
         }
         viewModel.setRoom(roomInfor);
         return true;
-    }
-
-    private String formatPrice(String price){
-        DecimalFormat decimalFormat = new DecimalFormat("#,###.##");
-        double millions = Integer.parseInt(price) / 1_000_000.0;
-        return decimalFormat.format(millions) + " triệu";
     }
 
     private void showConfirmDialog() {

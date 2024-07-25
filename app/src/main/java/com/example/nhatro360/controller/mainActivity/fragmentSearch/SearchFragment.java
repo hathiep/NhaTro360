@@ -14,6 +14,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Parcelable;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -35,6 +36,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -84,14 +86,17 @@ public class SearchFragment extends Fragment  {
     private List<String> provinceIds, districtIds;
     private JSONArray provincesArray, districtsArray;
     private String provinceId, districtId, province, district;
+    private List<Room> listSearchedRoom;
     private List<TextView> listTvPostType;
     private List<TextView> listTvRoomType;
     private List<TextView> listTvOrderType;
     private int[] listOption = new int[3];
-    private Button btnSearch, btnClose, btnFilter;
+    private Button btnSearch;
+    private TextView btnClose, btnFilter;
     private int minPrice, maxPrice, minArea, maxArea;
     private int minValuePrice = 1, maxValuePrice = 20;
     private int minValueArea = 10, maxValueArea = 100;
+    private ProgressBar progressBar;
 
     @Nullable
     @Override
@@ -105,6 +110,7 @@ public class SearchFragment extends Fragment  {
 
     private void init(View view){
         edtSearch = view.findViewById(R.id.edt_search);
+        progressBar = view.findViewById(R.id.progressBar);
         tvSearchAround = view.findViewById(R.id.tv_search_around);
         layoutHistory = view.findViewById(R.id.layout_history);
         historyListView = view.findViewById(R.id.lv_history);
@@ -234,6 +240,12 @@ public class SearchFragment extends Fragment  {
         layoutParams.gravity = Gravity.BOTTOM;
         dialog.getWindow().setAttributes(layoutParams);
 
+        listOption[0] = listOption[1] = listOption[2] = 0;
+        minPrice = minValuePrice;
+        maxPrice = maxValuePrice;
+        minArea = minValueArea;
+        maxArea = maxValueArea;
+
         listTvPostType = new ArrayList<>();
         listTvPostType.add(dialog.findViewById(R.id.tv_all_post_type));
         listTvPostType.add(dialog.findViewById(R.id.tv_rent_room));
@@ -255,6 +267,9 @@ public class SearchFragment extends Fragment  {
         onClickList(listTvPostType, 0);
         onClickList(listTvRoomType, 1);
         onClickList(listTvOrderType, 2);
+
+        btnClose = dialog.findViewById(R.id.btn_close);
+        btnFilter = dialog.findViewById(R.id.btn_filter);
     }
 
     private void onClickList(List<TextView> listTv, int position){
@@ -271,15 +286,6 @@ public class SearchFragment extends Fragment  {
                 tv.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.blue2)));
             });
         }
-    }
-
-    private void updateRoomType(TextView tv){
-        for(int i=0; i<4; i++){
-            listTvRoomType.get(i).setTextColor(getResources().getColor(R.color.blue2));
-            listTvRoomType.get(i).setBackgroundTintList(null);
-        }
-        tv.setTextColor(getResources().getColor(R.color.white));
-        tv.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.blue2)));
     }
 
     private void initDrag(int i, boolean isLeft) {
@@ -362,10 +368,87 @@ public class SearchFragment extends Fragment  {
         });
     }
 
-    private void filterRoomsByOption(){
+    private void filterRoomsByOption() {
+        progressBar.setVisibility(View.VISIBLE);
         int postType = listOption[0];
         int roomType = listOption[1];
         int orderType = listOption[2];
+
+        Log.e(TAG, "PostType = " + postType);
+        Log.e(TAG, "RoomType = " + roomType);
+        Log.e(TAG, "OrderType = " + orderType);
+        Log.e(TAG, "Price = " + minPrice + " - " + maxPrice);
+        Log.e(TAG, "Area = " + minArea + " - " + maxArea);
+        Log.e(TAG, "" + listSearchedRoom.size());
+
+        // Lọc danh sách phòng dựa trên các điều kiện
+        List<Room> filteredRooms = new ArrayList<>();
+        for (Room room : listSearchedRoom) {
+            boolean matches = true;
+
+            if (postType != 0 && room.getPostType() != postType) {
+                matches = false;
+            }
+
+            // Lọc theo roomType
+            if (roomType != 0 && room.getRoomType() != roomType) {
+                matches = false;
+            }
+
+            int price = Integer.parseInt(room.getPrice());
+            if (price < minPrice * 1000000 || price > maxPrice * 1000000) {
+                matches = false;
+            }
+
+            int area = Integer.parseInt(room.getArea());
+            if (area < minArea || area > maxArea) {
+                matches = false;
+            }
+
+            if (matches) {
+                filteredRooms.add(room);
+            }
+        }
+
+        // Sắp xếp danh sách phòng dựa trên điều kiện orderType
+        switch (orderType) {
+            case 1:
+                Collections.sort(filteredRooms, new Comparator<Room>() {
+                    @Override
+                    public int compare(Room r1, Room r2) {
+                        return r2.getTimePosted().compareTo(r1.getTimePosted()); // Sắp xếp theo thời gian mới nhất
+                    }
+                });
+                break;
+            case 2:
+                Collections.sort(filteredRooms, new Comparator<Room>() {
+                    @Override
+                    public int compare(Room r1, Room r2) {
+                        return Integer.compare(Integer.parseInt(r1.getPrice()), Integer.parseInt(r2.getPrice())); // Sắp xếp theo giá tăng dần
+                    }
+                });
+                break;
+            case 3:
+                Collections.sort(filteredRooms, new Comparator<Room>() {
+                    @Override
+                    public int compare(Room r1, Room r2) {
+                        return Integer.compare(Integer.parseInt(r2.getPrice()), Integer.parseInt(r1.getPrice())); // Sắp xếp theo giá giảm dần
+                    }
+                });
+                break;
+        }
+
+        // Ghi log danh sách phòng đã lọc
+        for (Room room : filteredRooms) {
+            Log.e(TAG, "" + room.getPrice());
+            Log.e(TAG, "" + room.getPostType());
+        }
+        dialog.dismiss();
+
+        new Handler().postDelayed(() -> {
+            fragmentSingleListRoom.updateRoomList(filteredRooms);
+            progressBar.setVisibility(View.GONE);
+        }, 1000);
     }
 
     @SuppressLint("MissingPermission")
@@ -449,6 +532,7 @@ public class SearchFragment extends Fragment  {
         saveSearchHistory(query);
         edtSearch.setText(query);
         layoutListRoom.setVisibility(View.VISIBLE);
+        listSearchedRoom = new ArrayList<>();
         View view = getView();
         if (view != null) {
             InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -502,6 +586,7 @@ public class SearchFragment extends Fragment  {
                 filteredRooms.add(room);
             }
         }
+        listSearchedRoom = filteredRooms;
         return filteredRooms;
     }
 

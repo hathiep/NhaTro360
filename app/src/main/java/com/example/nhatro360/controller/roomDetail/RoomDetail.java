@@ -37,6 +37,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.Timestamp;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -157,7 +158,7 @@ public class RoomDetail extends AppCompatActivity implements OnMapReadyCallback 
 
     private void updateUI() {
         // Set text views
-        tvPrice.setText(room.getPrice() + "/tháng");
+        tvPrice.setText(formatPrice(room.getPrice()) + "/tháng");
 
         // Set up ViewPager with images
         if (room.getImages() != null && !room.getImages().isEmpty()) {
@@ -346,5 +347,11 @@ public class RoomDetail extends AppCompatActivity implements OnMapReadyCallback 
         Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
         mapIntent.setPackage("com.google.android.apps.maps");
         startActivity(mapIntent);
+    }
+
+    private String formatPrice(String price){
+        DecimalFormat decimalFormat = new DecimalFormat("#,###.##");
+        double millions = Integer.parseInt(price) / 1_000_000.0;
+        return decimalFormat.format(millions) + " triệu";
     }
 }

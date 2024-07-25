@@ -18,6 +18,7 @@ import com.example.nhatro360.controller.mainActivity.fragmentHome.OnRoomClickLis
 import com.example.nhatro360.models.Room;
 import com.google.firebase.Timestamp;
 
+import java.text.DecimalFormat;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -89,7 +90,7 @@ public class RoomAdapterSingle extends RecyclerView.Adapter<RoomAdapterSingle.Ro
                         .into(imvImage);
             }
             tvTitle.setText(room.getTitle());
-            tvPrice.setText(room.getPrice());
+            tvPrice.setText(formatPrice(room.getPrice()));
             tvAddress.setText(room.getAddress());
             tvArea.setText("DT " + room.getArea() + " m2");
 
@@ -117,4 +118,11 @@ public class RoomAdapterSingle extends RecyclerView.Adapter<RoomAdapterSingle.Ro
             }
         }
     }
+
+    private String formatPrice(String price){
+        DecimalFormat decimalFormat = new DecimalFormat("#,###.##");
+        double millions = Integer.parseInt(price) / 1_000_000.0;
+        return decimalFormat.format(millions) + " triệu";
+    }
+
 }

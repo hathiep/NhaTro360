@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -28,7 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FragmentSingleListRoom extends Fragment implements OnRoomClickListener {
-
+    private TextView tvEmptyMessage;
     private RecyclerView recyclerView;
     private RoomAdapterSingle adapter;
     private List<Room> roomList;
@@ -38,6 +39,7 @@ public class FragmentSingleListRoom extends Fragment implements OnRoomClickListe
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_single_list_room, container, false);
 
+        tvEmptyMessage = view.findViewById(R.id.tv_empty_message);
         recyclerView = view.findViewById(R.id.recycler_view_room_list);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
@@ -54,14 +56,22 @@ public class FragmentSingleListRoom extends Fragment implements OnRoomClickListe
         Bundle bundle = getArguments();
         if (bundle != null && bundle.containsKey("searchResults")) {
             ArrayList<Room> searchResults = bundle.getParcelableArrayList("searchResults");
-            if (searchResults != null) {
-                roomList.clear();
-                roomList.addAll(searchResults);
-                adapter.notifyDataSetChanged();
-            }
+            updateRoomList(searchResults);
         }
 
         return view;
+    }
+
+    public void updateRoomList(List<Room> newRoomList) {
+        tvEmptyMessage.setVisibility(View.GONE);
+        recyclerView.setVisibility(View.VISIBLE);
+        if(newRoomList == null || newRoomList.size() == 0){
+            tvEmptyMessage.setVisibility(View.VISIBLE);
+            recyclerView.setVisibility(View.GONE);
+        }
+        roomList.clear();
+        roomList.addAll(newRoomList);
+        adapter.notifyDataSetChanged();
     }
 
     @Override
