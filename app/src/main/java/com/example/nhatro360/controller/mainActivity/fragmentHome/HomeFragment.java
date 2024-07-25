@@ -31,9 +31,9 @@ import com.google.firebase.Timestamp;
 public class HomeFragment extends Fragment implements OnRoomClickListener {
 
     private static final String TAG = "HomeFragment";
-    private RecyclerView revNewRoom, revParingRoom, revGeneralRoom;
-    private RoomAdapter adapterNewRoom, adapterParingRoom, adapterGeneralRoom;
-    private List<Room> listNewRoom, listParingRoom, listGeneralRoom;
+    private RecyclerView revNewRoom, revParingRoom, revApartment, revHouse, revGeneralRoom;
+    private RoomAdapter adapterNewRoom, adapterParingRoom, adapterApartment, adapterHouse, adapterGeneralRoom;
+    private List<Room> listNewRoom, listParingRoom, listApartment, listHouse, listGeneralRoom;
     private ImageView imvCreate;
     private FirebaseFirestore db;
 
@@ -55,20 +55,30 @@ public class HomeFragment extends Fragment implements OnRoomClickListener {
         // Khởi tạo danh sách các phòng
         listNewRoom = new ArrayList<>();
         listParingRoom = new ArrayList<>();
+        listApartment = new ArrayList<>();
+        listHouse = new ArrayList<>();
         listGeneralRoom = new ArrayList<>();
 
         // Khởi tạo RecyclerView và Adapter
         revNewRoom = view.findViewById(R.id.recycler_view_new_room);
         revParingRoom = view.findViewById(R.id.recycler_view_paring_room);
+        revApartment = view.findViewById(R.id.recycler_view_apartment);
+        revHouse = view.findViewById(R.id.recycler_view_house);
         revGeneralRoom = view.findViewById(R.id.recycler_view_general_room);
         revNewRoom.setLayoutManager(new GridLayoutManager(getContext(), 2));
         revParingRoom.setLayoutManager(new GridLayoutManager(getContext(), 2));
+        revApartment.setLayoutManager(new GridLayoutManager(getContext(), 2));
+        revHouse.setLayoutManager(new GridLayoutManager(getContext(), 2));
         revGeneralRoom.setLayoutManager(new GridLayoutManager(getContext(), 2));
         adapterNewRoom = new RoomAdapter(listNewRoom, this);
         adapterParingRoom = new RoomAdapter(listParingRoom, this);
+        adapterApartment = new RoomAdapter(listApartment, this);
+        adapterHouse = new RoomAdapter(listHouse, this);
         adapterGeneralRoom = new RoomAdapter(listGeneralRoom, this);
         revNewRoom.setAdapter(adapterNewRoom);
         revParingRoom.setAdapter(adapterParingRoom);
+        revApartment.setAdapter(adapterApartment);
+        revHouse.setAdapter(adapterHouse);
         revGeneralRoom.setAdapter(adapterGeneralRoom);
         imvCreate = view.findViewById(R.id.imv_create);
         imvCreate.setImageResource(R.drawable.icon_create);
@@ -82,10 +92,12 @@ public class HomeFragment extends Fragment implements OnRoomClickListener {
                     if (task.isSuccessful()) {
                         listNewRoom.clear();
                         listParingRoom.clear();
+                        listApartment.clear();
+                        listHouse.clear();
                         listGeneralRoom.clear();
 
                         Date now = new Date();
-                        int newRoomCount = 0, paringRoomCount = 0;
+                        int newRoomCount = 0, paringRoomCount = 0, apartmentCount = 0, houseCount = 0;
 
                         for (QueryDocumentSnapshot document : task.getResult()) {
                             String roomId = document.getId(); // Lấy ID của tài liệu Firestore
@@ -107,13 +119,23 @@ public class HomeFragment extends Fragment implements OnRoomClickListener {
                                 }
                             }
                             // Kiểm tra loại tin
-                            if (room.getPostType() == 1 && paringRoomCount < 6) {
+                            if (room.getPostType() == 2 && paringRoomCount < 6) {
                                 listParingRoom.add(room);
                                 paringRoomCount++;
+                            }
+                            if ((room.getRoomType() == 2 || room.getRoomType() == 3) && apartmentCount < 6) {
+                                listApartment.add(room);
+                                apartmentCount++;
+                            }
+                            if (room.getRoomType() == 4 && houseCount < 6) {
+                                listHouse.add(room);
+                                houseCount++;
                             }
                         }
                         adapterNewRoom.notifyDataSetChanged();
                         adapterParingRoom.notifyDataSetChanged();
+                        adapterApartment.notifyDataSetChanged();
+                        adapterHouse.notifyDataSetChanged();
                         adapterGeneralRoom.notifyDataSetChanged();
                     } else {
                         Log.w(TAG, "Error getting documents.", task.getException());

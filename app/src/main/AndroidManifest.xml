@@ -32,13 +32,13 @@
             android:name=".controller.roomDetail.RoomDetail"
             android:exported="false" />
         <activity
-            android:name=".Register"
+            android:name=".controller.Register"
             android:exported="false" />
         <activity
             android:name=".controller.mainActivity.MainActivity"
             android:exported="false" />
         <activity
-            android:name=".Login"
+            android:name=".controller.Login"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

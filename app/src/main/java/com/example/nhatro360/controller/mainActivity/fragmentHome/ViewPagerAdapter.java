@@ -6,7 +6,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 
 import com.example.nhatro360.controller.mainActivity.fragmentAccount.AccountFragment;
-import com.example.nhatro360.PostFragment;
+import com.example.nhatro360.controller.PostFragment;
 import com.example.nhatro360.controller.mainActivity.fragmentSearch.SearchFragment;
 
 public class ViewPagerAdapter extends FragmentStatePagerAdapter {
