@@ -8,6 +8,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.location.Address;
@@ -20,6 +21,7 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -33,6 +35,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -81,7 +84,14 @@ public class SearchFragment extends Fragment  {
     private List<String> provinceIds, districtIds;
     private JSONArray provincesArray, districtsArray;
     private String provinceId, districtId, province, district;
-    private Button btnSearch;
+    private List<TextView> listTvPostType;
+    private List<TextView> listTvRoomType;
+    private List<TextView> listTvOrderType;
+    private int[] listOption = new int[3];
+    private Button btnSearch, btnClose, btnFilter;
+    private int minPrice, maxPrice, minArea, maxArea;
+    private int minValuePrice = 1, maxValuePrice = 20;
+    private int minValueArea = 10, maxValueArea = 100;
 
     @Nullable
     @Override
@@ -151,7 +161,6 @@ public class SearchFragment extends Fragment  {
 
             @Override
             public void afterTextChanged(Editable s) {
-                // Kiểm tra nếu EditText trống và thực hiện hàm x()
                 if (s.length() == 0) {
                     loadSearchHistory(view);
                 }
@@ -169,6 +178,194 @@ public class SearchFragment extends Fragment  {
                 setupPopupMenus();
             }
         });
+
+        imvFilter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                try {
+                    showFilterDialog(view);
+                } catch (JSONException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+
+    }
+
+    private void showFilterDialog(View view) throws JSONException {
+        overlay.setVisibility(View.VISIBLE);
+        initFilter();
+        initDrag(1, true);
+        initDrag(1, false);
+        initDrag(2, true);
+        initDrag(2, false);
+
+        dialog.show();
+
+        dialog.setOnDismissListener(dialogInterface -> {
+            // Hide overlay when dialog is dismissed
+            overlay.setVisibility(View.GONE);
+        });
+
+        btnClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
+
+        btnFilter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                filterRoomsByOption();
+            }
+        });
+    }
+
+    private void initFilter(){
+        dialog = new Dialog(getContext());
+        dialog.setContentView(R.layout.dialog_filter_room);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        // Set dialog width to match parent and height to wrap content
+        WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
+        layoutParams.copyFrom(dialog.getWindow().getAttributes());
+        layoutParams.width = WindowManager.LayoutParams.MATCH_PARENT;
+        layoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
+        layoutParams.gravity = Gravity.BOTTOM;
+        dialog.getWindow().setAttributes(layoutParams);
+
+        listTvPostType = new ArrayList<>();
+        listTvPostType.add(dialog.findViewById(R.id.tv_all_post_type));
+        listTvPostType.add(dialog.findViewById(R.id.tv_rent_room));
+        listTvPostType.add(dialog.findViewById(R.id.tv_share_room));
+
+        listTvRoomType = new ArrayList<>();
+        listTvRoomType.add(dialog.findViewById(R.id.tv_all_room_type));
+        listTvRoomType.add(dialog.findViewById(R.id.tv_room));
+        listTvRoomType.add(dialog.findViewById(R.id.tv_apartment));
+        listTvRoomType.add(dialog.findViewById(R.id.tv_mini_apartment));
+        listTvRoomType.add(dialog.findViewById(R.id.tv_house));
+
+        listTvOrderType = new ArrayList<>();
+        listTvOrderType.add(dialog.findViewById(R.id.tv_all_sort_type));
+        listTvOrderType.add(dialog.findViewById(R.id.tv_latest));
+        listTvOrderType.add(dialog.findViewById(R.id.tv_upPrice));
+        listTvOrderType.add(dialog.findViewById(R.id.tv_downPrice));
+
+        onClickList(listTvPostType, 0);
+        onClickList(listTvRoomType, 1);
+        onClickList(listTvOrderType, 2);
+    }
+
+    private void onClickList(List<TextView> listTv, int position){
+        for (int i=0; i<listTv.size(); i++){
+            TextView tv = listTv.get(i);
+            int index = i;
+            tv.setOnClickListener(view -> {
+                for(int j=0; j<listTv.size(); j++){
+                    listTv.get(j).setTextColor(getResources().getColor(R.color.blue2));
+                    listTv.get(j).setBackgroundTintList(null);
+                }
+                listOption[position] = index;
+                tv.setTextColor(getResources().getColor(R.color.white));
+                tv.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.blue2)));
+            });
+        }
+    }
+
+    private void updateRoomType(TextView tv){
+        for(int i=0; i<4; i++){
+            listTvRoomType.get(i).setTextColor(getResources().getColor(R.color.blue2));
+            listTvRoomType.get(i).setBackgroundTintList(null);
+        }
+        tv.setTextColor(getResources().getColor(R.color.white));
+        tv.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.blue2)));
+    }
+
+    private void initDrag(int i, boolean isLeft) {
+        TextView tvSelected;
+        View handleLeft, handleRight, rangeView;
+        RelativeLayout container;
+        if (i == 1) {
+            tvSelected = dialog.findViewById(R.id.tv_selected_price);
+            handleLeft = dialog.findViewById(R.id.handleLeft_price);
+            handleRight = dialog.findViewById(R.id.handleRight_price);
+            rangeView = dialog.findViewById(R.id.rangeView_price);
+            container = dialog.findViewById(R.id.container_price);
+        } else {
+            tvSelected = dialog.findViewById(R.id.tv_selected_area);
+            handleLeft = dialog.findViewById(R.id.handleLeft_area);
+            handleRight = dialog.findViewById(R.id.handleRight_area);
+            rangeView = dialog.findViewById(R.id.rangeView_area);
+            container = dialog.findViewById(R.id.container_area);
+        }
+
+        View handle = isLeft ? handleLeft : handleRight;
+        handle.setOnTouchListener(new View.OnTouchListener() {
+            private float dX;
+            private boolean dragging = false;
+
+            @Override
+            public boolean onTouch(View view, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        dX = view.getX() - event.getRawX();
+                        dragging = true;
+                        break;
+                    case MotionEvent.ACTION_MOVE:
+                        if (dragging) {
+                            float newX = event.getRawX() + dX;
+                            int handleWidth = view.getWidth();
+                            int containerWidth = container.getWidth();
+
+                            if (isLeft) {
+                                newX = Math.max(0, newX);
+                                newX = Math.min(handleRight.getX() - handleWidth, newX);
+                            } else {
+                                newX = Math.max(handleLeft.getX() + handleWidth, newX);
+                                newX = Math.min(containerWidth - handleWidth, newX);
+                            }
+
+                            view.animate().x(newX).setDuration(0).start();
+
+                            float leftPos = handleLeft.getX();
+                            float rightPos = handleRight.getX();
+
+                            RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) rangeView.getLayoutParams();
+                            layoutParams.width = (int) (rightPos - leftPos + handleWidth);
+                            layoutParams.setMargins((int) leftPos, layoutParams.topMargin, 0, layoutParams.bottomMargin);
+                            rangeView.setLayoutParams(layoutParams);
+
+                            if (i == 1) {
+                                minPrice = minValuePrice + (int) ((leftPos / containerWidth) * (maxValuePrice - minValuePrice + 2));
+                                maxPrice = minValuePrice + (int) ((rightPos / containerWidth) * (maxValuePrice - minValuePrice + 2));
+                                String selected = minPrice + " triệu  - " + maxPrice;
+                                if(maxPrice == maxValuePrice) selected+= "+ triệu";
+                                else selected+= " triệu";
+                                tvSelected.setText(selected);
+                            } else {
+                                minArea = minValueArea + (int) ((leftPos / containerWidth) * (maxValueArea - minValueArea + 6));
+                                maxArea = minValueArea + (int) ((rightPos / containerWidth) * (maxValueArea - minValueArea + 6));
+                                String selected = minArea + " m2  - " + maxArea;
+                                if(maxArea == maxValueArea) selected+= "+ m2";
+                                else selected+= " m2";
+                                tvSelected.setText(selected);
+                            }
+                        }
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        dragging = false;
+                        break;
+                }
+                return true;
+            }
+        });
+    }
+
+    private void filterRoomsByOption(){
+        int postType = listOption[0];
+        int roomType = listOption[1];
+        int orderType = listOption[2];
     }
 
     @SuppressLint("MissingPermission")
@@ -212,6 +409,7 @@ public class SearchFragment extends Fragment  {
     private void loadSearchHistory(View view) {
         layoutHistory.setVisibility(View.VISIBLE);
         layoutListRoom.setVisibility(View.GONE);
+        imvFilter.setVisibility(View.GONE);
         if (getContext() != null) {
             SharedPreferences sharedPreferences = getActivity().getSharedPreferences("search_history", Context.MODE_PRIVATE);
             String history = sharedPreferences.getString("history", "");
@@ -381,7 +579,6 @@ public class SearchFragment extends Fragment  {
                 String str = district + ", " + province;
                 if(district.equals("")) str = province;
                 performSearch(str);
-                imvFilter.setVisibility(View.VISIBLE);
             }
         });
         // Show dialog
@@ -396,6 +593,7 @@ public class SearchFragment extends Fragment  {
 
     private void saveSearchHistory(String query) {
         layoutHistory.setVisibility(View.GONE);
+        imvFilter.setVisibility(View.VISIBLE);
         SharedPreferences sharedPreferences = getActivity().getSharedPreferences("search_history", Context.MODE_PRIVATE);
         String history = sharedPreferences.getString("history", "");
 
@@ -422,7 +620,6 @@ public class SearchFragment extends Fragment  {
             editor.apply();
         }
     }
-
 
     private void getArray() throws IOException, JSONException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(getActivity().getAssets().open("provinces.json")));

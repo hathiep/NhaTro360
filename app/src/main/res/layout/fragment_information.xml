@@ -33,7 +33,7 @@
                 android:layout_weight="1"
                 android:background="@drawable/border_left"
                 android:backgroundTint="@color/blue2"
-                android:paddingHorizontal="20dp"
+                android:paddingHorizontal="5dp"
                 android:text="@string/rent_room"
                 android:gravity="center"
                 android:textSize="14sp"
@@ -46,7 +46,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
                 android:layout_weight="1"
-                android:paddingHorizontal="20dp"
+                android:paddingHorizontal="5dp"
+                android:ellipsize="end"
+                android:maxLines="1"
                 android:background="@drawable/border_right"
                 android:text="@string/share_room"
                 android:gravity="center"
@@ -80,6 +82,8 @@
                 android:gravity="center"
                 android:textSize="14sp"
                 android:textColor="@color/white"
+                android:ellipsize="end"
+                android:maxLines="1"
                 android:clickable="true"/>
 
             <TextView
@@ -92,6 +96,8 @@
                 android:gravity="center"
                 android:textSize="14sp"
                 android:textColor="@color/blue2"
+                android:ellipsize="end"
+                android:maxLines="1"
                 android:clickable="true"/>
 
             <TextView
@@ -104,6 +110,8 @@
                 android:gravity="center"
                 android:textSize="14sp"
                 android:textColor="@color/blue2"
+                android:ellipsize="end"
+                android:maxLines="1"
                 android:clickable="true"/>
 
             <TextView
@@ -111,6 +119,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
                 android:layout_weight="1"
+                android:ellipsize="end"
+                android:maxLines="1"
                 android:background="@drawable/border_right"
                 android:text="@string/house"
                 android:gravity="center"

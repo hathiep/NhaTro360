@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="56dp"
         android:paddingBottom="1dp"
-        android:background="@drawable/bottom_border"
+        android:background="@drawable/border_bottom"
         android:layout_alignParentTop="true">
 
         <TextView
