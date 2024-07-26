@@ -1,6 +1,6 @@
 package com.example.nhatro360.controller.roomDetail;
 
-import com.example.nhatro360.models.GeocodingResponse;
+import com.example.nhatro360.models.location.GeocodingResponse;
 
 import retrofit2.Call;
 import retrofit2.http.GET;

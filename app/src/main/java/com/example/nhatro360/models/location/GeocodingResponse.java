@@ -1,4 +1,4 @@
-package com.example.nhatro360.models;
+package com.example.nhatro360.models.location;
 
 import java.util.List;
 

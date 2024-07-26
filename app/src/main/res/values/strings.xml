@@ -119,6 +119,10 @@
     <string name="apply">Áp dụng</string>
     <string name="empty_message">Không tìm thấy kết quả nào phù hợp</string>
 
+    // Account Fragment
+    <string name="posted_room">Phòng đã đăng</string>
+    <string name="saved_room">Phòng đã lưu</string>
+
     <string name="utility1">Wifi</string>
     <string name="utility2">WC riêng</string>
     <string name="utility3">Giữ xe</string>

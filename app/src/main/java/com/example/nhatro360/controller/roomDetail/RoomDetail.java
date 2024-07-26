@@ -25,9 +25,9 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.example.nhatro360.R;
 import com.example.nhatro360.models.Room;
-import com.example.nhatro360.models.GeocodingResponse;
-import com.example.nhatro360.models.GeocodingResult;
-import com.example.nhatro360.models.Location;
+import com.example.nhatro360.models.location.GeocodingResponse;
+import com.example.nhatro360.models.location.GeocodingResult;
+import com.example.nhatro360.models.location.Location;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
