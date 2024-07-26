@@ -32,7 +32,9 @@
     <string name="posts">Bài viết</string>
     <string name="account">Tài khoản</string>
     <string name="new_room">Phòng mới đăng</string>
-    <string name="pairing_room">Phòng ở ghép, KTX</string>
+    <string name="pairing_room">Phòng ở ghép</string>
+    <string name="all_apartment">Căn hộ, CCMN</string>
+    <string name="fullHouse">Nhà nguyên căn</string>
     <string name="general_room">Phòng tổng hợp</string>
     <string name="more">Xem thêm</string>
     <string name="cancel_app">Bạn có chắc chắn muốn thoát ứng dụng không?</string>

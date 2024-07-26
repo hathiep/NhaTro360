@@ -163,7 +163,7 @@
                         android:layout_height="26dp"
                         android:layout_gravity="center"
                         android:background="@color/white"
-                        app:srcCompat="@drawable/icon_paring_room" />
+                        app:srcCompat="@drawable/icon_apartment" />
 
                     <TextView
                         android:id="@+id/tv_title_apartment"
@@ -171,7 +171,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:paddingHorizontal="5dp"
-                        android:text="@string/apartment"
+                        android:text="@string/all_apartment"
                         android:textSize="18sp"
                         android:textColor="@color/blue2"
                         android:fontFamily="sans-serif-medium"
@@ -220,7 +220,7 @@
                         android:layout_height="26dp"
                         android:layout_gravity="center"
                         android:background="@color/white"
-                        app:srcCompat="@drawable/icon_paring_room" />
+                        app:srcCompat="@drawable/icon_house" />
 
                     <TextView
                         android:id="@+id/tv_title_house"
@@ -228,7 +228,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:paddingHorizontal="5dp"
-                        android:text="@string/house"
+                        android:text="@string/fullHouse"
                         android:textSize="18sp"
                         android:textColor="@color/blue2"
                         android:fontFamily="sans-serif-medium"
