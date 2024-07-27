@@ -73,7 +73,7 @@ import java.util.Locale;
 public class SearchFragment extends Fragment  {
     private EditText edtSearch, edtProvince, edtDistrict;
     private ImageView imvDrop, imvFilter;
-    private FragmentSingleListRoom fragmentSingleListRoom;
+    private FragmentSearchedRoom fragmentSearchedRoom;
     private FrameLayout layoutListRoom;
     private FirebaseFirestore db;
     private View overlay;
@@ -446,7 +446,7 @@ public class SearchFragment extends Fragment  {
         dialog.dismiss();
 
         new Handler().postDelayed(() -> {
-            fragmentSingleListRoom.updateRoomList(filteredRooms);
+            fragmentSearchedRoom.updateRoomList(filteredRooms);
             progressBar.setVisibility(View.GONE);
         }, 1000);
     }
@@ -539,19 +539,19 @@ public class SearchFragment extends Fragment  {
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
 
-        fragmentSingleListRoom = new FragmentSingleListRoom();
+        fragmentSearchedRoom = new FragmentSearchedRoom();
 
         searchRooms(query, new FirestoreCallback() {
             @Override
             public void onCallback(List<Room> searchResults) {
-                // Gửi kết quả tìm kiếm tới fragmentSingleListRoom
+                // Gửi kết quả tìm kiếm tới fragmentSearchedRoom
                 Bundle bundle = new Bundle();
                 bundle.putParcelableArrayList("searchResults", (ArrayList<? extends Parcelable>) searchResults);
-                fragmentSingleListRoom.setArguments(bundle);
+                fragmentSearchedRoom.setArguments(bundle);
 
-                // Hiển thị fragmentSingleListRoom trong SearchFragment
+                // Hiển thị fragmentSearchedRoom trong SearchFragment
                 FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-                transaction.replace(R.id.container_list_room, fragmentSingleListRoom);
+                transaction.replace(R.id.container_list_room, fragmentSearchedRoom);
                 transaction.addToBackStack(null);
                 transaction.commit();
             }

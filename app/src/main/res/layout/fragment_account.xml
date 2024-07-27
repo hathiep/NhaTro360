@@ -40,6 +40,7 @@
                 app:shapeAppearanceOverlay="@style/Circle"/>
 
             <ImageView
+                android:id="@+id/imv_edit"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_alignParentBottom="true"
@@ -80,6 +81,7 @@
                 android:textColor="@color/blue2"/>
 
             <ImageView
+                android:id="@+id/imv_posted_room"
                 android:layout_width="35dp"
                 android:layout_height="40dp"
                 android:src="@drawable/icon_detail"/>
@@ -107,6 +109,7 @@
                 android:textColor="@color/blue2"/>
 
             <ImageView
+                android:id="@+id/imv_saved_room"
                 android:layout_width="35dp"
                 android:layout_height="40dp"
                 android:src="@drawable/icon_detail"/>
@@ -131,5 +134,12 @@
             android:textSize="16sp" />
 
     </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/fragment_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:background="@color/white"/>
 
 </RelativeLayout>

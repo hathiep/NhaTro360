@@ -25,6 +25,7 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.example.nhatro360.R;
 import com.example.nhatro360.models.Room;
+import com.example.nhatro360.models.User;
 import com.example.nhatro360.models.location.GeocodingResponse;
 import com.example.nhatro360.models.location.GeocodingResult;
 import com.example.nhatro360.models.location.Location;
@@ -34,6 +35,9 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.Timestamp;
 
@@ -60,8 +64,11 @@ public class RoomDetail extends AppCompatActivity implements OnMapReadyCallback 
     private GoogleMap mMap;
     private SupportMapFragment mapFragment;
     private LatLng roomLatLng;
-    private ImageView imvBack;
+    private ImageView imvBack, imvSave;
+    private boolean save;
     private static Room room;
+    private FirebaseUser currentUser;
+    private static User user;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -69,11 +76,7 @@ public class RoomDetail extends AppCompatActivity implements OnMapReadyCallback 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_room_detail);
 
-        // Initialize Firestore
-        db = FirebaseFirestore.getInstance();
-
         init();
-
         String roomId = getIntent().getStringExtra("roomId");
         if (roomId != null) {
             fetchRoomDetailsFromFirestore(roomId);
@@ -93,14 +96,32 @@ public class RoomDetail extends AppCompatActivity implements OnMapReadyCallback 
             }
         });
 
-        // Setup back button
+        getCurrentUser();
         imvBack = findViewById(R.id.imV_back);
         imvBack.setOnClickListener(v -> onBackPressed());
+        imvSave.setImageResource(user.getListSavedRoom().contains(roomId) ? R.drawable.icon_save : R.drawable.icon_unsave);
+        imvSave.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(save){
+                    imvSave.setImageResource(R.drawable.icon_unsave);
+                    user.getListSavedRoom().remove(roomId);
+                    save = false;
+                }
+                else {
+                    imvSave.setImageResource(R.drawable.icon_save);
+                    user.getListSavedRoom().add(roomId);
+                    save = true;
+                }
+            }
+        });
     }
 
     // Initialize views
     @SuppressLint("SuspiciousIndentation")
     private void init() {
+        db = FirebaseFirestore.getInstance();
+        currentUser = FirebaseAuth.getInstance().getCurrentUser();
         tvPrice = findViewById(R.id.tv_price);
         tvTitle = findViewById(R.id.tv_title);
         tvAddress = findViewById(R.id.tv_address);
@@ -130,6 +151,22 @@ public class RoomDetail extends AppCompatActivity implements OnMapReadyCallback 
         tvInfor = findViewById(R.id.tv_infor);
         mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this::onMapReady);
+    }
+
+    private void getCurrentUser(){
+
+        if (currentUser != null) {
+            String userEmail = currentUser.getEmail();
+            db.collection("users").whereEqualTo("email", userEmail)
+                    .get()
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful() && !task.getResult().isEmpty()) {
+                            DocumentSnapshot userDoc = task.getResult().getDocuments().get(0);
+                            user = userDoc.toObject(User.class);
+                        }
+                    });
+        }
+
     }
 
     private void fetchRoomDetailsFromFirestore(String roomId) {

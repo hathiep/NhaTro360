@@ -5,7 +5,6 @@ import static android.content.ContentValues.TAG;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -28,7 +27,7 @@ import com.example.nhatro360.models.Room;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FragmentSingleListRoom extends Fragment implements OnRoomClickListener {
+public class FragmentSearchedRoom extends Fragment implements OnRoomClickListener {
     private TextView tvEmptyMessage;
     private RecyclerView recyclerView;
     private RoomAdapterSingle adapter;

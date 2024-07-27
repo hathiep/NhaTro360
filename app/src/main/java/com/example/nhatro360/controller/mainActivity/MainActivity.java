@@ -15,6 +15,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 
 import com.example.nhatro360.controller.mainActivity.fragmentHome.CustomViewPager;
@@ -114,24 +115,29 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this)
-                .setMessage(R.string.cancel_app)
-                .setPositiveButton(R.string.yes, null)
-                .setNegativeButton(R.string.no, null);
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        if (fragmentManager.getBackStackEntryCount() > 0) {
+            fragmentManager.popBackStack(); // Quay về fragment trước đó nếu có
+        } else {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this)
+                    .setMessage(R.string.cancel_app)
+                    .setPositiveButton(R.string.yes, null)
+                    .setNegativeButton(R.string.no, null);
 
-        AlertDialog dialog = builder.create();
+            AlertDialog dialog = builder.create();
 
-        dialog.setOnShowListener(dialogInterface -> {
-            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.red));
-            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setAllCaps(true);
-            dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setAllCaps(true);
+            dialog.setOnShowListener(dialogInterface -> {
+                dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.red));
+                dialog.getButton(AlertDialog.BUTTON_POSITIVE).setAllCaps(true);
+                dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setAllCaps(true);
 
-            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(v -> {
-                finish();
+                dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(v -> {
+                    super.onBackPressed();
+                });
             });
-        });
 
-        dialog.show();
+            dialog.show();
+        }
     }
 
 }
