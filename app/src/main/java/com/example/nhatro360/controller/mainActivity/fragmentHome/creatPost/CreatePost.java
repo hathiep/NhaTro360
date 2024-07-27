@@ -11,11 +11,13 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowInsetsController;
 import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
@@ -31,8 +33,16 @@ import android.widget.Toast;
 
 import com.example.nhatro360.controller.mainActivity.MainActivity;
 import com.example.nhatro360.R;
+import com.example.nhatro360.controller.roomDetail.RoomDetail;
 import com.example.nhatro360.models.Room;
 import com.example.nhatro360.models.Address;
+import com.example.nhatro360.models.User;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
@@ -54,6 +64,9 @@ public class CreatePost extends AppCompatActivity {
     private Room room;
     private CreatPostViewModel viewModel;
     private ProgressDialog progressDialog;
+    private FirebaseFirestore db;
+    private FirebaseUser currentUser;
+    private static User user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,6 +118,9 @@ public class CreatePost extends AppCompatActivity {
     }
 
     private void init() {
+        db = FirebaseFirestore.getInstance();
+        currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        user = new User();
         viewModel = new ViewModelProvider(this).get(CreatPostViewModel.class);
         room = viewModel.getRoom();
         listImv = new ArrayList<>();
@@ -126,6 +142,43 @@ public class CreatePost extends AppCompatActivity {
         listLine.add(findViewById(R.id.line12));
         listLine.add(findViewById(R.id.line22));
         listLine.add(findViewById(R.id.line32));
+    }
+
+    private void getCurrentUser(FirestoreCallback callback) {
+        if (currentUser != null) {
+            String userEmail = currentUser.getEmail();
+            db.collection("users").whereEqualTo("email", userEmail)
+                    .get()
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful() && !task.getResult().isEmpty()) {
+                            DocumentSnapshot userDoc = task.getResult().getDocuments().get(0);
+                            User user = userDoc.toObject(User.class);
+                            user.setId(userDoc.getId());
+                            callback.onCallback(user);
+                        } else {
+                            // Xử lý lỗi nếu có
+                        }
+                    });
+        }
+    }
+
+    private void updateUser(){
+        DocumentReference userRef = db.collection("users").document(user.getId());
+        userRef.update("listPostedRoom", user.getListPostedRoom())
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        // Thông báo cập nhật thành công
+                        Log.d("Firestore", "User attribute updated successfully.");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        // Thông báo lỗi
+                        Log.w("Firestore", "Error updating user attribute.", e);
+                    }
+                });
     }
 
     private void setOnclickHeader() {
@@ -231,6 +284,14 @@ public class CreatePost extends AppCompatActivity {
                 .add(roomData)
                 .addOnSuccessListener(documentReference -> {
                     String documentId = documentReference.getId();
+                    getCurrentUser(new FirestoreCallback() {
+                        @Override
+                        public void onCallback(User userData) {
+                            user = userData;
+                            user.getListPostedRoom().add(documentId);
+                            updateUser();
+                        }
+                    });
                     // Call the method to upload images and save their URLs
                     uploadImagesAndSaveUrls(documentId, room.getImages());
                 })
@@ -540,6 +601,10 @@ public class CreatePost extends AppCompatActivity {
 
     private void showError(String message) {
         Toast.makeText(CreatePost.this, message, Toast.LENGTH_SHORT).show();
+    }
+
+    private interface FirestoreCallback {
+        void onCallback(User user);
     }
 
     @Override

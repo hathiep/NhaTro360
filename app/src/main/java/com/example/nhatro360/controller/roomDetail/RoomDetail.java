@@ -73,7 +73,6 @@ public class RoomDetail extends AppCompatActivity implements OnMapReadyCallback 
     private static Room room;
     private FirebaseUser currentUser;
     private static User user;
-    private static List<String> listSavedRoom;
 
     @SuppressLint("MissingInflatedId")
     @Override
