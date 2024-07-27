@@ -16,6 +16,7 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.text.Html;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -35,8 +36,11 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.Timestamp;
@@ -69,6 +73,7 @@ public class RoomDetail extends AppCompatActivity implements OnMapReadyCallback 
     private static Room room;
     private FirebaseUser currentUser;
     private static User user;
+    private static List<String> listSavedRoom;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -77,6 +82,7 @@ public class RoomDetail extends AppCompatActivity implements OnMapReadyCallback 
         setContentView(R.layout.activity_room_detail);
 
         init();
+
         String roomId = getIntent().getStringExtra("roomId");
         if (roomId != null) {
             fetchRoomDetailsFromFirestore(roomId);
@@ -89,31 +95,45 @@ public class RoomDetail extends AppCompatActivity implements OnMapReadyCallback 
 
         // Setup Floating Action Button
         ImageView imvMenu = findViewById(R.id.imV_menu);
-        imvMenu.setOnClickListener(new View.OnClickListener() {
+        imvMenu.setOnClickListener(view -> showMenuDialog());
+
+        getCurrentUser(new FirestoreCallback() {
             @Override
-            public void onClick(View view) {
-                showMenuDialog();
+            public void onCallback(User userData) {
+                user = userData;
+                // Tiến hành các xử lý liên quan đến user sau khi dữ liệu đã được lấy
+                handleUserData(roomId);
             }
         });
 
-        getCurrentUser();
-        imvBack = findViewById(R.id.imV_back);
         imvBack.setOnClickListener(v -> onBackPressed());
-        imvSave.setImageResource(user.getListSavedRoom().contains(roomId) ? R.drawable.icon_save : R.drawable.icon_unsave);
-        imvSave.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(save){
-                    imvSave.setImageResource(R.drawable.icon_unsave);
-                    user.getListSavedRoom().remove(roomId);
-                    save = false;
-                }
-                else {
-                    imvSave.setImageResource(R.drawable.icon_save);
-                    user.getListSavedRoom().add(roomId);
-                    save = true;
-                }
+    }
+
+    private void handleUserData(String roomId) {
+        Log.e(TAG, user.getEmail() + " " + user.getId() + " " + user.getListSavedRoom());
+        if (user.getListSavedRoom() != null) {
+            if (user.getListSavedRoom().contains(roomId)) {
+                imvSave.setImageResource(R.drawable.icon_save);
+                save = true;
+            } else {
+                imvSave.setImageResource(R.drawable.icon_unsave);
+                save = false;
             }
+        }
+
+        imvSave.setOnClickListener(view -> {
+            if (save) {
+                imvSave.setImageResource(R.drawable.icon_unsave);
+                user.getListSavedRoom().remove(roomId);
+                save = false;
+                Toast.makeText(this, "Bỏ lưu thành công", Toast.LENGTH_SHORT).show();
+            } else {
+                imvSave.setImageResource(R.drawable.icon_save);
+                user.getListSavedRoom().add(roomId);
+                save = true;
+                Toast.makeText(this, "Lưu thành công", Toast.LENGTH_SHORT).show();
+            }
+            updateUser();
         });
     }
 
@@ -122,7 +142,13 @@ public class RoomDetail extends AppCompatActivity implements OnMapReadyCallback 
     private void init() {
         db = FirebaseFirestore.getInstance();
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        imvBack = findViewById(R.id.imv_back);
+        imvSave = findViewById(R.id.imv_save);
+        room = new Room();
+        user = new User();
+        save = false;
         tvPrice = findViewById(R.id.tv_price);
+
         tvTitle = findViewById(R.id.tv_title);
         tvAddress = findViewById(R.id.tv_address);
         tvContact = findViewById(R.id.tv_contact);
@@ -130,7 +156,7 @@ public class RoomDetail extends AppCompatActivity implements OnMapReadyCallback 
         tvTimePosted = findViewById(R.id.tv_time_posted);
         tvUtilities = findViewById(R.id.tv_utilities);
         viewPager = findViewById(R.id.view_pager);
-        room = new Room();
+
         setViewPagerHeight();
         listImvUtilites.add(findViewById(R.id.imv_wifi));
         listImvUtilites.add(findViewById(R.id.imv_wc));
@@ -153,8 +179,7 @@ public class RoomDetail extends AppCompatActivity implements OnMapReadyCallback 
         mapFragment.getMapAsync(this::onMapReady);
     }
 
-    private void getCurrentUser(){
-
+    private void getCurrentUser(FirestoreCallback callback) {
         if (currentUser != null) {
             String userEmail = currentUser.getEmail();
             db.collection("users").whereEqualTo("email", userEmail)
@@ -162,11 +187,33 @@ public class RoomDetail extends AppCompatActivity implements OnMapReadyCallback 
                     .addOnCompleteListener(task -> {
                         if (task.isSuccessful() && !task.getResult().isEmpty()) {
                             DocumentSnapshot userDoc = task.getResult().getDocuments().get(0);
-                            user = userDoc.toObject(User.class);
+                            User user = userDoc.toObject(User.class);
+                            user.setId(userDoc.getId());
+                            callback.onCallback(user);
+                        } else {
+                            // Xử lý lỗi nếu có
                         }
                     });
         }
+    }
 
+    private void updateUser(){
+        DocumentReference userRef = db.collection("users").document(user.getId());
+        userRef.update("listSavedRoom", user.getListSavedRoom())
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        // Thông báo cập nhật thành công
+                        Log.d("Firestore", "User attribute updated successfully.");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        // Thông báo lỗi
+                        Log.w("Firestore", "Error updating user attribute.", e);
+                    }
+                });
     }
 
     private void fetchRoomDetailsFromFirestore(String roomId) {
@@ -390,5 +437,9 @@ public class RoomDetail extends AppCompatActivity implements OnMapReadyCallback 
         DecimalFormat decimalFormat = new DecimalFormat("#,###.##");
         double millions = Integer.parseInt(price) / 1_000_000.0;
         return decimalFormat.format(millions) + " triệu";
+    }
+
+    private interface FirestoreCallback {
+        void onCallback(User user);
     }
 }

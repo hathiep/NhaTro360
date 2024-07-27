@@ -14,7 +14,7 @@
         android:layout_alignParentTop="true">
 
         <ImageView
-            android:id="@+id/imV_back"
+            android:id="@+id/imv_back"
             android:layout_width="40dp"
             android:layout_height="20dp"
             android:layout_gravity="center"
@@ -34,7 +34,7 @@
             android:background="@color/white"/>
 
         <ImageView
-            android:id="@+id/imV_save"
+            android:id="@+id/imv_save"
             android:layout_width="40dp"
             android:layout_height="30dp"
             android:layout_gravity="center"

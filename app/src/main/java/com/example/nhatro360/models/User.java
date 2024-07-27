@@ -3,7 +3,7 @@ package com.example.nhatro360.models;
 import java.util.List;
 
 public class User {
-    private String fullName, email, phone;
+    private String id, fullName, email, phone;
     private List<String> listSavedRoom;
     private List<String> listPostedRoom;
 
@@ -16,6 +16,14 @@ public class User {
         this.phone = phone;
         this.listSavedRoom = listSavedRoom;
         this.listPostedRoom = listPostedRoom;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getFullName() {
