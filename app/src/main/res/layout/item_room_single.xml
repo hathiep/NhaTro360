@@ -127,6 +127,7 @@
                 android:id="@+id/tv_time_posted"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:layout_gravity="center"
                 android:ellipsize="end"
                 android:maxLines="1"
@@ -134,6 +135,14 @@
                 android:text="Time Posted"
                 android:textColor="@color/black3"
                 android:textSize="13sp" />
+
+            <ImageView
+                android:id="@+id/imv_delete"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginHorizontal="5dp"
+                android:src="@drawable/icon_delete2"
+                android:visibility="gone"/>
 
         </LinearLayout>
 

@@ -32,6 +32,7 @@ public class FragmentSearchedRoom extends Fragment implements OnRoomClickListene
     private RecyclerView recyclerView;
     private RoomAdapterSingle adapter;
     private List<Room> roomList;
+    private boolean showDeleteIcon;
 
     @Nullable
     @Override
@@ -43,15 +44,19 @@ public class FragmentSearchedRoom extends Fragment implements OnRoomClickListene
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         DividerItemDecoration divider = new DividerItemDecoration(recyclerView.getContext(), DividerItemDecoration.VERTICAL);
-        divider.setDrawable(new ColorDrawable(Color.LTGRAY)); // Chỉnh màu sắc đường kẻ
+        divider.setDrawable(new ColorDrawable(Color.LTGRAY));
 
         recyclerView.addItemDecoration(divider);
 
         roomList = new ArrayList<>();
-        adapter = new RoomAdapterSingle(roomList, this);
+
+        if (getArguments() != null) {
+            showDeleteIcon = getArguments().getBoolean("showDeleteIcon", false);
+        }
+
+        adapter = new RoomAdapterSingle(roomList, this, showDeleteIcon, getContext());
         recyclerView.setAdapter(adapter);
 
-        // Load search results if available
         Bundle bundle = getArguments();
         if (bundle != null && bundle.containsKey("searchResults")) {
             ArrayList<Room> searchResults = bundle.getParcelableArrayList("searchResults");
@@ -76,12 +81,11 @@ public class FragmentSearchedRoom extends Fragment implements OnRoomClickListene
     @Override
     public void onRoomClick(Room room) {
         Log.d(TAG, "Room clicked: " + room.getAddress());
-        Log.d(TAG, "Room ID: " + room.getId()); // Thêm dòng này để kiểm tra ID
+        Log.d(TAG, "Room ID: " + room.getId());
 
         Intent intent = new Intent(getActivity(), RoomDetail.class);
-        intent.putExtra("roomId", room.getId()); // Truyền ID của document qua intent
+        intent.putExtra("roomId", room.getId());
         intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
         startActivity(intent);
     }
-
 }

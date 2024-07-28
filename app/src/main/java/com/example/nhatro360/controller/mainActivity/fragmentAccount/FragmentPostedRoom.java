@@ -40,10 +40,9 @@ import java.util.List;
 
 public class FragmentPostedRoom extends Fragment  {
     private FragmentSearchedRoom fragmentSearchedRoom;
-    private AccountViewModel viewModel;
     private FirebaseFirestore db;
     private ImageView imvBack, imvCreate;
-    private TextView tvTitle;
+    private String email;
 
     @Nullable
     @Override
@@ -64,35 +63,26 @@ public class FragmentPostedRoom extends Fragment  {
     }
 
     private void init(View view){
-        db = FirebaseFirestore.getInstance();
-        imvBack = view.findViewById(R.id.imv_back);
-        tvTitle = view.findViewById(R.id.tv_title);
-        tvTitle.setText(R.string.posted_room);
-        imvCreate = view.findViewById(R.id.imv_action);
-        imvCreate.setImageResource(R.drawable.icon_create2);
-
-        imvBack.setOnClickListener(v -> {
-            FragmentManager fragmentManager = getParentFragmentManager();
-            fragmentManager.popBackStack();
-        });
-
-        imvCreate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getContext(), CreatePost.class);
-                startActivity(intent);
-            }
-        });
-
         fragmentSearchedRoom = new FragmentSearchedRoom();
+        db = FirebaseFirestore.getInstance();
 
-        viewModel = new ViewModelProvider(requireActivity()).get(AccountViewModel.class);
+        imvBack = view.findViewById(R.id.imv_back);
+        imvCreate = view.findViewById(R.id.imv_action);
 
-        viewModel.getUserEmail().observe(getViewLifecycleOwner(), email -> {
-            if (email != null && !email.isEmpty()) {
-                getCurrentUser(email);
-            }
+        imvBack.setOnClickListener(v -> getParentFragmentManager().popBackStack());
+
+        imvCreate.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), CreatePost.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+            startActivity(intent);
         });
+
+        email = FirebaseAuth.getInstance().getCurrentUser().getEmail();
+        getCurrentUser();
+
+        Bundle bundle = new Bundle();
+        bundle.putBoolean("showDeleteIcon", true);
+        fragmentSearchedRoom.setArguments(bundle);
 
         getChildFragmentManager().beginTransaction()
                 .replace(R.id.container_list_room, fragmentSearchedRoom)
@@ -102,21 +92,19 @@ public class FragmentPostedRoom extends Fragment  {
     @Override
     public void onResume() {
         super.onResume();
-        viewModel.getUserEmail().observe(getViewLifecycleOwner(), email -> {
-            if (email != null && !email.isEmpty()) {
-                getCurrentUser(email);
-            }
-        });
+        getCurrentUser();
     }
 
-    private void getCurrentUser(String email) {
+    private void getCurrentUser() {
         db.collection("users").whereEqualTo("email", email)
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful() && !task.getResult().isEmpty()) {
                         DocumentSnapshot userDoc = task.getResult().getDocuments().get(0);
                         User user = userDoc.toObject(User.class);
-                        getListPostedRoom(user.getListPostedRoom());
+                        List<String> list = user.getListPostedRoom();
+                        if(list.size() == 0) list.add("x");
+                        getListPostedRoom(list);
                     }
                 });
     }

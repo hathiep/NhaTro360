@@ -29,7 +29,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 public class AccountFragment extends Fragment {
     private ImageView imvEdit, imvPostedRoom, imvSavedRoom;
     private TextView tvFullName, btnLogout;
-    private AccountViewModel viewModel;
     private FirebaseFirestore db;
     private FirebaseAuth auth;
     private FirebaseUser currentUser;
@@ -51,7 +50,6 @@ public class AccountFragment extends Fragment {
         imvPostedRoom = view.findViewById(R.id.imv_posted_room);
         imvSavedRoom = view.findViewById(R.id.imv_saved_room);
         btnLogout = view.findViewById(R.id.btn_logout);
-        viewModel = new ViewModelProvider(requireActivity()).get(AccountViewModel.class);
         db = FirebaseFirestore.getInstance();
         auth = FirebaseAuth.getInstance();
         currentUser = auth.getCurrentUser();
@@ -77,7 +75,6 @@ public class AccountFragment extends Fragment {
 
         if (currentUser != null) {
             String userEmail = currentUser.getEmail();
-            viewModel.setUserEmail(userEmail);
             db.collection("users").whereEqualTo("email", userEmail)
                     .get()
                     .addOnCompleteListener(task -> {

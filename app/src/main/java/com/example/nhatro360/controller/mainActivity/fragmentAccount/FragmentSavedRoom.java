@@ -26,6 +26,7 @@ import com.example.nhatro360.models.Room;
 import com.example.nhatro360.models.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.*;
 
 import java.util.ArrayList;
@@ -33,10 +34,10 @@ import java.util.List;
 
 public class FragmentSavedRoom extends Fragment  {
     private FragmentSearchedRoom fragmentSearchedRoom;
-    private AccountViewModel viewModel;
     private FirebaseFirestore db;
     private ImageView imvBack, imvUnsaved;
     private TextView tvTitle;
+    private String email;
 
     @Nullable
     @Override
@@ -72,13 +73,8 @@ public class FragmentSavedRoom extends Fragment  {
 
         fragmentSearchedRoom = new FragmentSearchedRoom();
 
-        viewModel = new ViewModelProvider(requireActivity()).get(AccountViewModel.class);
-
-        viewModel.getUserEmail().observe(getViewLifecycleOwner(), email -> {
-            if (email != null && !email.isEmpty()) {
-                getCurrentUser(email);
-            }
-        });
+        email = FirebaseAuth.getInstance().getCurrentUser().getEmail();
+        getCurrentUser();
 
         getChildFragmentManager().beginTransaction()
                 .replace(R.id.container_list_room, fragmentSearchedRoom)
@@ -88,21 +84,19 @@ public class FragmentSavedRoom extends Fragment  {
     @Override
     public void onResume() {
         super.onResume();
-        viewModel.getUserEmail().observe(getViewLifecycleOwner(), email -> {
-            if (email != null && !email.isEmpty()) {
-                getCurrentUser(email);
-            }
-        });
+        getCurrentUser();
     }
 
-    private void getCurrentUser(String email) {
+    private void getCurrentUser() {
         db.collection("users").whereEqualTo("email", email)
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful() && !task.getResult().isEmpty()) {
                         DocumentSnapshot userDoc = task.getResult().getDocuments().get(0);
                         User user = userDoc.toObject(User.class);
-                        getListSavedRoom(user.getListSavedRoom());
+                        List<String> list = user.getListSavedRoom();
+                        if(list.size() == 0) list.add("x");
+                        getListSavedRoom(list);
                     }
                 });
     }
@@ -115,16 +109,43 @@ public class FragmentSavedRoom extends Fragment  {
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         List<Room> rooms = new ArrayList<>();
+                        List<String> foundRoomIds = new ArrayList<>();
                         for (DocumentSnapshot document : task.getResult()) {
                             String roomId = document.getId();
                             Room room = document.toObject(Room.class);
                             room.setId(roomId);
                             rooms.add(room);
+                            foundRoomIds.add(roomId);
                         }
                         fragmentSearchedRoom.updateRoomList(rooms);
+
+                        // Loại bỏ các roomId không có trong kết quả truy vấn khỏi listSavedRoom
+                        List<String> roomsToRemove = new ArrayList<>(listSavedRoom);
+                        roomsToRemove.removeAll(foundRoomIds);
+
+                        if (!roomsToRemove.isEmpty()) {
+                            FirebaseFirestore db = FirebaseFirestore.getInstance();
+                            String userEmail = FirebaseAuth.getInstance().getCurrentUser().getEmail();
+
+                            db.collection("users")
+                                    .whereEqualTo("email", userEmail)
+                                    .get()
+                                    .addOnCompleteListener(userTask -> {
+                                        if (userTask.isSuccessful() && !userTask.getResult().isEmpty()) {
+                                            DocumentSnapshot userDoc = userTask.getResult().getDocuments().get(0);
+                                            db.collection("users").document(userDoc.getId())
+                                                    .update("listSavedRoom", FieldValue.arrayRemove(roomsToRemove.toArray()))
+                                                    .addOnSuccessListener(aVoid -> Log.d("Firestore", "Removed invalid room IDs from listSavedRoom"))
+                                                    .addOnFailureListener(e -> Log.w("Firestore", "Error removing invalid room IDs", e));
+                                        } else {
+                                            Log.d("Firestore", "Error getting user document: ", userTask.getException());
+                                        }
+                                    });
+                        }
                     } else {
                         Log.d("Firestore", "Error getting documents: ", task.getException());
                     }
                 });
+
     }
 }
