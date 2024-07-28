@@ -42,6 +42,7 @@ public class FragmentPostedRoom extends Fragment  {
     private FragmentSearchedRoom fragmentSearchedRoom;
     private FirebaseFirestore db;
     private ImageView imvBack, imvCreate;
+    private TextView tvTitle;
     private String email;
 
     @Nullable
@@ -65,7 +66,8 @@ public class FragmentPostedRoom extends Fragment  {
     private void init(View view){
         fragmentSearchedRoom = new FragmentSearchedRoom();
         db = FirebaseFirestore.getInstance();
-
+        tvTitle = view.findViewById(R.id.tv_title);
+        tvTitle.setText(R.string.posted_room);
         imvBack = view.findViewById(R.id.imv_back);
         imvCreate = view.findViewById(R.id.imv_action);
 

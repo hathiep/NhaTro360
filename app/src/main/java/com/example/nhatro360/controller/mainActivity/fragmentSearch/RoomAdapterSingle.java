@@ -184,7 +184,6 @@ public class RoomAdapterSingle extends RecyclerView.Adapter<RoomAdapterSingle.Ro
                 StorageReference imageRef = storage.getReferenceFromUrl(imagePath);
                 imageRef.delete().addOnSuccessListener(aVoid -> {
                     Log.d("RoomAdapter", "Image successfully deleted!");
-
                     // Check if all images are deleted
                     if (imagePaths.indexOf(imagePath) == imagePaths.size() - 1) {
                         // All images deleted, proceed with deleting room
@@ -193,7 +192,6 @@ public class RoomAdapterSingle extends RecyclerView.Adapter<RoomAdapterSingle.Ro
                 }).addOnFailureListener(exception -> {
                     Log.w("RoomAdapter", "Error deleting image", exception);
                     deletingDialog.dismiss();
-                    Toast.makeText(context, "Lỗi xóa ảnh", Toast.LENGTH_SHORT).show();
                 });
             }
         }
@@ -221,24 +219,20 @@ public class RoomAdapterSingle extends RecyclerView.Adapter<RoomAdapterSingle.Ro
                                                 .addOnFailureListener(e -> {
                                                     Log.w("RoomAdapter", "Error deleting room ID from user", e);
                                                     deletingDialog.dismiss();
-                                                    Toast.makeText(context, "Lỗi xóa ID phòng", Toast.LENGTH_SHORT).show();
                                                 });
                                     } else {
                                         deletingDialog.dismiss();
-                                        Toast.makeText(context, "Không tìm thấy người dùng", Toast.LENGTH_SHORT).show();
                                     }
                                 })
                                 .addOnFailureListener(e -> {
                                     deletingDialog.dismiss();
                                     Log.w("RoomAdapter", "Error finding user", e);
-                                    Toast.makeText(context, "Lỗi tìm kiếm người dùng", Toast.LENGTH_SHORT).show();
                                 });
 
                     })
                     .addOnFailureListener(e -> {
                         Log.w("RoomAdapter", "Error deleting room", e);
                         deletingDialog.dismiss();
-                        Toast.makeText(context, "Lỗi xóa phòng", Toast.LENGTH_SHORT).show();
                     });
         }
 

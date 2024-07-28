@@ -117,7 +117,7 @@
     <string name="selected_area">10 m2 - 100+ m2</string>
     <string name="close">Đóng</string>
     <string name="apply">Áp dụng</string>
-    <string name="empty_message">Không tìm thấy kết quả nào phù hợp</string>
+    <string name="empty_message">Danh sách trống</string>
 
     // Account Fragment
     <string name="posted_room">Phòng đã đăng</string>
