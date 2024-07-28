@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -42,6 +43,17 @@ public class FragmentSavedRoom extends Fragment  {
 
         init(view);
 
+        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
+                fragmentManager.popBackStack("FragmentSavedRoom", FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                fragmentManager.beginTransaction()
+                        .replace(R.id.fragment_container, new AccountFragment())
+                        .commit();
+            }
+        });
+
         return view;
     }
 
@@ -54,14 +66,13 @@ public class FragmentSavedRoom extends Fragment  {
         imvUnsaved.setImageResource(0);
 
         imvBack.setOnClickListener(v -> {
-            FragmentManager fragmentManager = requireFragmentManager();
-            int backStackCount = fragmentManager.getBackStackEntryCount();
-            if (backStackCount > 0) {
-                fragmentManager.popBackStack(); // Quay về fragment trước đó
-            } else {
-                requireActivity().getSupportFragmentManager().popBackStack("FragmentSavedRoom", FragmentManager.POP_BACK_STACK_INCLUSIVE);
-            }
+            FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
+            fragmentManager.popBackStack("FragmentSavedRoom", FragmentManager.POP_BACK_STACK_INCLUSIVE);
+            fragmentManager.beginTransaction()
+                    .replace(R.id.fragment_container, new AccountFragment())
+                    .commit();
         });
+
 
         fragmentSearchedRoom = new FragmentSearchedRoom();
 
