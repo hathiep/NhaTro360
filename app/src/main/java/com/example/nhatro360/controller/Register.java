@@ -6,6 +6,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.InputType;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowInsetsController;
 import android.widget.Button;
@@ -28,21 +29,23 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Register extends AppCompatActivity {
-    TextInputEditText editTextName, editTextEmail, editTextPhone, editTextPassword, editTextPasswordAgain;
-    Button btnRegister;
-    ImageView imV_back, imV_eye1, imV_eye2;
-    ProgressBar progressBar;
-    FirebaseAuth mAuth;
-    FirebaseUser user;
-    Integer eye1, eye2;
-    FirebaseDatabase database;
+    private TextInputEditText editTextName, editTextEmail, editTextPhone, editTextPassword, editTextPasswordAgain;
+    private Button btnRegister;
+    private ImageView imV_back, imV_eye1, imV_eye2;
+    private ProgressBar progressBar;
+    private FirebaseAuth auth;
+    private FirebaseUser user;
+    private Integer eye1, eye2;
+    private FirebaseFirestore db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,7 +97,7 @@ public class Register extends AppCompatActivity {
         imV_back = findViewById(R.id.imV_back);
         imV_eye1 = findViewById(R.id.imV_eye1);
         imV_eye2 = findViewById(R.id.imV_eye2);
-        mAuth = FirebaseAuth.getInstance();
+        auth = FirebaseAuth.getInstance();
     }
     private void setUiEye(ImageView imv_eye, EditText edt, int x){
         imv_eye.setOnClickListener(new View.OnClickListener() {
@@ -163,14 +166,14 @@ public class Register extends AppCompatActivity {
     }
 
     private void createUserWithEmailAndPassword(String email, String password){
-        mAuth.createUserWithEmailAndPassword(email, password)
+        auth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
 //                        progressBar.setVisibility(View.GONE);
 
                         if (task.isSuccessful()) {
-                            user = mAuth.getCurrentUser();
+                            user = auth.getCurrentUser();
                             if (user != null) {
                                 sendEmailVerify(email);
                             }
@@ -195,8 +198,8 @@ public class Register extends AppCompatActivity {
                 if (task.isSuccessful()) {
                     // Email xác thực đã được gửi thành công
                     show_dialog("Tạo tài khoản thành công. Email xác thực đã được gửi đến " + email + "\nVui lòng truy cập email để xác nhận!", 3);
-                    // Lưu thông tin user vào Realtime Database
-//                    insertUserToRealtimeDatabase();
+                    // Lưu thông tin user vào Firestore Database
+                    insertUserToFirestoreDatabase();
                     //Back to login
                     new Handler().postDelayed(new Runnable() {
                         @Override
@@ -214,31 +217,34 @@ public class Register extends AppCompatActivity {
         });
     }
 
-    //Hàm khởi tạo thông tin User trên RealTimeDatabase
-    private void insertUserToRealtimeDatabase(){
-        database = FirebaseDatabase.getInstance();
-        DatabaseReference ref = database.getReference("User/");
-        ref.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                Exam exam = new Exam(0,0,0,0,0);
-//                Unit unit = new Unit(0);
-//                Exercise exercise = new Exercise(unit, unit);
-//                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-//                if(user == null){
-//                    return;
-//                }
-//                String uid = user.getUid();
-//                ref.child(uid).child("exam").setValue(exam);
-//                ref.child(uid).child("exercise").setValue(exercise);
-//                ref.child(uid).child("newword").child("0").setValue("0");
-//                ref.child(uid).child("name").setValue(editTextName.getText().toString().trim());
-//                ref.child(uid).child("phone").setValue(editTextPhone.getText().toString().trim());
-            }
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-            }
-        });
+    //Hàm khởi tạo thông tin User trên FirestoreDatabase
+    private void insertUserToFirestoreDatabase(){
+        db = FirebaseFirestore.getInstance();
+        user = auth.getCurrentUser();
+        List<String> listSavedRoom = new ArrayList<>(); listSavedRoom.add("x");
+        List<String> listPostedRoom = new ArrayList<>(); listPostedRoom.add("x");
+        if (user != null) {
+            Map<String, Object> userMap = new HashMap<>();
+            userMap.put("fullName", editTextName.getText().toString());
+            userMap.put("email", editTextEmail.getText().toString());
+            userMap.put("phone", editTextPhone.getText().toString());
+            userMap.put("listSavedRoom", listSavedRoom);
+            userMap.put("listPostedRoom", listPostedRoom);
+
+            // Add the user to the Firestore db
+            db.collection("users")
+                    .add(userMap)
+                    .addOnSuccessListener(documentReference -> {
+                        // Successfully added user to Firestore
+                        Log.d("Firestore", "User added successfully with ID: " + documentReference.getId());
+                    })
+                    .addOnFailureListener(e -> {
+                        // Failed to add user to Firestore
+                        Log.d("Firestore", "Error adding user", e);
+                    });
+        } else {
+            Log.d("Firestore", "No current user logged in");
+        }
     }
     private void show_dialog(String s, int time){
         ProgressDialog progressDialog = new ProgressDialog(Register.this);

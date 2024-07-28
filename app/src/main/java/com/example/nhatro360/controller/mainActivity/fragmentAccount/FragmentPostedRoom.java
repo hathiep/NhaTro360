@@ -56,10 +56,7 @@ public class FragmentPostedRoom extends Fragment  {
             @Override
             public void handleOnBackPressed() {
                 FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
-                fragmentManager.popBackStack("FragmentPostedRoom", FragmentManager.POP_BACK_STACK_INCLUSIVE);
-                fragmentManager.beginTransaction()
-                        .replace(R.id.fragment_container, new AccountFragment())
-                        .commit();
+                fragmentManager.popBackStack();
             }
         });
 
@@ -75,13 +72,8 @@ public class FragmentPostedRoom extends Fragment  {
         imvCreate.setImageResource(R.drawable.icon_create2);
 
         imvBack.setOnClickListener(v -> {
-            FragmentManager fragmentManager = requireFragmentManager();
-            int backStackCount = fragmentManager.getBackStackEntryCount();
-            if (backStackCount > 0) {
-                fragmentManager.popBackStack(); // Quay về fragment trước đó
-            } else {
-                requireActivity().getSupportFragmentManager().popBackStack("FragmentPostedRoom", FragmentManager.POP_BACK_STACK_INCLUSIVE);
-            }
+            FragmentManager fragmentManager = getParentFragmentManager();
+            fragmentManager.popBackStack();
         });
 
         imvCreate.setOnClickListener(new View.OnClickListener() {
@@ -96,13 +88,9 @@ public class FragmentPostedRoom extends Fragment  {
 
         viewModel = new ViewModelProvider(requireActivity()).get(AccountViewModel.class);
 
-        viewModel.getUser().observe(getViewLifecycleOwner(), new Observer<User>() {
-            @Override
-            public void onChanged(User user) {
-                if (user != null) {
-                    List<String> listPostedRoom = user.getListPostedRoom();
-                    getListPostedRoom(listPostedRoom);
-                }
+        viewModel.getUserEmail().observe(getViewLifecycleOwner(), email -> {
+            if (email != null && !email.isEmpty()) {
+                getCurrentUser(email);
             }
         });
 
@@ -111,27 +99,45 @@ public class FragmentPostedRoom extends Fragment  {
                 .commit();
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        viewModel.getUserEmail().observe(getViewLifecycleOwner(), email -> {
+            if (email != null && !email.isEmpty()) {
+                getCurrentUser(email);
+            }
+        });
+    }
+
+    private void getCurrentUser(String email) {
+        db.collection("users").whereEqualTo("email", email)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful() && !task.getResult().isEmpty()) {
+                        DocumentSnapshot userDoc = task.getResult().getDocuments().get(0);
+                        User user = userDoc.toObject(User.class);
+                        getListPostedRoom(user.getListPostedRoom());
+                    }
+                });
+    }
+
     private void getListPostedRoom(List<String> listPostedRoom) {
         CollectionReference roomsRef = db.collection("rooms");
 
         roomsRef.whereIn(FieldPath.documentId(), listPostedRoom)
                 .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            List<Room> rooms = new ArrayList<>();
-                            for (DocumentSnapshot document : task.getResult()) {
-                                String roomId = document.getId();
-                                Room room = document.toObject(Room.class);
-                                room.setId(roomId);
-                                rooms.add(room);
-                            }
-                            Log.e(TAG, "" + rooms);
-                            fragmentSearchedRoom.updateRoomList(rooms);
-                        } else {
-                            Log.d("Firestore", "Error getting documents: ", task.getException());
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        List<Room> rooms = new ArrayList<>();
+                        for (DocumentSnapshot document : task.getResult()) {
+                            String roomId = document.getId();
+                            Room room = document.toObject(Room.class);
+                            room.setId(roomId);
+                            rooms.add(room);
                         }
+                        fragmentSearchedRoom.updateRoomList(rooms);
+                    } else {
+                        Log.d("Firestore", "Error getting documents: ", task.getException());
                     }
                 });
     }

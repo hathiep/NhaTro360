@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowInsetsController;
-import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -18,10 +17,15 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 
+import com.example.nhatro360.controller.PostFragment;
+import com.example.nhatro360.controller.mainActivity.fragmentAccount.AccountFragment;
+import com.example.nhatro360.controller.mainActivity.fragmentAccount.FragmentPostedRoom;
+import com.example.nhatro360.controller.mainActivity.fragmentAccount.FragmentSavedRoom;
 import com.example.nhatro360.controller.mainActivity.fragmentHome.CustomViewPager;
 import com.example.nhatro360.controller.mainActivity.fragmentHome.HomeFragment;
 import com.example.nhatro360.R;
 import com.example.nhatro360.controller.mainActivity.fragmentHome.ViewPagerAdapter;
+import com.example.nhatro360.controller.mainActivity.fragmentSearch.SearchFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MainActivity extends AppCompatActivity {
@@ -63,11 +67,6 @@ public class MainActivity extends AppCompatActivity {
         init();
         setUpViewPager();
         setOnMenuSelected();
-
-        // Thêm fragment mặc định (nếu có)
-        if (savedInstanceState == null) {
-            openFragment(new HomeFragment());
-        }
     }
 
     public void init(){
@@ -80,64 +79,55 @@ public class MainActivity extends AppCompatActivity {
         viewPager.setAdapter(viewPagerAdapter);
     }
 
-    private void setOnMenuSelected(){
-        bottomNavigationView.setOnItemSelectedListener(new BottomNavigationView.OnItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                int itemId = item.getItemId();
-                if (itemId == R.id.nav_home) {
-                    viewPager.setCurrentItem(0, false); // Disable smooth scrolling
-                    return true;
-                }
-                if (itemId == R.id.nav_search) {
-                    viewPager.setCurrentItem(1, false); // Disable smooth scrolling
-                    return true;
-                }
-                if (itemId == R.id.nav_post) {
-                    viewPager.setCurrentItem(2, false); // Disable smooth scrolling
-                    return true;
-                }
-                if (itemId == R.id.nav_account) {
-                    viewPager.setCurrentItem(3, false); // Disable smooth scrolling
-                    return true;
-                }
-                return false;
+    private void setOnMenuSelected() {
+        bottomNavigationView.setOnItemSelectedListener(item -> {
+            int itemId = item.getItemId();
+            if (itemId == R.id.nav_home) {
+                viewPager.setCurrentItem(0, false);
+                return true;
+            } else if (itemId == R.id.nav_search) {
+                viewPager.setCurrentItem(1, false);
+                return true;
+            } else if (itemId == R.id.nav_post) {
+                viewPager.setCurrentItem(2, false);
+                return true;
+            } else if (itemId == R.id.nav_account) {
+                viewPager.setCurrentItem(3, false);
+                return true;
             }
+            return false;
         });
-    }
-
-    public void openFragment(Fragment fragment) {
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragment_container, fragment)
-                .addToBackStack(null)
-                .commit();
     }
 
     @Override
     public void onBackPressed() {
         FragmentManager fragmentManager = getSupportFragmentManager();
         if (fragmentManager.getBackStackEntryCount() > 0) {
-            fragmentManager.popBackStack(); // Quay về fragment trước đó nếu có
+            Fragment currentFragment = fragmentManager.findFragmentById(R.id.fragment_container);
+            if (currentFragment instanceof FragmentPostedRoom || currentFragment instanceof FragmentSavedRoom) {
+                fragmentManager.popBackStack();
+            } else {
+                showExitConfirmationDialog();
+            }
         } else {
-            AlertDialog.Builder builder = new AlertDialog.Builder(this)
-                    .setMessage(R.string.cancel_app)
-                    .setPositiveButton(R.string.yes, null)
-                    .setNegativeButton(R.string.no, null);
-
-            AlertDialog dialog = builder.create();
-
-            dialog.setOnShowListener(dialogInterface -> {
-                dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.red));
-                dialog.getButton(AlertDialog.BUTTON_POSITIVE).setAllCaps(true);
-                dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setAllCaps(true);
-
-                dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(v -> {
-                    super.onBackPressed();
-                });
-            });
-
-            dialog.show();
+            showExitConfirmationDialog();
         }
     }
+
+    private void showExitConfirmationDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this)
+                .setMessage(R.string.cancel_app)
+                .setPositiveButton(R.string.yes, (dialog, which) -> finish())
+                .setNegativeButton(R.string.no, null);
+
+        AlertDialog dialog = builder.create();
+        dialog.setOnShowListener(dialogInterface -> {
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.red));
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setAllCaps(true);
+            dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setAllCaps(true);
+        });
+        dialog.show();
+    }
+
 
 }
