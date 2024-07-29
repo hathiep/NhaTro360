@@ -13,9 +13,6 @@
         android:layout_alignParentRight="true"
         android:layout_marginRight="10dp"
         android:layout_marginBottom="110dp"
-        android:clickable="true"
-        android:focusable="true"
-        android:focusableInTouchMode="true"
         android:elevation="10dp"
         android:visibility="gone"
         app:srcCompat="@drawable/ic_filter" />
