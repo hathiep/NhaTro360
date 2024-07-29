@@ -1,4 +1,4 @@
-package com.example.nhatro360.models;
+package com.example.nhatro360.model;
 
 public class Address {
     private String province, district, ward, street, address;

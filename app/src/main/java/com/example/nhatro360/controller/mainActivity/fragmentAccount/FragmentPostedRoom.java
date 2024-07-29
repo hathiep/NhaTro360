@@ -1,15 +1,11 @@
 package com.example.nhatro360.controller.mainActivity.fragmentAccount;
 
-import static android.content.ContentValues.TAG;
-
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -18,24 +14,16 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
 
 import com.example.nhatro360.R;
-import com.example.nhatro360.controller.mainActivity.fragmentHome.creatPost.CreatePost;
+import com.example.nhatro360.controller.mainActivity.fragmentHome.createRoom.CreateRoom;
 import com.example.nhatro360.controller.mainActivity.fragmentSearch.FragmentSearchedRoom;
-import com.example.nhatro360.models.Room;
-import com.example.nhatro360.models.User;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
+import com.example.nhatro360.model.Room;
+import com.example.nhatro360.model.User;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.*;
 
-import org.json.JSONException;
-
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class FragmentPostedRoom extends Fragment  {
@@ -74,7 +62,7 @@ public class FragmentPostedRoom extends Fragment  {
         imvBack.setOnClickListener(v -> getParentFragmentManager().popBackStack());
 
         imvCreate.setOnClickListener(v -> {
-            Intent intent = new Intent(getActivity(), CreatePost.class);
+            Intent intent = new Intent(getActivity(), CreateRoom.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
             startActivity(intent);
         });

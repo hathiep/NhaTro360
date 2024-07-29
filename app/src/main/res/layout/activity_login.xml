@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@color/white"
     android:orientation="vertical"
-    tools:context=".controller.Login">
+    tools:context=".controller.LoginActivity">
 
     <TextView
         android:layout_width="match_parent"
@@ -92,7 +92,7 @@
                         android:id="@+id/imV_eye"
                         android:layout_width="40dp"
                         android:layout_height="50dp"
-                        android:src="@drawable/icon_unhide"
+                        android:src="@drawable/ic_unhide"
                         android:layout_gravity="center_vertical"
                         app:layout_constraintTop_toTopOf="@id/pw"
                         app:layout_constraintBottom_toBottomOf="@id/pw"

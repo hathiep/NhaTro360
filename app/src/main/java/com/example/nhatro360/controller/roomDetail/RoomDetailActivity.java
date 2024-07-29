@@ -25,11 +25,8 @@ import androidx.core.content.ContextCompat;
 import androidx.viewpager.widget.ViewPager;
 
 import com.example.nhatro360.R;
-import com.example.nhatro360.models.Room;
-import com.example.nhatro360.models.User;
-import com.example.nhatro360.models.location.GeocodingResponse;
-import com.example.nhatro360.models.location.GeocodingResult;
-import com.example.nhatro360.models.location.Location;
+import com.example.nhatro360.model.Room;
+import com.example.nhatro360.model.User;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -59,7 +56,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
 
-public class RoomDetail extends AppCompatActivity implements OnMapReadyCallback {
+public class RoomDetailActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     private static final String TAG = "RoomDetailActivity";
 
@@ -111,22 +108,22 @@ public class RoomDetail extends AppCompatActivity implements OnMapReadyCallback 
         Log.e(TAG, user.getEmail() + " " + user.getId() + " " + user.getListSavedRoom());
         if (user.getListSavedRoom() != null) {
             if (user.getListSavedRoom().contains(roomId)) {
-                imvSave.setImageResource(R.drawable.icon_save);
+                imvSave.setImageResource(R.drawable.ic_save);
                 save = true;
             } else {
-                imvSave.setImageResource(R.drawable.icon_unsave);
+                imvSave.setImageResource(R.drawable.ic_unsave);
                 save = false;
             }
         }
 
         imvSave.setOnClickListener(view -> {
             if (save) {
-                imvSave.setImageResource(R.drawable.icon_unsave);
+                imvSave.setImageResource(R.drawable.ic_unsave);
                 user.getListSavedRoom().remove(roomId);
                 save = false;
                 Toast.makeText(this, "Bỏ lưu thành công", Toast.LENGTH_SHORT).show();
             } else {
-                imvSave.setImageResource(R.drawable.icon_save);
+                imvSave.setImageResource(R.drawable.ic_save);
                 user.getListSavedRoom().add(roomId);
                 save = true;
                 Toast.makeText(this, "Lưu thành công", Toast.LENGTH_SHORT).show();
@@ -430,8 +427,8 @@ public class RoomDetail extends AppCompatActivity implements OnMapReadyCallback 
         overlay.setVisibility(View.VISIBLE);
 
         // Create a dialog with custom menu layout
-        Dialog dialog = new Dialog(RoomDetail.this);
-        dialog.setContentView(R.layout.custom_menu);
+        Dialog dialog = new Dialog(RoomDetailActivity.this);
+        dialog.setContentView(R.layout.dialog_menu_contact);
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
         // Set dialog width to match parent and height to wrap content

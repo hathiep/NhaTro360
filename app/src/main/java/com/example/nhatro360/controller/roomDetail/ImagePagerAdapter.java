@@ -38,7 +38,7 @@ public class ImagePagerAdapter extends PagerAdapter {
     @NonNull
     @Override
     public Object instantiateItem(@NonNull ViewGroup container, int position) {
-        View view = LayoutInflater.from(context).inflate(R.layout.item_image, container, false);
+        View view = LayoutInflater.from(context).inflate(R.layout.item_image_detail, container, false);
 
         ImageView imageView = view.findViewById(R.id.image_view);
         TextView tvImageCount = view.findViewById(R.id.tv_image_count);

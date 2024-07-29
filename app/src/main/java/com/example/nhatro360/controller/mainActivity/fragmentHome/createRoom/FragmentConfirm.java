@@ -1,4 +1,4 @@
-package com.example.nhatro360.controller.mainActivity.fragmentHome.creatPost;
+package com.example.nhatro360.controller.mainActivity.fragmentHome.createRoom;
 
 import android.content.Intent;
 import android.net.Uri;
@@ -23,7 +23,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.example.nhatro360.R;
-import com.example.nhatro360.models.Room;
+import com.example.nhatro360.model.Room;
 
 public class FragmentConfirm extends Fragment {
 
@@ -31,7 +31,7 @@ public class FragmentConfirm extends Fragment {
     private EditText edtTitle, edtHost, edtPhone, edtDetail;
     private TextView tvTitleCount, tvDetailCount, tvWarning, tvSpace;
     private Room room;
-    private CreatPostViewModel viewModel;
+    private CreatRoomViewModel viewModel;
 
     @Nullable
     @Override
@@ -44,7 +44,7 @@ public class FragmentConfirm extends Fragment {
     }
 
     private void init(View view){
-        viewModel = new ViewModelProvider(requireActivity()).get(CreatPostViewModel.class);
+        viewModel = new ViewModelProvider(requireActivity()).get(CreatRoomViewModel.class);
         room = viewModel.getRoom();
         scrollView = view.findViewById(R.id.scrollView);
         edtTitle = view.findViewById(R.id.edt_title);

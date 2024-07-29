@@ -15,9 +15,9 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.nhatro360.R;
-import com.example.nhatro360.models.Room;
-import com.example.nhatro360.controller.mainActivity.fragmentHome.creatPost.CreatePost;
-import com.example.nhatro360.controller.roomDetail.RoomDetail;
+import com.example.nhatro360.model.Room;
+import com.example.nhatro360.controller.mainActivity.fragmentHome.createRoom.CreateRoom;
+import com.example.nhatro360.controller.roomDetail.RoomDetailActivity;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
@@ -81,7 +81,7 @@ public class HomeFragment extends Fragment implements OnRoomClickListener {
         revHouse.setAdapter(adapterHouse);
         revGeneralRoom.setAdapter(adapterGeneralRoom);
         imvCreate = view.findViewById(R.id.imv_create);
-        imvCreate.setImageResource(R.drawable.icon_create);
+        imvCreate.setImageResource(R.drawable.ic_create);
         imvCreate.setVisibility(View.VISIBLE);
     }
 
@@ -160,7 +160,7 @@ public class HomeFragment extends Fragment implements OnRoomClickListener {
             @Override
             public void onClick(View v) {
                 Log.d(TAG, "Create button clicked");
-                Intent intent = new Intent(getActivity(), CreatePost.class);
+                Intent intent = new Intent(getActivity(), CreateRoom.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                 startActivity(intent);
             }
@@ -172,7 +172,7 @@ public class HomeFragment extends Fragment implements OnRoomClickListener {
     public void onRoomClick(Room room) {
         Log.d(TAG, "Room clicked: " + room.getAddress());
 
-        Intent intent = new Intent(getActivity(), RoomDetail.class);
+        Intent intent = new Intent(getActivity(), RoomDetailActivity.class);
         intent.putExtra("roomId", room.getId()); // Truyền ID của document qua intent
         intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
         startActivity(intent);

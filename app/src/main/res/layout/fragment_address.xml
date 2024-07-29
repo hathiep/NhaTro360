@@ -30,7 +30,7 @@
                 android:layout_height="25dp"
                 android:layout_marginRight="5dp"
                 android:layout_toLeftOf="@+id/tv_current_location"
-                android:src="@drawable/icon_current_location"/>
+                android:src="@drawable/ic_current_location"/>
 
             <TextView
                 android:id="@+id/tv_current_location"

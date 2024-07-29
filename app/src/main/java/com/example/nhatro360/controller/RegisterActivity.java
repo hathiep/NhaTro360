@@ -22,14 +22,13 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.nhatro360.R;
-import com.example.nhatro360.models.Validate;
+import com.example.nhatro360.model.Validate;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
@@ -37,7 +36,7 @@ import java.util.List;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Register extends AppCompatActivity {
+public class RegisterActivity extends AppCompatActivity {
     private TextInputEditText editTextName, editTextEmail, editTextPhone, editTextPassword, editTextPasswordAgain;
     private Button btnRegister;
     private ImageView imV_back, imV_eye1, imV_eye2;
@@ -108,7 +107,7 @@ public class Register extends AppCompatActivity {
                 if(x==2) eye = eye2;
                 if(eye == 0){
                     // Chuyển icon unhide thành hide
-                    imv_eye.setImageResource(R.drawable.icon_hide);
+                    imv_eye.setImageResource(R.drawable.ic_hide);
                     // Chuyển text từ hide thành unhide
                     edt.setInputType(InputType.TYPE_CLASS_TEXT);
                     // Đặt con trỏ nháy ở cuối input đã nhập
@@ -119,7 +118,7 @@ public class Register extends AppCompatActivity {
                 }
                 else {
                     // Chuyển icon hide thành unhide
-                    imv_eye.setImageResource(R.drawable.icon_unhide);
+                    imv_eye.setImageResource(R.drawable.ic_unhide);
                     // Chuyển text từ unhide thành hide
                     int inputType = InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD;
                     edt.setInputType(inputType);
@@ -136,7 +135,7 @@ public class Register extends AppCompatActivity {
         imV_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(),Login.class);
+                Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
                 startActivity(intent);
                 finish();
                 overridePendingTransition(0, 0);
@@ -153,7 +152,7 @@ public class Register extends AppCompatActivity {
                 password = editTextPassword.getText().toString().trim();
                 passwordagain = editTextPasswordAgain.getText().toString().trim();
                 // Gọi đối tượng validate
-                Validate validate = new Validate(Register.this);
+                Validate validate = new Validate(RegisterActivity.this);
                 if(!validate.validateRegister(name, email, phone, password, passwordagain)) return;
                 // Chạy vòng loading
 //                progressBar.setVisibility(View.VISIBLE);
@@ -204,7 +203,7 @@ public class Register extends AppCompatActivity {
                     new Handler().postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            Intent intent = new Intent(getApplicationContext(),Login.class);
+                            Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
                             startActivity(intent);
                             finish();
                         }
@@ -247,7 +246,7 @@ public class Register extends AppCompatActivity {
         }
     }
     private void show_dialog(String s, int time){
-        ProgressDialog progressDialog = new ProgressDialog(Register.this);
+        ProgressDialog progressDialog = new ProgressDialog(RegisterActivity.this);
         progressDialog.setTitle("Thông báo");
         progressDialog.setMessage(s);
         progressDialog.show();

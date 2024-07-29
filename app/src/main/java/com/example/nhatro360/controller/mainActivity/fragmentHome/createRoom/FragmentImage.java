@@ -1,4 +1,4 @@
-package com.example.nhatro360.controller.mainActivity.fragmentHome.creatPost;
+package com.example.nhatro360.controller.mainActivity.fragmentHome.createRoom;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -26,7 +26,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.nhatro360.R;
-import com.example.nhatro360.models.Room;
+import com.example.nhatro360.model.Room;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,7 +42,7 @@ public class FragmentImage extends Fragment {
     private TextView mEmptyImageMessage, tvSelectImageHint;
     private List<String> mImageList;
     private Room room;
-    private CreatPostViewModel viewModel;
+    private CreatRoomViewModel viewModel;
     private int mRepresentativeImagePosition = -1; // Vị trí của ảnh đại diện
 
 
@@ -121,7 +121,7 @@ public class FragmentImage extends Fragment {
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        viewModel = new ViewModelProvider(requireActivity()).get(CreatPostViewModel.class);
+        viewModel = new ViewModelProvider(requireActivity()).get(CreatRoomViewModel.class);
         room = viewModel.getRoom();
         if (room.getImages() != null) {
             mImageList = new ArrayList<>(room.getImages());

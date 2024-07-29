@@ -67,7 +67,7 @@
                 android:layout_width="20dp"
                 android:layout_height="30dp"
                 android:layout_marginHorizontal="5dp"
-                android:src="@drawable/icon_location" />
+                android:src="@drawable/ic_location" />
 
             <TextView
                 android:id="@+id/tv_address"
@@ -94,7 +94,7 @@
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:layout_marginHorizontal="5dp"
-                android:src="@drawable/icon_area" />
+                android:src="@drawable/ic_area" />
 
             <TextView
                 android:id="@+id/tv_area"
@@ -121,7 +121,7 @@
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:layout_marginHorizontal="5dp"
-                android:src="@drawable/icon_time_posted" />
+                android:src="@drawable/ic_time_posted" />
 
             <TextView
                 android:id="@+id/tv_time_posted"
@@ -141,7 +141,7 @@
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:layout_marginHorizontal="5dp"
-                android:src="@drawable/icon_delete2"
+                android:src="@drawable/ic_delete2"
                 android:visibility="gone"/>
 
         </LinearLayout>

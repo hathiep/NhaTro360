@@ -49,7 +49,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.example.nhatro360.R;
-import com.example.nhatro360.models.Room;
+import com.example.nhatro360.model.Room;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
@@ -598,7 +598,7 @@ public class SearchFragment extends Fragment  {
         overlay.setVisibility(View.VISIBLE);
 
         dialog = new Dialog(getContext());
-        dialog.setContentView(R.layout.dialog_address);
+        dialog.setContentView(R.layout.dialog_search_address);
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
         // Set dialog width to match parent and height to wrap content

@@ -278,7 +278,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="45dp"
                         android:layout_gravity="center"
-                        android:src="@drawable/icon_wifi"
+                        android:src="@drawable/ic_wifi"
                         app:tint="@android:color/darker_gray" />
 
                     <TextView
@@ -304,7 +304,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="45dp"
                         android:layout_gravity="center"
-                        android:src="@drawable/icon_wc"
+                        android:src="@drawable/ic_wc"
                         app:tint="@android:color/darker_gray" />
 
                     <TextView
@@ -330,7 +330,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="45dp"
                         android:layout_gravity="center"
-                        android:src="@drawable/icon_parking"
+                        android:src="@drawable/ic_parking"
                         app:tint="@android:color/darker_gray" />
 
                     <TextView
@@ -356,7 +356,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="45dp"
                         android:layout_gravity="center"
-                        android:src="@drawable/icon_free_time"
+                        android:src="@drawable/ic_free_time"
                         app:tint="@android:color/darker_gray" />
 
                     <TextView
@@ -390,7 +390,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="45dp"
                         android:layout_gravity="center"
-                        android:src="@drawable/icon_kitchen"
+                        android:src="@drawable/ic_kitchen"
                         app:tint="@android:color/darker_gray" />
 
                     <TextView
@@ -416,7 +416,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="45dp"
                         android:layout_gravity="center"
-                        android:src="@drawable/icon_air_conditioner"
+                        android:src="@drawable/ic_air_conditioner"
                         app:tint="@android:color/darker_gray" />
 
                     <TextView
@@ -442,7 +442,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="45dp"
                         android:layout_gravity="center"
-                        android:src="@drawable/icon_fridge"
+                        android:src="@drawable/ic_fridge"
                         app:tint="@android:color/darker_gray" />
 
                     <TextView
@@ -468,7 +468,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="45dp"
                         android:layout_gravity="center"
-                        android:src="@drawable/icon_washing_machine"
+                        android:src="@drawable/ic_washing_machine"
                         app:tint="@android:color/darker_gray" />
 
                     <TextView

@@ -1,4 +1,4 @@
-package com.example.nhatro360.controller.mainActivity.fragmentHome.creatPost;
+package com.example.nhatro360.controller.mainActivity.fragmentHome.createRoom;
 
 import android.content.Context;
 import android.net.Uri;
@@ -87,7 +87,7 @@ public class ImageUploadAdapter extends RecyclerView.Adapter<ImageUploadAdapter.
     @NonNull
     @Override
     public ImageViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(mContext).inflate(R.layout.item_image2, parent, false);
+        View v = LayoutInflater.from(mContext).inflate(R.layout.item_image_create, parent, false);
         return new ImageViewHolder(v, mListener);
     }
 

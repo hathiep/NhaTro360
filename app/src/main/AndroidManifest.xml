@@ -19,7 +19,7 @@
         android:theme="@style/Theme.NhaTro360"
         tools:targetApi="31">
         <activity
-            android:name=".controller.mainActivity.fragmentHome.creatPost.CreatePost"
+            android:name=".controller.mainActivity.fragmentHome.createRoom.CreateRoom"
             android:exported="false" />
         <meta-data
             android:name="com.google.android.geo.API_KEY"
@@ -29,16 +29,16 @@
             android:value="@integer/google_play_services_version" />
 
         <activity
-            android:name=".controller.roomDetail.RoomDetail"
+            android:name=".controller.roomDetail.RoomDetailActivity"
             android:exported="false" />
         <activity
-            android:name=".controller.Register"
+            android:name=".controller.RegisterActivity"
             android:exported="false" />
         <activity
             android:name=".controller.mainActivity.MainActivity"
             android:exported="false" />
         <activity
-            android:name=".controller.Login"
+            android:name=".controller.LoginActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

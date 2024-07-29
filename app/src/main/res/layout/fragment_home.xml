@@ -19,7 +19,7 @@
         android:focusable="true"
         android:focusableInTouchMode="true"
         android:elevation="10dp"
-        app:srcCompat="@drawable/icon_create" />
+        app:srcCompat="@drawable/ic_create" />
 
     <ScrollView
         android:layout_width="match_parent"
@@ -49,7 +49,7 @@
                         android:layout_height="30dp"
                         android:layout_gravity="center"
                         android:background="@color/white"
-                        app:srcCompat="@drawable/icon_new_room" />
+                        app:srcCompat="@drawable/ic_new_room" />
 
                     <TextView
                         android:id="@+id/tv_title_new_room"
@@ -106,7 +106,7 @@
                         android:layout_height="26dp"
                         android:layout_gravity="center"
                         android:background="@color/white"
-                        app:srcCompat="@drawable/icon_paring_room" />
+                        app:srcCompat="@drawable/ic_paring_room" />
 
                     <TextView
                         android:id="@+id/tv_title_paring_room"
@@ -163,7 +163,7 @@
                         android:layout_height="26dp"
                         android:layout_gravity="center"
                         android:background="@color/white"
-                        app:srcCompat="@drawable/icon_apartment" />
+                        app:srcCompat="@drawable/ic_apartment" />
 
                     <TextView
                         android:id="@+id/tv_title_apartment"
@@ -220,7 +220,7 @@
                         android:layout_height="26dp"
                         android:layout_gravity="center"
                         android:background="@color/white"
-                        app:srcCompat="@drawable/icon_house" />
+                        app:srcCompat="@drawable/ic_house" />
 
                     <TextView
                         android:id="@+id/tv_title_house"
@@ -277,7 +277,7 @@
                         android:layout_height="30dp"
                         android:layout_gravity="center"
                         android:background="@color/white"
-                        app:srcCompat="@drawable/icon_general_room" />
+                        app:srcCompat="@drawable/ic_general_room" />
 
                     <TextView
                         android:id="@+id/tv_title_general_room"

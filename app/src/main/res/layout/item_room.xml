@@ -45,7 +45,7 @@
             android:layout_width="25dp"
             android:layout_height="30dp"
             android:layout_marginRight="5dp"
-            android:src="@drawable/icon_location" />
+            android:src="@drawable/ic_location" />
 
         <TextView
             android:id="@+id/tv_address"
@@ -70,7 +70,7 @@
             android:layout_width="25dp"
             android:layout_height="25dp"
             android:layout_marginRight="5dp"
-            android:src="@drawable/icon_area" />
+            android:src="@drawable/ic_area" />
 
         <TextView
             android:id="@+id/tv_area"

@@ -1,4 +1,4 @@
-package com.example.nhatro360.controller.mainActivity.fragmentHome.creatPost;
+package com.example.nhatro360.controller.mainActivity.fragmentHome.createRoom;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
@@ -33,10 +33,9 @@ import android.widget.Toast;
 
 import com.example.nhatro360.controller.mainActivity.MainActivity;
 import com.example.nhatro360.R;
-import com.example.nhatro360.controller.roomDetail.RoomDetail;
-import com.example.nhatro360.models.Room;
-import com.example.nhatro360.models.Address;
-import com.example.nhatro360.models.User;
+import com.example.nhatro360.model.Room;
+import com.example.nhatro360.model.Address;
+import com.example.nhatro360.model.User;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -48,21 +47,20 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 
-public class CreatePost extends AppCompatActivity {
+public class CreateRoom extends AppCompatActivity {
 
     private TextView tvCancel, tvNext;
     private List<TextView> listTv;
     private List<ImageView> listImv, listLine;
     private Address address;
     private Room room;
-    private CreatPostViewModel viewModel;
+    private CreatRoomViewModel viewModel;
     private ProgressDialog progressDialog;
     private FirebaseFirestore db;
     private FirebaseUser currentUser;
@@ -72,7 +70,7 @@ public class CreatePost extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_create_post);
+        setContentView(R.layout.activity_create_room);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             getWindow().setDecorFitsSystemWindows(false);
@@ -121,7 +119,7 @@ public class CreatePost extends AppCompatActivity {
         db = FirebaseFirestore.getInstance();
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
         user = new User();
-        viewModel = new ViewModelProvider(this).get(CreatPostViewModel.class);
+        viewModel = new ViewModelProvider(this).get(CreatRoomViewModel.class);
         room = viewModel.getRoom();
         listImv = new ArrayList<>();
         listTv = new ArrayList<>();
@@ -298,7 +296,7 @@ public class CreatePost extends AppCompatActivity {
                 .addOnFailureListener(e -> {
                     // Failed to add room
                     progressDialog.dismiss();
-                    Toast.makeText(CreatePost.this, "Error posting room: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(CreateRoom.this, "Error posting room: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 });
     }
 
@@ -332,13 +330,13 @@ public class CreatePost extends AppCompatActivity {
                                 // Failed to upload image
                                 runOnUiThread(() -> {
                                     progressDialog.dismiss();
-                                    Toast.makeText(CreatePost.this, "Error uploading image: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(CreateRoom.this, "Error uploading image: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                                 });
                             });
                 } catch (Exception e) {
                     runOnUiThread(() -> {
                         progressDialog.dismiss();
-                        Toast.makeText(CreatePost.this, "Error uploading image: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(CreateRoom.this, "Error uploading image: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                     });
                 }
             });
@@ -363,7 +361,7 @@ public class CreatePost extends AppCompatActivity {
                 .addOnFailureListener(e -> {
                     // Failed to update room with image URLs
                     progressDialog.dismiss();
-                    Toast.makeText(CreatePost.this, "Error updating room with images: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(CreateRoom.this, "Error updating room with images: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 });
     }
 
@@ -392,16 +390,16 @@ public class CreatePost extends AppCompatActivity {
             listImv.get(cnt).setImageResource(0);
             if (i == 1) {
                 time_delay = 50;
-                imv.setImageResource(R.drawable.icon_completed_step);
-            } else { imv.setImageResource(R.drawable.icon_current_step); time_delay = 50; }
+                imv.setImageResource(R.drawable.ic_completed_step);
+            } else { imv.setImageResource(R.drawable.ic_current_step); time_delay = 50; }
         } else {
             time_delay = 50;
             scaleA = 1f;
             scaleB = 0f;
             if (i == 3) {
-                imv.setImageResource(R.drawable.icon_current_step);
+                imv.setImageResource(R.drawable.ic_current_step);
             } else {
-                imv.setImageResource(R.drawable.icon_completed_step);
+                imv.setImageResource(R.drawable.ic_completed_step);
             }
         }
 
@@ -424,7 +422,7 @@ public class CreatePost extends AppCompatActivity {
 
                     @Override
                     public void onAnimationEnd(Animator animation) {
-                        imv.setImageResource(R.drawable.icon_current_step);
+                        imv.setImageResource(R.drawable.ic_current_step);
                         ObjectAnimator scaleX = ObjectAnimator.ofFloat(imv, "scaleX", 0f, 1f);
                         ObjectAnimator scaleY = ObjectAnimator.ofFloat(imv, "scaleY", 0f, 1f);
                         scaleX.setDuration(50);
@@ -448,12 +446,12 @@ public class CreatePost extends AppCompatActivity {
 
     private void setAnimationLine(int i, int direction) {
         if(direction == 2) {
-            listLine.get(i).setBackgroundResource(R.drawable.icon_line);
-            listLine.get(i+3).setBackgroundResource(R.drawable.icon_line);
+            listLine.get(i).setBackgroundResource(R.drawable.ic_line);
+            listLine.get(i+3).setBackgroundResource(R.drawable.ic_line);
             return;
         }
-        listLine.get(i).setBackgroundResource(R.drawable.icon_line2);
-        listLine.get(i+3).setBackgroundResource(R.drawable.icon_line2);
+        listLine.get(i).setBackgroundResource(R.drawable.ic_line2);
+        listLine.get(i+3).setBackgroundResource(R.drawable.ic_line2);
     }
 
     private void updateButtons() {
@@ -600,7 +598,7 @@ public class CreatePost extends AppCompatActivity {
     }
 
     private void showError(String message) {
-        Toast.makeText(CreatePost.this, message, Toast.LENGTH_SHORT).show();
+        Toast.makeText(CreateRoom.this, message, Toast.LENGTH_SHORT).show();
     }
 
     private interface FirestoreCallback {

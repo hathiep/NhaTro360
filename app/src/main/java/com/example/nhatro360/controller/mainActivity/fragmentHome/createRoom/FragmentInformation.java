@@ -1,4 +1,4 @@
-package com.example.nhatro360.controller.mainActivity.fragmentHome.creatPost;
+package com.example.nhatro360.controller.mainActivity.fragmentHome.createRoom;
 
 import android.content.res.ColorStateList;
 import android.graphics.PorterDuff;
@@ -17,7 +17,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.nhatro360.R;
-import com.example.nhatro360.models.Room;
+import com.example.nhatro360.model.Room;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +30,7 @@ public class FragmentInformation extends Fragment {
     private List<ImageView> listImvUtilites;
     private List<TextView> listTvUtilites;
     private List<Boolean> utilities;
-    private CreatPostViewModel viewModel;
+    private CreatRoomViewModel viewModel;
     private Room room;
 
     @Nullable
@@ -46,7 +46,7 @@ public class FragmentInformation extends Fragment {
     }
 
     private void init(View view){
-        viewModel = new ViewModelProvider(requireActivity()).get(CreatPostViewModel.class);
+        viewModel = new ViewModelProvider(requireActivity()).get(CreatRoomViewModel.class);
         room = viewModel.getRoom();
         utilities = room.getUtilities();
         tvRentRoom = view.findViewById(R.id.tv_rent_room);

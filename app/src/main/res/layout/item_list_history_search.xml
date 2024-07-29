@@ -10,7 +10,7 @@
         android:layout_width="24dp"
         android:layout_height="24dp"
         android:layout_gravity="center_vertical"
-        android:src="@drawable/icon_search"
+        android:src="@drawable/ic_search"
         android:scaleType="centerInside"/>
 
     <TextView

@@ -1,4 +1,4 @@
-package com.example.nhatro360.controller.mainActivity.fragmentHome.creatPost;
+package com.example.nhatro360.controller.mainActivity.fragmentHome.createRoom;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -441,7 +441,7 @@ public class FragmentAddress extends Fragment {
         }
         // Create a new dialog
         Dialog dialog = new Dialog(getActivity());
-        dialog.setContentView(R.layout.popup_list);
+        dialog.setContentView(R.layout.dialog_create_address);
 
         ListView listView = dialog.findViewById(R.id.list_view_popup);
         ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, items);

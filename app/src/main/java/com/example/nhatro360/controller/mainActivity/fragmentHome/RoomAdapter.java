@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.nhatro360.R;
-import com.example.nhatro360.models.Room;
+import com.example.nhatro360.model.Room;
 import com.google.firebase.Timestamp;
 
 import java.text.DecimalFormat;

@@ -19,7 +19,7 @@
             android:layout_height="20dp"
             android:layout_gravity="center"
             android:background="@color/white"
-            app:srcCompat="@drawable/icon_back" />
+            app:srcCompat="@drawable/ic_back" />
 
         <TextView
             android:id="@+id/tv_price"
@@ -39,7 +39,7 @@
             android:layout_height="30dp"
             android:layout_gravity="center"
             app:tint="@color/blue2"
-            app:srcCompat="@drawable/icon_unsave" />
+            app:srcCompat="@drawable/ic_unsave" />
 
     </LinearLayout>
 
@@ -86,7 +86,7 @@
                         android:layout_width="25dp"
                         android:layout_height="30dp"
                         android:layout_marginHorizontal="5dp"
-                        android:src="@drawable/icon_location" />
+                        android:src="@drawable/ic_location" />
 
                     <TextView
                         android:id="@+id/tv_address"
@@ -112,7 +112,7 @@
                         android:layout_width="25dp"
                         android:layout_height="25dp"
                         android:layout_marginHorizontal="5dp"
-                        android:src="@drawable/icon_phone" />
+                        android:src="@drawable/ic_phone" />
 
                     <TextView
                         android:id="@+id/tv_contact"
@@ -138,7 +138,7 @@
                         android:layout_width="25dp"
                         android:layout_height="25dp"
                         android:layout_marginHorizontal="5dp"
-                        android:src="@drawable/icon_area" />
+                        android:src="@drawable/ic_area" />
 
                     <TextView
                         android:id="@+id/tv_area"
@@ -164,7 +164,7 @@
                         android:layout_width="25dp"
                         android:layout_height="25dp"
                         android:layout_marginHorizontal="5dp"
-                        android:src="@drawable/icon_time_posted" />
+                        android:src="@drawable/ic_time_posted" />
 
                     <TextView
                         android:id="@+id/tv_time_posted"
@@ -219,7 +219,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="45dp"
                                 android:layout_gravity="center"
-                                android:src="@drawable/icon_wifi"
+                                android:src="@drawable/ic_wifi"
                                 app:tint="@android:color/darker_gray" />
 
                             <TextView
@@ -245,7 +245,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="45dp"
                                 android:layout_gravity="center"
-                                android:src="@drawable/icon_wc"
+                                android:src="@drawable/ic_wc"
                                 app:tint="@android:color/darker_gray" />
 
                             <TextView
@@ -271,7 +271,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="45dp"
                                 android:layout_gravity="center"
-                                android:src="@drawable/icon_parking"
+                                android:src="@drawable/ic_parking"
                                 app:tint="@android:color/darker_gray" />
 
                             <TextView
@@ -297,7 +297,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="45dp"
                                 android:layout_gravity="center"
-                                android:src="@drawable/icon_free_time"
+                                android:src="@drawable/ic_free_time"
                                 app:tint="@android:color/darker_gray" />
 
                             <TextView
@@ -331,7 +331,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="45dp"
                                 android:layout_gravity="center"
-                                android:src="@drawable/icon_kitchen"
+                                android:src="@drawable/ic_kitchen"
                                 app:tint="@android:color/darker_gray" />
 
                             <TextView
@@ -357,7 +357,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="45dp"
                                 android:layout_gravity="center"
-                                android:src="@drawable/icon_air_conditioner"
+                                android:src="@drawable/ic_air_conditioner"
                                 app:tint="@android:color/darker_gray" />
 
                             <TextView
@@ -383,7 +383,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="45dp"
                                 android:layout_gravity="center"
-                                android:src="@drawable/icon_fridge"
+                                android:src="@drawable/ic_fridge"
                                 app:tint="@android:color/darker_gray" />
 
                             <TextView
@@ -409,7 +409,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="45dp"
                                 android:layout_gravity="center"
-                                android:src="@drawable/icon_washing_machine"
+                                android:src="@drawable/ic_washing_machine"
                                 app:tint="@android:color/darker_gray" />
 
                             <TextView
@@ -495,7 +495,7 @@
         android:layout_alignParentRight="true"
         android:layout_marginRight="10dp"
         android:layout_marginBottom="5dp"
-        app:srcCompat="@drawable/icon_menu" />
+        app:srcCompat="@drawable/ic_menu" />
 
     <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/fragment_container"

@@ -21,8 +21,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.nhatro360.R;
 import com.example.nhatro360.controller.mainActivity.fragmentHome.OnRoomClickListener;
-import com.example.nhatro360.controller.roomDetail.RoomDetail;
-import com.example.nhatro360.models.Room;
+import com.example.nhatro360.controller.roomDetail.RoomDetailActivity;
+import com.example.nhatro360.model.Room;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -83,7 +83,7 @@ public class FragmentSearchedRoom extends Fragment implements OnRoomClickListene
         Log.d(TAG, "Room clicked: " + room.getAddress());
         Log.d(TAG, "Room ID: " + room.getId());
 
-        Intent intent = new Intent(getActivity(), RoomDetail.class);
+        Intent intent = new Intent(getActivity(), RoomDetailActivity.class);
         intent.putExtra("roomId", room.getId());
         intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
         startActivity(intent);

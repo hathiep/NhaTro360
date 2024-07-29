@@ -1,7 +1,6 @@
 package com.example.nhatro360.controller.mainActivity.fragmentAccount;
 
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -15,11 +14,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
 
 import com.example.nhatro360.R;
-import com.example.nhatro360.controller.Login;
-import com.example.nhatro360.models.User;
+import com.example.nhatro360.controller.LoginActivity;
+import com.example.nhatro360.model.User;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.*;
@@ -98,7 +96,7 @@ public class AccountFragment extends Fragment {
             dialog.dismiss();
             show_dialog("Đăng xuất thành công!", 1);
             new Handler().postDelayed(() -> {
-                Intent intent = new Intent(getContext(), Login.class);
+                Intent intent = new Intent(getContext(), LoginActivity.class);
                 startActivity(intent);
             }, 2000);
         });

@@ -84,21 +84,21 @@
                     <ImageView
                         android:layout_width="30dp"
                         android:layout_height="30dp"
-                        android:src="@drawable/icon_incomplete_step"
+                        android:src="@drawable/ic_incomplete_step"
                         android:layout_centerHorizontal="true" />
 
                     <ImageView
                         android:id="@+id/imv_address"
                         android:layout_width="30dp"
                         android:layout_height="30dp"
-                        android:src="@drawable/icon_current_step"
+                        android:src="@drawable/ic_current_step"
                         android:layout_centerHorizontal="true" />
 
                     <ImageView
                         android:id="@+id/line11"
                         android:layout_width="25dp"
                         android:layout_height="match_parent"
-                        android:background="@drawable/icon_line"
+                        android:background="@drawable/ic_line"
                         android:layout_alignParentRight="true"/>
 
                 </RelativeLayout>
@@ -113,13 +113,13 @@
                         android:id="@+id/line12"
                         android:layout_width="25dp"
                         android:layout_height="match_parent"
-                        android:background="@drawable/icon_line"
+                        android:background="@drawable/ic_line"
                         android:layout_alignParentLeft="true"/>
 
                     <ImageView
                         android:layout_width="30dp"
                         android:layout_height="30dp"
-                        android:src="@drawable/icon_incomplete_step"
+                        android:src="@drawable/ic_incomplete_step"
                         android:layout_centerHorizontal="true" />
 
                     <ImageView
@@ -133,7 +133,7 @@
                         android:id="@+id/line21"
                         android:layout_width="25dp"
                         android:layout_height="match_parent"
-                        android:background="@drawable/icon_line"
+                        android:background="@drawable/ic_line"
                         android:layout_alignParentRight="true"/>
 
                 </RelativeLayout>
@@ -148,13 +148,13 @@
                         android:id="@+id/line22"
                         android:layout_width="25dp"
                         android:layout_height="match_parent"
-                        android:background="@drawable/icon_line"
+                        android:background="@drawable/ic_line"
                         android:layout_alignParentLeft="true"/>
 
                     <ImageView
                         android:layout_width="30dp"
                         android:layout_height="30dp"
-                        android:src="@drawable/icon_incomplete_step"
+                        android:src="@drawable/ic_incomplete_step"
                         android:layout_centerHorizontal="true" />
 
                     <ImageView
@@ -168,7 +168,7 @@
                         android:id="@+id/line31"
                         android:layout_width="25dp"
                         android:layout_height="match_parent"
-                        android:background="@drawable/icon_line"
+                        android:background="@drawable/ic_line"
                         android:layout_alignParentRight="true"/>
 
                 </RelativeLayout>
@@ -183,14 +183,14 @@
                         android:id="@+id/line32"
                         android:layout_width="25dp"
                         android:layout_height="match_parent"
-                        android:background="@drawable/icon_line"
+                        android:background="@drawable/ic_line"
                         android:layout_alignParentLeft="true"/>
 
                     <ImageView
                         android:layout_width="30dp"
                         android:layout_height="30dp"
                         android:layout_centerHorizontal="true"
-                        android:src="@drawable/icon_incomplete_step"/>
+                        android:src="@drawable/ic_incomplete_step"/>
 
                     <ImageView
                         android:id="@+id/imv_confirm"

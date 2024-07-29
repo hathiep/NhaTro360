@@ -20,7 +20,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.example.nhatro360.R;
 import com.example.nhatro360.controller.mainActivity.MainActivity;
-import com.example.nhatro360.models.Validate;
+import com.example.nhatro360.model.Validate;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
@@ -28,7 +28,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-public class Login extends AppCompatActivity {
+public class LoginActivity extends AppCompatActivity {
     TextInputEditText edt_email, edt_password;
     Button btn_login;
     TextView tv_forgot_password, tv_register;
@@ -105,7 +105,7 @@ public class Login extends AppCompatActivity {
             public void onClick(View view) {
                 if(eye == 0){
                     // Chuyển icon unhide thành hide
-                    imV_eye.setImageResource(R.drawable.icon_hide);
+                    imV_eye.setImageResource(R.drawable.ic_hide);
                     // Chuyển txt từ hide thành unhide
                     edt_password.setInputType(InputType.TYPE_CLASS_TEXT);
                     // Đặt con trỏ nháy ở cuối input đã nhập
@@ -114,7 +114,7 @@ public class Login extends AppCompatActivity {
                 }
                 else {
                     // Chuyển icon hide thành unhide
-                    imV_eye.setImageResource(R.drawable.icon_unhide);
+                    imV_eye.setImageResource(R.drawable.ic_unhide);
                     // Chuyển text từ unhide thành hide
                     int inputType = InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD;
                     edt_password.setInputType(inputType);
@@ -139,7 +139,7 @@ public class Login extends AppCompatActivity {
         tv_register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), Register.class);
+                Intent intent = new Intent(getApplicationContext(), RegisterActivity.class);
                 startActivity(intent);
                 overridePendingTransition(0, 0);
             }
@@ -153,7 +153,7 @@ public class Login extends AppCompatActivity {
                 email = edt_email.getText().toString();
                 password = edt_password.getText().toString();
                 // Gọi đối tượng validate
-                Validate validate = new Validate(Login.this);
+                Validate validate = new Validate(LoginActivity.this);
                 if(!validate.validateLogin(email, password)) return;
                 // Check đăng nhập
 //                progressBar.setVisibility(View.VISIBLE);
@@ -198,7 +198,7 @@ public class Login extends AppCompatActivity {
     }
     // Hàm hiển thị thông báo
     private void show_dialog(String s, int time){
-        ProgressDialog progressDialog = new ProgressDialog(Login.this);
+        ProgressDialog progressDialog = new ProgressDialog(LoginActivity.this);
         progressDialog.setTitle("Thông báo");
         progressDialog.setMessage(s);
         progressDialog.show();
