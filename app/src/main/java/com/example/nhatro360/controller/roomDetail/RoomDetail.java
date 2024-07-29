@@ -44,6 +44,7 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.Timestamp;
+import com.google.gson.annotations.SerializedName;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -55,6 +56,8 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.http.GET;
+import retrofit2.http.Query;
 
 public class RoomDetail extends AppCompatActivity implements OnMapReadyCallback {
 
@@ -66,7 +69,6 @@ public class RoomDetail extends AppCompatActivity implements OnMapReadyCallback 
     private ViewPager viewPager;
     private FirebaseFirestore db;
     private GoogleMap mMap;
-    private SupportMapFragment mapFragment;
     private LatLng roomLatLng;
     private ImageView imvBack, imvSave;
     private boolean save;
@@ -88,9 +90,6 @@ public class RoomDetail extends AppCompatActivity implements OnMapReadyCallback 
         } else {
             Log.e("RoomDetailActivity", "Room ID is null");
         }
-
-        // Add click event to open full screen map
-        mapFragment.getView().setOnClickListener(v -> openFullScreenMap());
 
         // Setup Floating Action Button
         ImageView imvMenu = findViewById(R.id.imV_menu);
@@ -174,8 +173,20 @@ public class RoomDetail extends AppCompatActivity implements OnMapReadyCallback 
         listTvUtilites.add(findViewById(R.id.tv_fridge));
         listTvUtilites.add(findViewById(R.id.tv_washing_machine));
         tvInfor = findViewById(R.id.tv_infor);
-        mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this::onMapReady);
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+        if (mapFragment != null) {
+            mapFragment.getMapAsync(this);
+            View mapView = mapFragment.getView();
+            if (mapView != null) {
+                mapView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        openFullScreenMap();
+                        Log.e(TAG, "Map was clicked");
+                    }
+                });
+            }
+        }
     }
 
     private void getCurrentUser(FirestoreCallback callback) {
@@ -226,7 +237,7 @@ public class RoomDetail extends AppCompatActivity implements OnMapReadyCallback 
                             updateUI();
 
                             // Lấy tọa độ từ địa chỉ
-                            getLatLngFromAddress(room.getAddress());
+                            getLatLngFromAddress(room.getAddress(), false);
                         } else {
                             Log.d("RoomDetailActivity", "Room object is null");
                         }
@@ -301,28 +312,32 @@ public class RoomDetail extends AppCompatActivity implements OnMapReadyCallback 
         viewPager.setLayoutParams(params);
     }
 
-    private void getLatLngFromAddress(String address) {
+    private void getLatLngFromAddress(String address, boolean retried) {
         Log.d(TAG, "Fetching lat/lng for address: " + address);
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://maps.googleapis.com/")
+                .baseUrl("https://nominatim.openstreetmap.org/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
-        GeocodingAPI geocodingAPI = retrofit.create(GeocodingAPI.class);
-        String apiKey = getString(R.string.google_maps_key);
+        NominatimAPI nominatimAPI = retrofit.create(NominatimAPI.class);
 
-        Call<GeocodingResponse> call = geocodingAPI.getGeocoding(address, apiKey);
-        call.enqueue(new Callback<GeocodingResponse>() {
+        Call<List<NominatimResponse>> call = nominatimAPI.getGeocoding(address, "json", 1);
+        call.enqueue(new Callback<List<NominatimResponse>>() {
             @Override
-            public void onResponse(Call<GeocodingResponse> call, Response<GeocodingResponse> response) {
+            public void onResponse(Call<List<NominatimResponse>> call, Response<List<NominatimResponse>> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    List<GeocodingResult> results = response.body().results;
+                    List<NominatimResponse> results = response.body();
                     if (!results.isEmpty()) {
-                        Location location = results.get(0).geometry.location;
-                        updateMap(location.lat, location.lng);
+                        double lat = Double.parseDouble(results.get(0).getLat());
+                        double lon = Double.parseDouble(results.get(0).getLon());
+                        updateMap(lat, lon);
                     } else {
                         Log.e(TAG, "No results found for the address.");
+                        if (!retried) {
+                            String newAddress = removeStreetFromAddress(address);
+                            getLatLngFromAddress(newAddress, true);
+                        }
                     }
                 } else {
                     Log.e(TAG, "Geocoding API response unsuccessful");
@@ -330,10 +345,19 @@ public class RoomDetail extends AppCompatActivity implements OnMapReadyCallback 
             }
 
             @Override
-            public void onFailure(Call<GeocodingResponse> call, Throwable t) {
+            public void onFailure(Call<List<NominatimResponse>> call, Throwable t) {
                 Log.e(TAG, "Geocoding API request failed", t);
             }
         });
+    }
+
+    private String removeStreetFromAddress(String address) {
+        // This is a simple implementation. You might need a more complex logic depending on your address format.
+        int index = address.indexOf(",");
+        if (index != -1) {
+            return address.substring(index + 1).trim();
+        }
+        return address;
     }
 
     private void updateMap(double lat, double lng) {
@@ -341,19 +365,8 @@ public class RoomDetail extends AppCompatActivity implements OnMapReadyCallback 
 
         if (mMap != null) {
             roomLatLng = new LatLng(lat, lng);
-            mMap.addMarker(new MarkerOptions().position(roomLatLng).title("Room Location"));
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(roomLatLng, 15));
-        }
-    }
-
-    private void openFullScreenMap() {
-        if (roomLatLng != null) {
-            FullScreenMapFragment fragment = FullScreenMapFragment.newInstance(roomLatLng);
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(android.R.id.content, fragment)
-                    .addToBackStack(null)
-                    .commit();
+            mMap.addMarker(new MarkerOptions().position(roomLatLng).title("Vị trí phòng"));
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(roomLatLng, 14.5F));
         }
     }
 
@@ -364,11 +377,53 @@ public class RoomDetail extends AppCompatActivity implements OnMapReadyCallback 
         // Disable map gestures
         mMap.getUiSettings().setAllGesturesEnabled(false);
 
+        mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+            @Override
+            public void onMapClick(LatLng latLng) {
+                openFullScreenMap();
+                Log.e(TAG, "Map area was clicked");
+            }
+        });
+    }
+
+    private void openFullScreenMap() {
+        FullScreenMapFragment fullScreenMapFragment = new FullScreenMapFragment();
+
+        // Truyền tọa độ bản đồ qua Bundle
+        Bundle bundle = new Bundle();
         if (roomLatLng != null) {
-            mMap.addMarker(new MarkerOptions().position(roomLatLng).title("Room Location"));
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(roomLatLng, 15));
+            bundle.putDouble("latitude", roomLatLng.latitude);
+            bundle.putDouble("longitude", roomLatLng.longitude);
+        }
+        fullScreenMapFragment.setArguments(bundle);
+
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragment_container, fullScreenMapFragment)
+                .addToBackStack(null)
+                .commit();
+    }
+
+    public interface NominatimAPI {
+        @GET("search")
+        Call<List<NominatimResponse>> getGeocoding(@Query("q") String address, @Query("format") String format, @Query("limit") int limit);
+    }
+
+    public static class NominatimResponse {
+        @SerializedName("lat")
+        private String lat;
+
+        @SerializedName("lon")
+        private String lon;
+
+        public String getLat() {
+            return lat;
+        }
+
+        public String getLon() {
+            return lon;
         }
     }
+
 
     private void showMenuDialog() {
         View overlay = findViewById(R.id.overlay);
