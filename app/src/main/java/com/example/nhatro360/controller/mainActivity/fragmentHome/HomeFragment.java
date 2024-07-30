@@ -16,7 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.nhatro360.R;
 import com.example.nhatro360.model.Room;
-import com.example.nhatro360.controller.mainActivity.fragmentHome.createRoom.CreateRoom;
+import com.example.nhatro360.controller.mainActivity.fragmentHome.createRoom.CreateRoomActivity;
 import com.example.nhatro360.controller.roomDetail.RoomDetailActivity;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -160,7 +160,7 @@ public class HomeFragment extends Fragment implements OnRoomClickListener {
             @Override
             public void onClick(View v) {
                 Log.d(TAG, "Create button clicked");
-                Intent intent = new Intent(getActivity(), CreateRoom.class);
+                Intent intent = new Intent(getActivity(), CreateRoomActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                 startActivity(intent);
             }

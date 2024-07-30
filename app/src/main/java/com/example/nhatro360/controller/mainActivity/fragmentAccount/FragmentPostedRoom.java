@@ -16,7 +16,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import com.example.nhatro360.R;
-import com.example.nhatro360.controller.mainActivity.fragmentHome.createRoom.CreateRoom;
+import com.example.nhatro360.controller.mainActivity.fragmentHome.createRoom.CreateRoomActivity;
 import com.example.nhatro360.controller.mainActivity.fragmentSearch.FragmentSearchedRoom;
 import com.example.nhatro360.model.Room;
 import com.example.nhatro360.model.User;
@@ -62,7 +62,7 @@ public class FragmentPostedRoom extends Fragment  {
         imvBack.setOnClickListener(v -> getParentFragmentManager().popBackStack());
 
         imvCreate.setOnClickListener(v -> {
-            Intent intent = new Intent(getActivity(), CreateRoom.class);
+            Intent intent = new Intent(getActivity(), CreateRoomActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
             startActivity(intent);
         });

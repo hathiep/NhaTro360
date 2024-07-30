@@ -53,7 +53,7 @@ import java.util.List;
 import java.util.Map;
 
 
-public class CreateRoom extends AppCompatActivity {
+public class CreateRoomActivity extends AppCompatActivity {
 
     private TextView tvCancel, tvNext;
     private List<TextView> listTv;
@@ -296,7 +296,7 @@ public class CreateRoom extends AppCompatActivity {
                 .addOnFailureListener(e -> {
                     // Failed to add room
                     progressDialog.dismiss();
-                    Toast.makeText(CreateRoom.this, "Error posting room: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(CreateRoomActivity.this, "Error posting room: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 });
     }
 
@@ -330,13 +330,13 @@ public class CreateRoom extends AppCompatActivity {
                                 // Failed to upload image
                                 runOnUiThread(() -> {
                                     progressDialog.dismiss();
-                                    Toast.makeText(CreateRoom.this, "Error uploading image: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(CreateRoomActivity.this, "Error uploading image: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                                 });
                             });
                 } catch (Exception e) {
                     runOnUiThread(() -> {
                         progressDialog.dismiss();
-                        Toast.makeText(CreateRoom.this, "Error uploading image: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(CreateRoomActivity.this, "Error uploading image: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                     });
                 }
             });
@@ -355,13 +355,14 @@ public class CreateRoom extends AppCompatActivity {
                         progressDialog.dismiss();
                         Intent intent = new Intent(this, MainActivity.class);
                         startActivity(intent);
+                        overridePendingTransition(0, 0);
                         finish();
                     }, 2000); // Chờ 2 giây trước khi chuyển sang MainActivity
                 })
                 .addOnFailureListener(e -> {
                     // Failed to update room with image URLs
                     progressDialog.dismiss();
-                    Toast.makeText(CreateRoom.this, "Error updating room with images: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(CreateRoomActivity.this, "Error updating room with images: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 });
     }
 
@@ -590,7 +591,9 @@ public class CreateRoom extends AppCompatActivity {
             dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setAllCaps(true);
 
             dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(v -> {
+                dialog.dismiss();
                 finish();
+                overridePendingTransition(0, 0);
             });
         });
 
@@ -598,7 +601,7 @@ public class CreateRoom extends AppCompatActivity {
     }
 
     private void showError(String message) {
-        Toast.makeText(CreateRoom.this, message, Toast.LENGTH_SHORT).show();
+        Toast.makeText(CreateRoomActivity.this, message, Toast.LENGTH_SHORT).show();
     }
 
     private interface FirestoreCallback {

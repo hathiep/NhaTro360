@@ -22,16 +22,18 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/white"
-        android:scrollbars="none">
+        android:scrollbars="none"
+        android:smoothScrollbar="true">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <RelativeLayout
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:orientation="vertical"
                 android:paddingHorizontal="5dp">
 
                 <LinearLayout
@@ -79,16 +81,14 @@
                     android:id="@+id/recycler_view_new_room"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/header_new_room"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginHorizontal="2dp"
-                    android:scrollbars="vertical" />
+                    android:layout_marginHorizontal="2dp"/>
 
-            </RelativeLayout>
+            </LinearLayout>
 
-            <RelativeLayout
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:orientation="vertical"
                 android:paddingHorizontal="5dp">
 
                 <LinearLayout
@@ -136,16 +136,14 @@
                     android:id="@+id/recycler_view_paring_room"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/header_paring_room"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginHorizontal="2dp"
-                    android:scrollbars="vertical" />
+                    android:layout_marginHorizontal="2dp"/>
 
-            </RelativeLayout>
+            </LinearLayout>
 
-            <RelativeLayout
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:orientation="vertical"
                 android:paddingHorizontal="5dp">
 
                 <LinearLayout
@@ -193,16 +191,14 @@
                     android:id="@+id/recycler_view_apartment"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/header_apartment"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginHorizontal="2dp"
-                    android:scrollbars="vertical" />
+                    android:layout_marginHorizontal="2dp"/>
 
-            </RelativeLayout>
+            </LinearLayout>
 
-            <RelativeLayout
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:orientation="vertical"
                 android:paddingHorizontal="5dp">
 
                 <LinearLayout
@@ -250,16 +246,14 @@
                     android:id="@+id/recycler_view_house"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/header_house"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginHorizontal="2dp"
-                    android:scrollbars="vertical" />
+                    android:layout_marginHorizontal="2dp"/>
 
-            </RelativeLayout>
+            </LinearLayout>
 
-            <RelativeLayout
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:orientation="vertical"
                 android:paddingHorizontal="5dp">
 
                 <LinearLayout
@@ -295,13 +289,10 @@
                     android:id="@+id/recycler_view_general_room"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/header_general_room"
-                    android:layout_marginTop="5dp"
                     android:layout_marginHorizontal="2dp"
-                    android:layout_marginBottom="120dp"
-                    android:scrollbars="vertical" />
+                    android:layout_marginBottom="120dp"/>
 
-            </RelativeLayout>
+            </LinearLayout>
 
         </LinearLayout>
 
