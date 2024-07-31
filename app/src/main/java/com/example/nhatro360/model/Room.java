@@ -23,11 +23,12 @@ public class Room implements Parcelable {
     private Integer roomType;
     private Integer postType;
     private Integer avatar;
+    private Integer status;
 
     public Room() {
     }
 
-    public Room(String id, String title, String address, String price, String area, Timestamp timePosted, List<String> images, List<Boolean> utilities, String phone, String host, String detail, Integer roomType, Integer postType, Integer avatar) {
+    public Room(String id, String title, String address, String price, String area, Timestamp timePosted, List<String> images, List<Boolean> utilities, String phone, String host, String detail, Integer roomType, Integer postType, Integer avatar, Integer status) {
         this.id = id;
         this.title = title;
         this.address = address;
@@ -42,6 +43,7 @@ public class Room implements Parcelable {
         this.roomType = roomType;
         this.postType = postType;
         this.avatar = avatar;
+        this.status = status;
     }
 
     public Room(List<String> images, List<Boolean> utitlities, Integer roomType, Integer postType, Integer avatar) {
@@ -242,5 +244,13 @@ public class Room implements Parcelable {
 
     public void setAvatar(Integer avatar) {
         this.avatar = avatar;
+    }
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
     }
 }

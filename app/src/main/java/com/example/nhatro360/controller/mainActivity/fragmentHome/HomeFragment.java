@@ -87,7 +87,7 @@ public class HomeFragment extends Fragment implements OnRoomClickListener {
 
     private void fetchRoomsFromFirestore() {
         db.collection("rooms")
-                .get()
+            .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         listNewRoom.clear();
@@ -103,7 +103,9 @@ public class HomeFragment extends Fragment implements OnRoomClickListener {
                             String roomId = document.getId(); // Lấy ID của tài liệu Firestore
                             Room room = document.toObject(Room.class);
                             room.setId(roomId);
-                            listGeneralRoom.add(room);
+                            if (room.getStatus() == 1) {
+                                listGeneralRoom.add(room);
+                            }
                         }
                         sortRoomsByTimePosted(listGeneralRoom);
                         for (Room room : listGeneralRoom){
@@ -141,6 +143,7 @@ public class HomeFragment extends Fragment implements OnRoomClickListener {
                         Log.w(TAG, "Error getting documents.", task.getException());
                     }
                 });
+
     }
 
     private void sortRoomsByTimePosted(List<Room> rooms) {

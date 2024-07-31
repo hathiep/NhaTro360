@@ -568,7 +568,9 @@ public class SearchFragment extends Fragment  {
                             String roomId = document.getId(); // Lấy ID của tài liệu Firestore
                             Room room = document.toObject(Room.class);
                             room.setId(roomId);
-                            rooms.add(room);
+                            if (room.getStatus() == 1) {
+                                rooms.add(room);
+                            }
                         }
                         // Lọc kết quả tìm kiếm trên thiết bị
                         List<Room> filteredRooms = filterRoomsByQuery(rooms, query);

@@ -273,6 +273,7 @@ public class CreateRoomActivity extends AppCompatActivity {
         roomData.put("postType", room.getPostType() + 1);
         roomData.put("price", room.getPrice());
         roomData.put("roomType", room.getRoomType() + 1);
+        roomData.put("status", room.getStatus());
         roomData.put("timePosted", FieldValue.serverTimestamp());
         roomData.put("title", room.getTitle());
         roomData.put("utilities", room.getUtilities());
