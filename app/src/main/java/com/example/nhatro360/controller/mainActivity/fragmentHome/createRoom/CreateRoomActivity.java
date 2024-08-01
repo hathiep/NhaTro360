@@ -217,13 +217,14 @@ public class CreateRoomActivity extends AppCompatActivity {
                 showCancelDialog();
             } else {
                 if (currentFragment instanceof FragmentConfirm) {
+                    viewModel.setRoom(((FragmentConfirm) getCurrentFragment()).getRoom());
                     setBackStep(2, 3);
                 } else if (currentFragment instanceof FragmentImage) {
                     room.setImages(((FragmentImage) currentFragment).getImageList());
                     viewModel.setRoom(room);
                     setBackStep(1, 2);
                 } else if (currentFragment instanceof FragmentInformation) {
-                        viewModel.setRoom(((FragmentInformation) getCurrentFragment()).getRoom());
+                    viewModel.setRoom(((FragmentInformation) getCurrentFragment()).getRoom());
                     setBackStep(0, 1);
                 }
                 getSupportFragmentManager().popBackStack();
@@ -273,7 +274,7 @@ public class CreateRoomActivity extends AppCompatActivity {
         roomData.put("postType", room.getPostType() + 1);
         roomData.put("price", room.getPrice());
         roomData.put("roomType", room.getRoomType() + 1);
-        roomData.put("status", room.getStatus());
+        roomData.put("status", 0);
         roomData.put("timePosted", FieldValue.serverTimestamp());
         roomData.put("title", room.getTitle());
         roomData.put("utilities", room.getUtilities());

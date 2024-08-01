@@ -82,6 +82,11 @@ public class Room implements Parcelable {
         } else {
             avatar = in.readInt();
         }
+        if (in.readByte() == 0) {
+            status = null;
+        } else {
+            status = in.readInt();
+        }
     }
 
     public static final Creator<Room> CREATOR = new Creator<Room>() {
@@ -131,6 +136,12 @@ public class Room implements Parcelable {
         } else {
             dest.writeByte((byte) 1);
             dest.writeInt(avatar);
+        }
+        if (status == null) {
+            dest.writeByte((byte) 0);
+        } else {
+            dest.writeByte((byte) 1);
+            dest.writeInt(status);
         }
     }
 

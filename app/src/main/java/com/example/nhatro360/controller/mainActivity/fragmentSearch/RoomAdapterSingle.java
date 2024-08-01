@@ -55,7 +55,7 @@ public class RoomAdapterSingle extends RecyclerView.Adapter<RoomAdapterSingle.Ro
     @Override
     public void onBindViewHolder(@NonNull RoomViewHolder holder, int position) {
         Room room = roomList.get(position);
-        Log.d("RoomAdapter", "Binding room: " + room.getAddress());
+        Log.d("RoomAdapterSingle", "Binding room: " + room.getAddress());
         holder.bind(room);
     }
 
@@ -181,14 +181,14 @@ public class RoomAdapterSingle extends RecyclerView.Adapter<RoomAdapterSingle.Ro
             for (String imagePath : imagePaths) {
                 StorageReference imageRef = storage.getReferenceFromUrl(imagePath);
                 imageRef.delete().addOnSuccessListener(aVoid -> {
-                    Log.d("RoomAdapter", "Image successfully deleted!");
+                    Log.d("RoomAdapterSingle", "Image successfully deleted!");
                     // Check if all images are deleted
                     if (imagePaths.indexOf(imagePath) == imagePaths.size() - 1) {
                         // All images deleted, proceed with deleting room
                         deleteRoomFromFirestore(room, db, deletingDialog);
                     }
                 }).addOnFailureListener(exception -> {
-                    Log.w("RoomAdapter", "Error deleting image", exception);
+                    Log.w("RoomAdapterSingle", "Error deleting image", exception);
                     deletingDialog.dismiss();
                 });
             }
@@ -210,12 +210,12 @@ public class RoomAdapterSingle extends RecyclerView.Adapter<RoomAdapterSingle.Ro
                                                     roomList.remove(room);
                                                     notifyItemRemoved(getAdapterPosition());
                                                     notifyItemRangeChanged(getAdapterPosition(), roomList.size());
-                                                    Log.d("RoomAdapter", "Room successfully deleted!");
+                                                    Log.d("RoomAdapterSingle", "Room successfully deleted!");
                                                     deletingDialog.dismiss();
                                                     Toast.makeText(context, "Xóa thành công", Toast.LENGTH_SHORT).show();
                                                 })
                                                 .addOnFailureListener(e -> {
-                                                    Log.w("RoomAdapter", "Error deleting room ID from user", e);
+                                                    Log.w("RoomAdapterSingle", "Error deleting room ID from user", e);
                                                     deletingDialog.dismiss();
                                                 });
                                     } else {
@@ -224,12 +224,12 @@ public class RoomAdapterSingle extends RecyclerView.Adapter<RoomAdapterSingle.Ro
                                 })
                                 .addOnFailureListener(e -> {
                                     deletingDialog.dismiss();
-                                    Log.w("RoomAdapter", "Error finding user", e);
+                                    Log.w("RoomAdapterSingle", "Error finding user", e);
                                 });
 
                     })
                     .addOnFailureListener(e -> {
-                        Log.w("RoomAdapter", "Error deleting room", e);
+                        Log.w("RoomAdapterSingle", "Error deleting room", e);
                         deletingDialog.dismiss();
                     });
         }
