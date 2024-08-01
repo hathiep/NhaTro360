@@ -102,12 +102,10 @@ public class RoomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
                 });
             }
-            else if ("title_general_room".equals(header)) {
+            if ("title_general_room".equals(header)) {
                 tvTitle.setText(R.string.general_room);
                 imvIcon.setImageResource(R.drawable.ic_general_room);
-                tvAction.setOnClickListener(view -> {
-
-                });
+                tvAction.setText("");
             }
         }
     }
