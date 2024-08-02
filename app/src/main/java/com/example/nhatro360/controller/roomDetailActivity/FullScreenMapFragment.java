@@ -1,4 +1,4 @@
-package com.example.nhatro360.controller.roomDetail;
+package com.example.nhatro360.controller.roomDetailActivity;
 
 import android.content.Intent;
 import android.net.Uri;

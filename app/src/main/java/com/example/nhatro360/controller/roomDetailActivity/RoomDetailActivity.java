@@ -1,4 +1,4 @@
-package com.example.nhatro360.controller.roomDetail;
+package com.example.nhatro360.controller.roomDetailActivity;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
@@ -492,5 +492,11 @@ public class RoomDetailActivity extends AppCompatActivity implements OnMapReadyC
 
     private interface FirestoreCallback {
         void onCallback(User user);
+    }
+
+    @Override
+    public void onBackPressed(){
+        super.onBackPressed();
+        overridePendingTransition(0, 0);
     }
 }

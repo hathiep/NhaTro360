@@ -1,4 +1,4 @@
-package com.example.nhatro360.controller.mainActivity.fragmentHome.createRoom;
+package com.example.nhatro360.controller.mainActivity.fragmentHome.createRoomActivity;
 
 import androidx.lifecycle.ViewModel;
 

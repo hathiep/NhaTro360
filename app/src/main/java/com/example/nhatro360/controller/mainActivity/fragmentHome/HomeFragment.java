@@ -16,8 +16,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.nhatro360.R;
 import com.example.nhatro360.model.Room;
-import com.example.nhatro360.controller.mainActivity.fragmentHome.createRoom.CreateRoomActivity;
-import com.example.nhatro360.controller.roomDetail.RoomDetailActivity;
+import com.example.nhatro360.controller.mainActivity.fragmentHome.createRoomActivity.CreateRoomActivity;
+import com.example.nhatro360.controller.roomDetailActivity.RoomDetailActivity;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 

@@ -21,7 +21,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.nhatro360.R;
 import com.example.nhatro360.controller.mainActivity.fragmentHome.OnRoomClickListener;
-import com.example.nhatro360.controller.roomDetail.RoomDetailActivity;
+import com.example.nhatro360.controller.roomDetailActivity.RoomDetailActivity;
 import com.example.nhatro360.model.Room;
 
 import java.util.ArrayList;

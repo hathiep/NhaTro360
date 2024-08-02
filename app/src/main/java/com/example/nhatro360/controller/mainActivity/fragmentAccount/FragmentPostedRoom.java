@@ -16,7 +16,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import com.example.nhatro360.R;
-import com.example.nhatro360.controller.mainActivity.fragmentHome.createRoom.CreateRoomActivity;
+import com.example.nhatro360.controller.mainActivity.fragmentHome.createRoomActivity.CreateRoomActivity;
 import com.example.nhatro360.controller.mainActivity.fragmentSearch.FragmentSearchedRoom;
 import com.example.nhatro360.model.Room;
 import com.example.nhatro360.model.User;
