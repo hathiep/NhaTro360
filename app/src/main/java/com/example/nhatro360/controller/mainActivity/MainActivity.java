@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.WindowInsetsController;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
@@ -18,7 +19,10 @@ import com.example.nhatro360.controller.mainActivity.fragmentAccount.FragmentPos
 import com.example.nhatro360.controller.mainActivity.fragmentAccount.FragmentSavedRoom;
 import com.example.nhatro360.controller.mainActivity.fragmentHome.CustomViewPager;
 import com.example.nhatro360.R;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -59,6 +63,17 @@ public class MainActivity extends AppCompatActivity {
         init();
         setUpViewPager();
         setOnMenuSelected();
+
+        FirebaseMessaging.getInstance().subscribeToTopic("NhaTroNotification")
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        String msg = "Done";
+                        if(task.isSuccessful()){
+                            msg = "Failed";
+                        }
+                    }
+                });
     }
 
     public void init(){
