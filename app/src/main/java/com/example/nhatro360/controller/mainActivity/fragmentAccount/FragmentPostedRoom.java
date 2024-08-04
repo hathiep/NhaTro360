@@ -92,7 +92,7 @@ public class FragmentPostedRoom extends Fragment  {
                     if (task.isSuccessful() && !task.getResult().isEmpty()) {
                         DocumentSnapshot userDoc = task.getResult().getDocuments().get(0);
                         User user = userDoc.toObject(User.class);
-                        List<String> list = user.getListPostedRoom();
+                        List<String> list = user.getPostedRooms();
                         if(list.size() == 0) list.add("x");
                         getListPostedRoom(list);
                     }

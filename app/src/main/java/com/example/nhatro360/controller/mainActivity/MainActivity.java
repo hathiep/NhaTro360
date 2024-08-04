@@ -1,13 +1,10 @@
 package com.example.nhatro360.controller.mainActivity;
 
-import android.content.DialogInterface;
 import android.os.Build;
 import android.os.Bundle;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowInsetsController;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
@@ -17,15 +14,10 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 
-import com.example.nhatro360.controller.PostFragment;
-import com.example.nhatro360.controller.mainActivity.fragmentAccount.AccountFragment;
 import com.example.nhatro360.controller.mainActivity.fragmentAccount.FragmentPostedRoom;
 import com.example.nhatro360.controller.mainActivity.fragmentAccount.FragmentSavedRoom;
 import com.example.nhatro360.controller.mainActivity.fragmentHome.CustomViewPager;
-import com.example.nhatro360.controller.mainActivity.fragmentHome.HomeFragment;
 import com.example.nhatro360.R;
-import com.example.nhatro360.controller.mainActivity.fragmentHome.ViewPagerAdapter;
-import com.example.nhatro360.controller.mainActivity.fragmentSearch.SearchFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MainActivity extends AppCompatActivity {
@@ -88,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
             } else if (itemId == R.id.nav_search) {
                 viewPager.setCurrentItem(1, false);
                 return true;
-            } else if (itemId == R.id.nav_post) {
+            } else if (itemId == R.id.nav_notification) {
                 viewPager.setCurrentItem(2, false);
                 return true;
             } else if (itemId == R.id.nav_account) {

@@ -9,9 +9,9 @@
         android:title="@string/search"
         android:icon="@drawable/ic_search" />
     <item
-        android:id="@+id/nav_post"
-        android:title="@string/posts"
-        android:icon="@drawable/ic_post" />
+        android:id="@+id/nav_notification"
+        android:title="@string/notification"
+        android:icon="@drawable/ic_notification" />
     <item
         android:id="@+id/nav_account"
         android:title="@string/account"

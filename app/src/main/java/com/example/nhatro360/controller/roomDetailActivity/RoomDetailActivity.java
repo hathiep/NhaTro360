@@ -105,9 +105,9 @@ public class RoomDetailActivity extends AppCompatActivity implements OnMapReadyC
     }
 
     private void handleUserData(String roomId) {
-        Log.e(TAG, user.getEmail() + " " + user.getId() + " " + user.getListSavedRoom());
-        if (user.getListSavedRoom() != null) {
-            if (user.getListSavedRoom().contains(roomId)) {
+        Log.e(TAG, user.getEmail() + " " + user.getId() + " " + user.getSavedRooms());
+        if (user.getSavedRooms() != null) {
+            if (user.getSavedRooms().contains(roomId)) {
                 imvSave.setImageResource(R.drawable.ic_save);
                 save = true;
             } else {
@@ -119,12 +119,12 @@ public class RoomDetailActivity extends AppCompatActivity implements OnMapReadyC
         imvSave.setOnClickListener(view -> {
             if (save) {
                 imvSave.setImageResource(R.drawable.ic_unsave);
-                user.getListSavedRoom().remove(roomId);
+                user.getSavedRooms().remove(roomId);
                 save = false;
                 Toast.makeText(this, "Bỏ lưu thành công", Toast.LENGTH_SHORT).show();
             } else {
                 imvSave.setImageResource(R.drawable.ic_save);
-                user.getListSavedRoom().add(roomId);
+                user.getSavedRooms().add(roomId);
                 save = true;
                 Toast.makeText(this, "Lưu thành công", Toast.LENGTH_SHORT).show();
             }
@@ -206,7 +206,7 @@ public class RoomDetailActivity extends AppCompatActivity implements OnMapReadyC
 
     private void updateUser(){
         DocumentReference userRef = db.collection("users").document(user.getId());
-        userRef.update("listSavedRoom", user.getListSavedRoom())
+        userRef.update("savedRooms", user.getSavedRooms())
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {

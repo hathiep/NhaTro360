@@ -4,18 +4,18 @@ import java.util.List;
 
 public class User {
     private String id, fullName, email, phone;
-    private List<String> listSavedRoom;
-    private List<String> listPostedRoom;
+    private List<String> savedRooms;
+    private List<String> postedRooms;
 
     public User() {
     }
 
-    public User(String fullName, String email, String phone, List<String> listSavedRoom, List<String> listPostedRoom) {
+    public User(String fullName, String email, String phone, List<String> savedRooms, List<String> postedRooms) {
         this.fullName = fullName;
         this.email = email;
         this.phone = phone;
-        this.listSavedRoom = listSavedRoom;
-        this.listPostedRoom = listPostedRoom;
+        this.savedRooms = savedRooms;
+        this.postedRooms = postedRooms;
     }
 
     public String getId() {
@@ -50,19 +50,19 @@ public class User {
         this.phone = phone;
     }
 
-    public List<String> getListSavedRoom() {
-        return listSavedRoom;
+    public List<String> getSavedRooms() {
+        return savedRooms;
     }
 
-    public void setListSavedRoom(List<String> listSavedRoom) {
-        this.listSavedRoom = listSavedRoom;
+    public void setSavedRooms(List<String> savedRooms) {
+        this.savedRooms = savedRooms;
     }
 
-    public List<String> getListPostedRoom() {
-        return listPostedRoom;
+    public List<String> getPostedRooms() {
+        return postedRooms;
     }
 
-    public void setListPostedRoom(List<String> listPostedRoom) {
-        this.listPostedRoom = listPostedRoom;
+    public void setPostedRooms(List<String> postedRooms) {
+        this.postedRooms = postedRooms;
     }
 }

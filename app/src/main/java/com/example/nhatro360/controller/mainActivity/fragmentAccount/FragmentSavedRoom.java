@@ -86,7 +86,7 @@ public class FragmentSavedRoom extends Fragment  {
                     if (task.isSuccessful() && !task.getResult().isEmpty()) {
                         DocumentSnapshot userDoc = task.getResult().getDocuments().get(0);
                         User user = userDoc.toObject(User.class);
-                        List<String> list = user.getListSavedRoom();
+                        List<String> list = user.getSavedRooms();
                         if(list.size() == 0) list.add("x");
                         getListSavedRoom(list);
                     }

@@ -1,4 +1,4 @@
-package com.example.nhatro360.controller.mainActivity.fragmentHome;
+package com.example.nhatro360.controller.mainActivity;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -6,7 +6,8 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 
 import com.example.nhatro360.controller.mainActivity.fragmentAccount.AccountFragment;
-import com.example.nhatro360.controller.PostFragment;
+import com.example.nhatro360.controller.mainActivity.fragmentHome.HomeFragment;
+import com.example.nhatro360.controller.mainActivity.fragmentNotifications.NotificationsFragment;
 import com.example.nhatro360.controller.mainActivity.fragmentSearch.SearchFragment;
 
 public class ViewPagerAdapter extends FragmentStatePagerAdapter {
@@ -27,7 +28,7 @@ public class ViewPagerAdapter extends FragmentStatePagerAdapter {
             case 1:
                 return new SearchFragment();
             case 2:
-                return new PostFragment();
+                return new NotificationsFragment();
             case 3:
                 return new AccountFragment();
             default:

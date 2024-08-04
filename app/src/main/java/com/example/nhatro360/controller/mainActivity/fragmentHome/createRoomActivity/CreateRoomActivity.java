@@ -162,7 +162,7 @@ public class CreateRoomActivity extends AppCompatActivity {
 
     private void updateUser(){
         DocumentReference userRef = db.collection("users").document(user.getId());
-        userRef.update("listPostedRoom", user.getListPostedRoom())
+        userRef.update("postedRooms", user.getPostedRooms())
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
@@ -288,7 +288,7 @@ public class CreateRoomActivity extends AppCompatActivity {
                         @Override
                         public void onCallback(User userData) {
                             user = userData;
-                            user.getListPostedRoom().add(documentId);
+                            user.getPostedRooms().add(documentId);
                             updateUser();
                         }
                     });
