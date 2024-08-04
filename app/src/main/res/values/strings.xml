@@ -142,5 +142,7 @@
     // Account Fragment
         <string name="posted_room">Phòng đã đăng</string>
         <string name="saved_room">Phòng đã lưu</string>
+        <string name="approved">Đã duyệt</string>
+        <string name="unapproved">Chờ duyệt</string>
 
 </resources>

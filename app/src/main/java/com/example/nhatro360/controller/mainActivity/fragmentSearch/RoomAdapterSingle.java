@@ -67,7 +67,7 @@ public class RoomAdapterSingle extends RecyclerView.Adapter<RoomAdapterSingle.Ro
     public class RoomViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         private ImageView imvImage, imvDelete;
-        private TextView tvTitle, tvPrice, tvAddress, tvArea, tvTimePosted;
+        private TextView tvTitle, tvPrice, tvAddress, tvArea, tvTimePosted, tvStatus;
         private OnRoomClickListener onRoomClickListener;
 
         public RoomViewHolder(@NonNull View itemView, OnRoomClickListener onRoomClickListener) {
@@ -78,6 +78,7 @@ public class RoomAdapterSingle extends RecyclerView.Adapter<RoomAdapterSingle.Ro
             tvAddress = itemView.findViewById(R.id.tv_address);
             tvArea = itemView.findViewById(R.id.tv_area);
             tvTimePosted = itemView.findViewById(R.id.tv_time_posted);
+            tvStatus = itemView.findViewById(R.id.tv_status);
             imvDelete = itemView.findViewById(R.id.imv_delete);
 
             this.onRoomClickListener = onRoomClickListener;
@@ -85,8 +86,10 @@ public class RoomAdapterSingle extends RecyclerView.Adapter<RoomAdapterSingle.Ro
 
             if (!showDeleteIcon) {
                 imvDelete.setVisibility(View.GONE);
+                tvStatus.setVisibility(View.GONE);
             } else {
                 imvDelete.setVisibility(View.VISIBLE);
+                tvStatus.setVisibility(View.VISIBLE);
                 imvDelete.setOnClickListener(v -> {
                     int position = getAdapterPosition();
                     if (position != RecyclerView.NO_POSITION) {
@@ -133,6 +136,20 @@ public class RoomAdapterSingle extends RecyclerView.Adapter<RoomAdapterSingle.Ro
             } else {
                 long days = TimeUnit.SECONDS.toDays(timeDiff);
                 tvTimePosted.setText(days + " ngày");
+            }
+            if (showDeleteIcon) {
+                setTvStatus(room.getStatus());
+            }
+        }
+
+        private void setTvStatus(Integer status){
+            if(status == 0){
+                tvStatus.setText(context.getString(R.string.unapproved));
+                tvStatus.setTextColor(context.getColorStateList(R.color.red2));
+            }
+            else if(status == 1){
+                tvStatus.setText(context.getString(R.string.approved));
+                tvStatus.setTextColor(context.getColorStateList(R.color.green));
             }
         }
 
