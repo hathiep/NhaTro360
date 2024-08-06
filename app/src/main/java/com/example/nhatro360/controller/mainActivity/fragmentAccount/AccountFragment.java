@@ -16,7 +16,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
 import com.example.nhatro360.R;
-import com.example.nhatro360.controller.LoginActivity;
+import com.example.nhatro360.controller.authenActivity.LoginActivity;
 import com.example.nhatro360.model.User;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;

@@ -1,4 +1,4 @@
-package com.example.nhatro360.controller;
+package com.example.nhatro360.controller.authenActivity;
 
 import android.app.ProgressDialog;
 import android.content.Intent;

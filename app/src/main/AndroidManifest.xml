@@ -32,13 +32,19 @@
             android:name=".controller.roomDetailActivity.RoomDetailActivity"
             android:exported="false" />
         <activity
-            android:name=".controller.RegisterActivity"
+            android:name=".controller.authenActivity.RegisterActivity"
+            android:exported="false" />
+        <activity
+            android:name=".controller.authenActivity.ChangePassword"
+            android:exported="false" />
+        <activity
+            android:name=".controller.authenActivity.ForgotPassword"
             android:exported="false" />
         <activity
             android:name=".controller.mainActivity.MainActivity"
             android:exported="false" />
         <activity
-            android:name=".controller.LoginActivity"
+            android:name=".controller.authenActivity.LoginActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -1,4 +1,4 @@
-package com.example.nhatro360.controller;
+package com.example.nhatro360.controller.authenActivity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Build;
@@ -131,8 +131,9 @@ public class LoginActivity extends AppCompatActivity {
         tv_forgot_password.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                Intent intent = new Intent(getApplicationContext(), ForgotPassword.class);
-//                startActivity(intent);
+                Intent intent = new Intent(getApplicationContext(), ForgotPassword.class);
+                startActivity(intent);
+                overridePendingTransition(0, 0);
             }
         });
         // OnClick đăng ký
@@ -186,6 +187,7 @@ public class LoginActivity extends AppCompatActivity {
                     public void run() {
                         Intent intent = new Intent(getApplicationContext(),MainActivity.class);
                         startActivity(intent);
+                        overridePendingTransition(0, 0);
                         finish();
                     }
                 }, 1000);
@@ -210,6 +212,6 @@ public class LoginActivity extends AppCompatActivity {
                 // Ẩn Dialog sau khi đã qua một khoảng thời gian nhất định
                 progressDialog.dismiss();
             }
-        }, time * 1000); // Số milliseconds bạn muốn Dialog biến mất sau đó
+        }, time * 1000); // Số milliseconds Dialog biến mất sau đó
     }
 }
