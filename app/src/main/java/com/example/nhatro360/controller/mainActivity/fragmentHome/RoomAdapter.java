@@ -78,29 +78,33 @@ public class RoomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             if ("title_new_room".equals(header)) {
                 tvTitle.setText(R.string.new_room);
                 imvIcon.setImageResource(R.drawable.ic_new_room);
-                tvAction.setOnClickListener(view -> {
-
-                });
+                tvAction.setText("");
+//                tvAction.setOnClickListener(view -> {
+//
+//                });
             } else if ("title_paring_room".equals(header)) {
                 tvTitle.setText(R.string.pairing_room);
                 imvIcon.setImageResource(R.drawable.ic_paring_room);
-                tvAction.setOnClickListener(view -> {
-
-                });
+                tvAction.setText("");
+//                tvAction.setOnClickListener(view -> {
+//
+//                });
             }
             else if ("title_apartment".equals(header)) {
                 tvTitle.setText(R.string.apartment);
                 imvIcon.setImageResource(R.drawable.ic_apartment);
-                tvAction.setOnClickListener(view -> {
-
-                });
+                tvAction.setText("");
+//                tvAction.setOnClickListener(view -> {
+//
+//                });
             }
             else if ("title_house".equals(header)) {
                 tvTitle.setText(R.string.house);
                 imvIcon.setImageResource(R.drawable.ic_house);
-                tvAction.setOnClickListener(view -> {
-
-                });
+                tvAction.setText("");
+//                tvAction.setOnClickListener(view -> {
+//
+//                });
             }
             if ("title_general_room".equals(header)) {
                 tvTitle.setText(R.string.general_room);
