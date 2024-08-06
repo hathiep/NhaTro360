@@ -102,7 +102,7 @@ public class CreateRoomActivity extends AppCompatActivity {
         init();
 
         if (savedInstanceState == null) {
-            loadFragment(new FragmentAddress(), false);
+            loadFragment(new AddressFragment(), false);
         } else {
             updateButtons(); // Cập nhật nút khi Activity được tái tạo
         }
@@ -183,28 +183,28 @@ public class CreateRoomActivity extends AppCompatActivity {
 
         tvNext.setOnClickListener(v -> {
             Fragment currentFragment = getCurrentFragment();
-            if (currentFragment instanceof FragmentAddress) {
+            if (currentFragment instanceof AddressFragment) {
                 if (validateAddress()) {
-                    loadFragment(new FragmentInformation(), true);
+                    loadFragment(new InformationFragment(), true);
                     setNextStep(1, 0);
                 }
-            } else if (currentFragment instanceof FragmentInformation) {
+            } else if (currentFragment instanceof InformationFragment) {
                 if (validateInformation()) {
-                    loadFragment(new FragmentImage(), true);
+                    loadFragment(new ImageFragment(), true);
                     setNextStep(2, 1);
                 }
-            } else if (currentFragment instanceof FragmentImage) {
-                if (!((FragmentImage) currentFragment).getImageList().isEmpty()){
-                    room.setImages(((FragmentImage) currentFragment).getImageList());
+            } else if (currentFragment instanceof ImageFragment) {
+                if (!((ImageFragment) currentFragment).getImageList().isEmpty()){
+                    room.setImages(((ImageFragment) currentFragment).getImageList());
                     viewModel.setRoom(room);
-                    loadFragment(new FragmentConfirm(), true);
+                    loadFragment(new ConfirmFragment(), true);
                     setNextStep(3, 2);
                 }
                 else {
                     showError("Vui lòng chọn hình ảnh cho bài đăng!");
                 }
             }
-            else if (currentFragment instanceof FragmentConfirm) {
+            else if (currentFragment instanceof ConfirmFragment) {
                 if(validateConfirm()){
                     showConfirmDialog();
                 }
@@ -213,18 +213,18 @@ public class CreateRoomActivity extends AppCompatActivity {
 
         tvCancel.setOnClickListener(v -> {
             Fragment currentFragment = getCurrentFragment();
-            if (currentFragment instanceof FragmentAddress) {
+            if (currentFragment instanceof AddressFragment) {
                 showCancelDialog();
             } else {
-                if (currentFragment instanceof FragmentConfirm) {
-                    viewModel.setRoom(((FragmentConfirm) getCurrentFragment()).getRoom());
+                if (currentFragment instanceof ConfirmFragment) {
+                    viewModel.setRoom(((ConfirmFragment) getCurrentFragment()).getRoom());
                     setBackStep(2, 3);
-                } else if (currentFragment instanceof FragmentImage) {
-                    room.setImages(((FragmentImage) currentFragment).getImageList());
+                } else if (currentFragment instanceof ImageFragment) {
+                    room.setImages(((ImageFragment) currentFragment).getImageList());
                     viewModel.setRoom(room);
                     setBackStep(1, 2);
-                } else if (currentFragment instanceof FragmentInformation) {
-                    viewModel.setRoom(((FragmentInformation) getCurrentFragment()).getRoom());
+                } else if (currentFragment instanceof InformationFragment) {
+                    viewModel.setRoom(((InformationFragment) getCurrentFragment()).getRoom());
                     setBackStep(0, 1);
                 }
                 getSupportFragmentManager().popBackStack();
@@ -235,11 +235,11 @@ public class CreateRoomActivity extends AppCompatActivity {
     }
 
     private void loadFragment(Fragment fragment, boolean addToBackStack) {
-        if (fragment instanceof FragmentImage) {
-            ((FragmentImage) fragment).setImageList(room.getImages());
+        if (fragment instanceof ImageFragment) {
+            ((ImageFragment) fragment).setImageList(room.getImages());
         }
-        if (fragment instanceof FragmentImage) {
-            ((FragmentImage) fragment).setImageList(room.getImages());
+        if (fragment instanceof ImageFragment) {
+            ((ImageFragment) fragment).setImageList(room.getImages());
         }
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -463,7 +463,7 @@ public class CreateRoomActivity extends AppCompatActivity {
         }
 
         Fragment currentFragment = getCurrentFragment();
-        if (currentFragment instanceof FragmentAddress) {
+        if (currentFragment instanceof AddressFragment) {
             tvCancel.setText(R.string.cancel);
             tvCancel.setTextColor(getResources().getColor(R.color.red));
         } else {
@@ -471,7 +471,7 @@ public class CreateRoomActivity extends AppCompatActivity {
             tvCancel.setTextColor(getResources().getColor(R.color.black));
         }
 
-        if (currentFragment instanceof FragmentConfirm) {
+        if (currentFragment instanceof ConfirmFragment) {
             tvNext.setText(R.string.post);
         } else {
             tvNext.setText(R.string.next);
@@ -479,12 +479,12 @@ public class CreateRoomActivity extends AppCompatActivity {
     }
 
     private boolean validateAddress() {
-        FragmentAddress fragmentAddress = (FragmentAddress) getCurrentFragment();
+        AddressFragment addressFragment = (AddressFragment) getCurrentFragment();
 
-        String province = fragmentAddress.getProvince();
-        String district = fragmentAddress.getDistrict();
-        String ward = fragmentAddress.getWard();
-        String street = fragmentAddress.getStreet();
+        String province = addressFragment.getProvince();
+        String district = addressFragment.getDistrict();
+        String ward = addressFragment.getWard();
+        String street = addressFragment.getStreet();
 
         if(province == null || province.isEmpty()){
             showError("Vui lòng chọn Tỉnh/TP!");
@@ -510,8 +510,8 @@ public class CreateRoomActivity extends AppCompatActivity {
     }
 
     private boolean validateInformation(){
-        FragmentInformation fragmentInformation = (FragmentInformation) getCurrentFragment();
-        Room roomInfor = fragmentInformation.getRoom();
+        InformationFragment informationFragment = (InformationFragment) getCurrentFragment();
+        Room roomInfor = informationFragment.getRoom();
         String roomPrice = roomInfor.getPrice();
         String roomArea = roomInfor.getArea();
         if(roomPrice.equals("")){
@@ -539,8 +539,8 @@ public class CreateRoomActivity extends AppCompatActivity {
     }
 
     private boolean validateConfirm(){
-        FragmentConfirm fragmentConfirm = (FragmentConfirm) getCurrentFragment();
-        Room roomInfor = fragmentConfirm.getRoom();
+        ConfirmFragment confirmFragment = (ConfirmFragment) getCurrentFragment();
+        Room roomInfor = confirmFragment.getRoom();
         if(roomInfor.getTitle().equals("") || roomInfor.getHost().equals("") ||
                 roomInfor.getPhone().equals("") || roomInfor.getDetail().equals("") ){
             showError("Vui lòng nhập đầy đủ thông tin!");

@@ -73,7 +73,7 @@ import java.util.Locale;
 public class SearchFragment extends Fragment  {
     private EditText edtSearch, edtProvince, edtDistrict;
     private ImageView imvDrop, imvFilter;
-    private FragmentSearchedRoom fragmentSearchedRoom;
+    private SearchedRoomsFragment fragmentSearchedRoom;
     private FrameLayout layoutListRoom;
     private FirebaseFirestore db;
     private View overlay;
@@ -539,7 +539,7 @@ public class SearchFragment extends Fragment  {
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
 
-        fragmentSearchedRoom = new FragmentSearchedRoom();
+        fragmentSearchedRoom = new SearchedRoomsFragment();
 
         searchRooms(query, new FirestoreCallback() {
             @Override

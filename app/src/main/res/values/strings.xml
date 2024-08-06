@@ -156,7 +156,16 @@
     <string name="saved_room">Phòng đã lưu</string>
     <string name="approved">Đã duyệt</string>
     <string name="unapproved">Chờ duyệt</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="edit_profile">Cập nhật tài khoản</string>
+    <string name="update">Cập nhật</string>
+    <string name="update_confirm_message">Bạn có chắc chắn muốn cập nhật tài khoản</string>
+    <string name="updating">Đang cập nhật dữ liệu...</string>
+    <string name="update_success">Cập nhật thành công</string>
+    <string name="share_app">Chia sẻ ứng dụng</string>
+    <string name="submit_app_review">Gửi đánh giá ứng dụng</string>
+    <string name="submit_feedback_reports">Gửi góp ý và báo lỗi ứng dụng</string>
+    <string name="app_homepage">Trang chủ ứng dụng</string>
+    <string name="similar_app">Ứng dụng hữu ích khác</string>
+    <string name="about_us">Về chúng tôi</string>
 
 </resources>

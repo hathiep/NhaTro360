@@ -35,7 +35,7 @@
             android:name=".controller.authenActivity.RegisterActivity"
             android:exported="false" />
         <activity
-            android:name=".controller.authenActivity.ChangePassword"
+            android:name=".controller.mainActivity.fragmentAccount.ChangePassword"
             android:exported="false" />
         <activity
             android:name=".controller.authenActivity.ForgotPassword"

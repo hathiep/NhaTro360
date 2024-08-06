@@ -25,7 +25,7 @@ import android.widget.TextView;
 import com.example.nhatro360.R;
 import com.example.nhatro360.model.Room;
 
-public class FragmentConfirm extends Fragment {
+public class ConfirmFragment extends Fragment {
 
     private ScrollView scrollView;
     private EditText edtTitle, edtHost, edtPhone, edtDetail;
@@ -104,15 +104,13 @@ public class FragmentConfirm extends Fragment {
     }
 
     private void setWarning(){
-
-        String warning = "* Bằng việc tiếp tục đăng tin nghĩa là bạn đã đồng ý với Điều khoản và Chính sách của chúng tôi.";
-        SpannableString spannableString = new SpannableString(warning);
+        SpannableString spannableString = new SpannableString(getString(R.string.warning));
 
         ClickableSpan termsClickableSpan = new ClickableSpan() {
             @Override
             public void onClick(@NonNull View widget) {
                 // Khởi chạy URL trên trình duyệt ngoài
-                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.term_policy_url)));
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://thuenhatro360.com/quy-dinh-dang-tin"));
                 widget.getContext().startActivity(browserIntent);
             }
 

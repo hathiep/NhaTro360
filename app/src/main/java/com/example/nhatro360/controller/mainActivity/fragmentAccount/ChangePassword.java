@@ -1,11 +1,13 @@
-package com.example.nhatro360.controller.authenActivity;
+package com.example.nhatro360.controller.mainActivity.fragmentAccount;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.InputType;
 import android.view.View;
+import android.view.WindowInsetsController;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -18,6 +20,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.nhatro360.R;
+import com.example.nhatro360.controller.authenActivity.LoginActivity;
 import com.example.nhatro360.model.Validate;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -32,9 +35,8 @@ public class ChangePassword extends AppCompatActivity {
     TextInputEditText edt_old_password, edt_new_password, edt_new_password_again;
     Button btn_change_password;
     ImageView imV_back, imV_eye1, imV_eye2, imV_eye3;
-    FirebaseAuth mAuth;
+    FirebaseAuth auth;
     FirebaseUser user;
-    FirebaseDatabase database;
     Integer eye1, eye2, eye3;
 
     @Override
@@ -42,6 +44,27 @@ public class ChangePassword extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_change_password);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            getWindow().setDecorFitsSystemWindows(false);
+            final WindowInsetsController controller = getWindow().getInsetsController();
+            if (controller != null) {
+                controller.setSystemBarsAppearance(
+                        0,
+                        WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS | WindowInsetsController.APPEARANCE_LIGHT_NAVIGATION_BARS
+                );
+            }
+            getWindow().setStatusBarColor(getColor(R.color.blue2));
+            getWindow().setNavigationBarColor(getColor(R.color.blue2));
+        } else {
+            // For API < 30
+            int flags = View.SYSTEM_UI_FLAG_LAYOUT_STABLE |
+                    View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN |
+                    View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION;
+            getWindow().getDecorView().setSystemUiVisibility(flags);
+            getWindow().setStatusBarColor(getResources().getColor(R.color.blue2));
+            getWindow().setNavigationBarColor(getResources().getColor(R.color.blue2));
+        }
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
@@ -63,8 +86,8 @@ public class ChangePassword extends AppCompatActivity {
         imV_eye1 = findViewById(R.id.imV_eye1);
         imV_eye2 = findViewById(R.id.imV_eye2);
         imV_eye3 = findViewById(R.id.imV_eye3);
-        mAuth = FirebaseAuth.getInstance();
-        user = mAuth.getCurrentUser();
+        auth = FirebaseAuth.getInstance();
+        user = auth.getCurrentUser();
     }
     private void setUiEye(ImageView imv_eye, EditText edt, int x){
         imv_eye.setOnClickListener(new View.OnClickListener() {
@@ -103,13 +126,9 @@ public class ChangePassword extends AppCompatActivity {
         });
     }
     private void setOnClickListener(){
-        imV_back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-//                Intent intent = new Intent(getApplicationContext(),Profile.class);
-//                startActivity(intent);
-//                finish();
-            }
+        imV_back.setOnClickListener(view -> {
+            finish();
+            overridePendingTransition(0, 0);
         });
         btn_change_password.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -140,9 +159,11 @@ public class ChangePassword extends AppCompatActivity {
                             new Handler().postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
-//                                    Intent intent = new Intent(getApplicationContext(), Profile.class);
-//                                    startActivity(intent);
-//                                    finish();
+                                    auth.signOut();
+                                    Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                                    startActivity(intent);
+                                    overridePendingTransition(0, 0);
+                                    finish();
                                 }
                             }, 2000);
                         }
@@ -184,5 +205,10 @@ public class ChangePassword extends AppCompatActivity {
                 progressDialog.dismiss();
             }
         }, time * 1000); // Số milliseconds bạn muốn Dialog biến mất sau đó
+    }
+    @Override
+    public void onBackPressed() {
+        overridePendingTransition(0, 0);
+        finish();
     }
 }

@@ -1,6 +1,7 @@
 package com.example.nhatro360.controller.authenActivity;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -29,12 +30,12 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 public class LoginActivity extends AppCompatActivity {
-    TextInputEditText edt_email, edt_password;
-    Button btn_login;
-    TextView tv_forgot_password, tv_register;
+    TextInputEditText edtEmail, edtPassword;
+    Button btnLogin;
+    TextView tvForgotPassword, tvRegister, tvPolicy;
 //    ProgressBar progressBar;
     FirebaseAuth mAuth;
-    ImageView imV_eye;
+    ImageView imvEye;
     Integer eye;
 
     @Override
@@ -90,36 +91,37 @@ public class LoginActivity extends AppCompatActivity {
     // Hàm ánh xạ view
     private void initUi(){
         mAuth = FirebaseAuth.getInstance();
-        edt_email = findViewById(R.id.edt_email);
-        edt_password = findViewById(R.id.edt_password);
-        imV_eye = findViewById(R.id.imV_eye);
-        tv_forgot_password = findViewById(R.id.tv_forgot_password);
-        tv_register = findViewById(R.id.tv_register);
-        btn_login = findViewById(R.id.btn_login);
+        edtEmail = findViewById(R.id.edt_email);
+        edtPassword = findViewById(R.id.edt_password);
+        imvEye = findViewById(R.id.imV_eye);
+        tvForgotPassword = findViewById(R.id.tv_forgot_password);
+        tvRegister = findViewById(R.id.tv_register);
+        tvPolicy = findViewById(R.id.tv_policy);
+        btnLogin = findViewById(R.id.btn_login);
     }
     // Hàm logic ẩn mật khẩu
     private void setUiEye(){
         eye = 0;
-        imV_eye.setOnClickListener(new View.OnClickListener() {
+        imvEye.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if(eye == 0){
                     // Chuyển icon unhide thành hide
-                    imV_eye.setImageResource(R.drawable.ic_hide);
+                    imvEye.setImageResource(R.drawable.ic_hide);
                     // Chuyển txt từ hide thành unhide
-                    edt_password.setInputType(InputType.TYPE_CLASS_TEXT);
+                    edtPassword.setInputType(InputType.TYPE_CLASS_TEXT);
                     // Đặt con trỏ nháy ở cuối input đã nhập
-                    edt_password.setSelection(edt_password.getText().length());
+                    edtPassword.setSelection(edtPassword.getText().length());
                     eye = 1;
                 }
                 else {
                     // Chuyển icon hide thành unhide
-                    imV_eye.setImageResource(R.drawable.ic_unhide);
+                    imvEye.setImageResource(R.drawable.ic_unhide);
                     // Chuyển text từ unhide thành hide
                     int inputType = InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD;
-                    edt_password.setInputType(inputType);
+                    edtPassword.setInputType(inputType);
                     // Đặt con trỏ nháy ở cuối input đã nhập
-                    edt_password.setSelection(edt_password.getText().length());
+                    edtPassword.setSelection(edtPassword.getText().length());
                     eye = 0;
                 }
             }
@@ -128,7 +130,7 @@ public class LoginActivity extends AppCompatActivity {
     // Hàm gọi các onClick
     private void onClickListener(){
         // OnClick đổi mật khẩu
-        tv_forgot_password.setOnClickListener(new View.OnClickListener() {
+        tvForgotPassword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getApplicationContext(), ForgotPassword.class);
@@ -137,7 +139,7 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
         // OnClick đăng ký
-        tv_register.setOnClickListener(new View.OnClickListener() {
+        tvRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), RegisterActivity.class);
@@ -145,14 +147,21 @@ public class LoginActivity extends AppCompatActivity {
                 overridePendingTransition(0, 0);
             }
         });
+        // OnClick Điều khoản và chính sách
+        tvPolicy.setOnClickListener(view -> {
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            intent.setData(Uri.parse("https://thuenhatro360.com/dieu-khoan-su-dung"));
+            startActivity(intent);
+        });
+
         // OnClick đăng nhập
-        btn_login.setOnClickListener(new View.OnClickListener() {
+        btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // Lấy các giá trị từ input
                 String email, password;
-                email = edt_email.getText().toString();
-                password = edt_password.getText().toString();
+                email = edtEmail.getText().toString();
+                password = edtPassword.getText().toString();
                 // Gọi đối tượng validate
                 Validate validate = new Validate(LoginActivity.this);
                 if(!validate.validateLogin(email, password)) return;

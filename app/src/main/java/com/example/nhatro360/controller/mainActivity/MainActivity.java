@@ -15,8 +15,10 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 
-import com.example.nhatro360.controller.mainActivity.fragmentAccount.FragmentPostedRoom;
-import com.example.nhatro360.controller.mainActivity.fragmentAccount.FragmentSavedRoom;
+import com.example.nhatro360.controller.mainActivity.fragmentAccount.AppInformationFragment;
+import com.example.nhatro360.controller.mainActivity.fragmentAccount.EditProfileFragment;
+import com.example.nhatro360.controller.mainActivity.fragmentAccount.PostedRoomsFragment;
+import com.example.nhatro360.controller.mainActivity.fragmentAccount.SavedRoomsFragment;
 import com.example.nhatro360.controller.mainActivity.fragmentHome.CustomViewPager;
 import com.example.nhatro360.R;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -111,7 +113,10 @@ public class MainActivity extends AppCompatActivity {
         FragmentManager fragmentManager = getSupportFragmentManager();
         if (fragmentManager.getBackStackEntryCount() > 0) {
             Fragment currentFragment = fragmentManager.findFragmentById(R.id.fragment_container);
-            if (currentFragment instanceof FragmentPostedRoom || currentFragment instanceof FragmentSavedRoom) {
+            if (currentFragment instanceof AppInformationFragment
+                    || currentFragment instanceof EditProfileFragment
+                    || currentFragment instanceof PostedRoomsFragment
+                    || currentFragment instanceof SavedRoomsFragment) {
                 fragmentManager.popBackStack();
             } else {
                 showExitConfirmationDialog();

@@ -25,7 +25,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 
 public class AccountFragment extends Fragment {
-    private ImageView imvEdit, imvPostedRoom, imvSavedRoom;
+    private ImageView imvInformation, imvEdit, imvPostedRoom, imvSavedRoom;
     private TextView tvFullName, btnLogout;
     private FirebaseFirestore db;
     private FirebaseAuth auth;
@@ -43,6 +43,7 @@ public class AccountFragment extends Fragment {
     }
 
     private void init(View view){
+        imvInformation = view.findViewById(R.id.imv_information);
         imvEdit = view.findViewById(R.id.imv_edit);
         tvFullName = view.findViewById(R.id.tv_fullName);
         imvPostedRoom = view.findViewById(R.id.imv_posted_room);
@@ -52,21 +53,22 @@ public class AccountFragment extends Fragment {
         auth = FirebaseAuth.getInstance();
         currentUser = auth.getCurrentUser();
 
-        imvPostedRoom.setOnClickListener(v -> {
-            getActivity().getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_container, new FragmentPostedRoom())
-                    .addToBackStack("FragmentPostedRoom")
-                    .commit();
-        });
+        setOnclick(imvInformation, new AppInformationFragment());
+        setOnclick(imvEdit, new EditProfileFragment());
+        setOnclick(imvPostedRoom, new PostedRoomsFragment());
+        setOnclick(imvSavedRoom, new SavedRoomsFragment());
 
-        imvSavedRoom.setOnClickListener(v -> {
-            getActivity().getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_container, new FragmentSavedRoom())
-                    .addToBackStack("FragmentSavedRoom")
-                    .commit();
-        });
         btnLogout.setOnClickListener(v -> showLogoutDialog());
 
+    }
+
+    private void setOnclick(ImageView imv, Fragment fragment){
+        imv.setOnClickListener(v -> {
+            getActivity().getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, fragment)
+                    .addToBackStack(fragment.getClass().getSimpleName())
+                    .commit();
+        });
     }
 
     private void getCurrentUser(){

@@ -45,9 +45,9 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 
-public class FragmentAddress extends Fragment {
+public class AddressFragment extends Fragment {
 
-    private static final String TAG = "FragmentAddress";
+    private static final String TAG = "AddressFragment";
     private EditText edtProvince, edtDistrict, edtWard, edtStreet;
     private FusedLocationProviderClient fusedLocationClient;
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;

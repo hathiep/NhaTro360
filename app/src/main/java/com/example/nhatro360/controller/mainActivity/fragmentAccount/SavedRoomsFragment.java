@@ -1,6 +1,5 @@
 package com.example.nhatro360.controller.mainActivity.fragmentAccount;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,8 +15,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import com.example.nhatro360.R;
-import com.example.nhatro360.controller.mainActivity.fragmentHome.createRoomActivity.CreateRoomActivity;
-import com.example.nhatro360.controller.mainActivity.fragmentSearch.FragmentSearchedRoom;
+import com.example.nhatro360.controller.mainActivity.fragmentSearch.SearchedRoomsFragment;
 import com.example.nhatro360.model.Room;
 import com.example.nhatro360.model.User;
 import com.google.firebase.auth.FirebaseAuth;
@@ -26,10 +24,10 @@ import com.google.firebase.firestore.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FragmentPostedRoom extends Fragment  {
-    private FragmentSearchedRoom fragmentSearchedRoom;
+public class SavedRoomsFragment extends Fragment  {
+    private SearchedRoomsFragment fragmentSearchedRoom;
     private FirebaseFirestore db;
-    private ImageView imvBack, imvCreate;
+    private ImageView imvBack, imvUnsaved;
     private TextView tvTitle;
     private String email;
 
@@ -52,27 +50,23 @@ public class FragmentPostedRoom extends Fragment  {
     }
 
     private void init(View view){
-        fragmentSearchedRoom = new FragmentSearchedRoom();
         db = FirebaseFirestore.getInstance();
-        tvTitle = view.findViewById(R.id.tv_title);
-        tvTitle.setText(R.string.posted_room);
         imvBack = view.findViewById(R.id.imv_back);
-        imvCreate = view.findViewById(R.id.imv_action);
+        tvTitle = view.findViewById(R.id.tv_title);
+        tvTitle.setText(R.string.saved_room);
+        imvUnsaved = view.findViewById(R.id.imv_action);
+        imvUnsaved.setImageResource(0);
 
-        imvBack.setOnClickListener(v -> getParentFragmentManager().popBackStack());
-
-        imvCreate.setOnClickListener(v -> {
-            Intent intent = new Intent(getActivity(), CreateRoomActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-            startActivity(intent);
+        imvBack.setOnClickListener(v -> {
+            FragmentManager fragmentManager = getParentFragmentManager();
+            fragmentManager.popBackStack();
         });
+
+
+        fragmentSearchedRoom = new SearchedRoomsFragment();
 
         email = FirebaseAuth.getInstance().getCurrentUser().getEmail();
         getCurrentUser();
-
-        Bundle bundle = new Bundle();
-        bundle.putBoolean("showDeleteIcon", true);
-        fragmentSearchedRoom.setArguments(bundle);
 
         getChildFragmentManager().beginTransaction()
                 .replace(R.id.container_list_room, fragmentSearchedRoom)
@@ -92,31 +86,58 @@ public class FragmentPostedRoom extends Fragment  {
                     if (task.isSuccessful() && !task.getResult().isEmpty()) {
                         DocumentSnapshot userDoc = task.getResult().getDocuments().get(0);
                         User user = userDoc.toObject(User.class);
-                        List<String> list = user.getPostedRooms();
+                        List<String> list = user.getSavedRooms();
                         if(list.size() == 0) list.add("x");
-                        getListPostedRoom(list);
+                        getListSavedRoom(list);
                     }
                 });
     }
 
-    private void getListPostedRoom(List<String> listPostedRoom) {
+    private void getListSavedRoom(List<String> listSavedRoom) {
         CollectionReference roomsRef = db.collection("rooms");
 
-        roomsRef.whereIn(FieldPath.documentId(), listPostedRoom)
+        roomsRef.whereIn(FieldPath.documentId(), listSavedRoom)
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         List<Room> rooms = new ArrayList<>();
+                        List<String> foundRoomIds = new ArrayList<>();
                         for (DocumentSnapshot document : task.getResult()) {
                             String roomId = document.getId();
                             Room room = document.toObject(Room.class);
                             room.setId(roomId);
                             rooms.add(room);
+                            foundRoomIds.add(roomId);
                         }
                         fragmentSearchedRoom.updateRoomList(rooms);
+
+                        // Loại bỏ các roomId không có trong kết quả truy vấn khỏi listSavedRoom
+                        List<String> roomsToRemove = new ArrayList<>(listSavedRoom);
+                        roomsToRemove.removeAll(foundRoomIds);
+
+                        if (!roomsToRemove.isEmpty()) {
+                            FirebaseFirestore db = FirebaseFirestore.getInstance();
+                            String userEmail = FirebaseAuth.getInstance().getCurrentUser().getEmail();
+
+                            db.collection("users")
+                                    .whereEqualTo("email", userEmail)
+                                    .get()
+                                    .addOnCompleteListener(userTask -> {
+                                        if (userTask.isSuccessful() && !userTask.getResult().isEmpty()) {
+                                            DocumentSnapshot userDoc = userTask.getResult().getDocuments().get(0);
+                                            db.collection("users").document(userDoc.getId())
+                                                    .update("listSavedRoom", FieldValue.arrayRemove(roomsToRemove.toArray()))
+                                                    .addOnSuccessListener(aVoid -> Log.d("Firestore", "Removed invalid room IDs from listSavedRoom"))
+                                                    .addOnFailureListener(e -> Log.w("Firestore", "Error removing invalid room IDs", e));
+                                        } else {
+                                            Log.d("Firestore", "Error getting user document: ", userTask.getException());
+                                        }
+                                    });
+                        }
                     } else {
                         Log.d("Firestore", "Error getting documents: ", task.getException());
                     }
                 });
+
     }
 }

@@ -27,7 +27,7 @@ import com.example.nhatro360.model.Room;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FragmentSearchedRoom extends Fragment implements OnRoomClickListener {
+public class SearchedRoomsFragment extends Fragment implements OnRoomClickListener {
     private TextView tvEmptyMessage;
     private RecyclerView recyclerView;
     private RoomAdapterSingle adapter;

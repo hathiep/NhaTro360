@@ -31,7 +31,7 @@ import com.example.nhatro360.model.Room;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FragmentImage extends Fragment {
+public class ImageFragment extends Fragment {
     private static final int PICK_IMAGE_REQUEST = 1;
     private static final int STORAGE_PERMISSION_CODE = 123;
 
@@ -185,7 +185,7 @@ public class FragmentImage extends Fragment {
             mAdapter.notifyDataSetChanged();
             updateImageCount();
         } else {
-            Log.e("FragmentImage", "Failed to select image");
+            Log.e("ImageFragment", "Failed to select image");
         }
     }
 

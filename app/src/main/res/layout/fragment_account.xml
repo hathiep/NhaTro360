@@ -6,20 +6,45 @@
     android:orientation="vertical"
     android:background="@color/white">
 
-    <TextView
-        android:id="@+id/tv_header"
+    <LinearLayout
+        android:id="@+id/header"
         android:layout_width="match_parent"
         android:layout_height="56dp"
-        android:text="@string/account"
-        android:textSize="22sp"
-        android:textColor="@color/blue2"
-        android:fontFamily="sans-serif-medium"
-        android:gravity="center"
-        android:layout_alignParentTop="true"
-        android:background="@drawable/border_bottom"/>
+        android:orientation="horizontal"
+        android:background="@drawable/border_bottom">
+
+        <ImageView
+            android:id="@+id/imV_back"
+            android:layout_width="40dp"
+            android:layout_height="30dp"
+            android:layout_gravity="center"
+            android:background="@color/white"/>
+
+        <TextView
+            android:id="@+id/tv_header"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:layout_weight="1"
+            android:text="@string/account"
+            android:textSize="22sp"
+            android:textColor="@color/blue2"
+            android:fontFamily="sans-serif-medium"
+            android:gravity="center"
+            android:layout_alignParentTop="true"/>
+
+        <ImageView
+            android:id="@+id/imv_information"
+            android:layout_width="40dp"
+            android:layout_height="30dp"
+            android:layout_gravity="center"
+            android:paddingVertical="1dp"
+            android:background="@color/white"
+            android:src="@drawable/ic_information"/>
+
+    </LinearLayout>
 
     <LinearLayout
-        android:layout_below="@id/tv_header"
+        android:layout_below="@id/header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingHorizontal="20dp"

@@ -22,7 +22,7 @@ import com.example.nhatro360.model.Room;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FragmentInformation extends Fragment {
+public class InformationFragment extends Fragment {
 
     private TextView tvRentRoom, tvShareRoom;
     private List<TextView> listTvRoomType;
