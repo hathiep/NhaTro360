@@ -1,5 +1,7 @@
 package com.example.nhatro360.controller.authenActivity;
 
+import static android.content.ContentValues.TAG;
+
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Build;
@@ -30,6 +32,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -190,6 +193,7 @@ public class RegisterActivity extends AppCompatActivity {
                     }
                 });
     }
+
     private void sendEmailVerify(String email){
         user.sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override

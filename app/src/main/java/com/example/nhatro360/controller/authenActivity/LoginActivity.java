@@ -1,4 +1,6 @@
 package com.example.nhatro360.controller.authenActivity;
+import static android.content.ContentValues.TAG;
+
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
@@ -6,6 +8,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.InputType;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowInsetsController;
 import android.widget.Button;
@@ -28,6 +31,8 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 public class LoginActivity extends AppCompatActivity {
     TextInputEditText edtEmail, edtPassword;
@@ -191,6 +196,17 @@ public class LoginActivity extends AppCompatActivity {
             if (user.isEmailVerified()) {
                 // Email đã được xác thực, chuyển hướng người dùng đến màn hình chính
                 show_dialog("Đăng nhập thành công!", 1);
+                FirebaseMessaging.getInstance().getToken()
+                        .addOnCompleteListener(task2 -> {
+                            if (task2.isSuccessful()) {
+                                String token = task2.getResult();
+                                // Lưu token vào Firestore
+                                saveTokenToFirestore(token);
+                            } else {
+                                Log.w(TAG, "Fetching FCM registration token failed", task2.getException());
+                            }
+                        });
+
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
@@ -223,4 +239,42 @@ public class LoginActivity extends AppCompatActivity {
             }
         }, time * 1000); // Số milliseconds Dialog biến mất sau đó
     }
+
+    private void saveTokenToFirestore(String token) {
+        // Lấy email của người dùng hiện tại
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+        String email = auth.getCurrentUser().getEmail();
+
+        if (email != null) {
+            FirebaseFirestore db = FirebaseFirestore.getInstance();
+            // Tìm tài liệu người dùng dựa trên email
+            db.collection("users")
+                    .whereEqualTo("email", email)
+                    .get()
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful() && !task.getResult().isEmpty()) {
+                            // Giả sử có duy nhất một tài liệu với email này
+                            String userId = task.getResult().getDocuments().get(0).getId();
+
+                            // Cập nhật token cho tài liệu người dùng
+                            db.collection("users").document(userId)
+                                    .update("token", token)
+                                    .addOnSuccessListener(aVoid -> {
+                                        Log.d(TAG, "Token successfully written!");
+                                    })
+                                    .addOnFailureListener(e -> {
+                                        Log.w(TAG, "Error writing token", e);
+                                    });
+                        } else {
+                            Log.w(TAG, "No user found with email: " + email);
+                        }
+                    })
+                    .addOnFailureListener(e -> {
+                        Log.w(TAG, "Error finding user by email", e);
+                    });
+        } else {
+            Log.w(TAG, "User email is null");
+        }
+    }
+
 }
