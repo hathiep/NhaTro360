@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@color/white"
     android:orientation="vertical"
-    tools:context=".controller.authenActivity.RegisterActivity">
+    tools:context=".authenActivity.RegisterActivity">
 
     <androidx.cardview.widget.CardView
         android:id="@+id/header"
