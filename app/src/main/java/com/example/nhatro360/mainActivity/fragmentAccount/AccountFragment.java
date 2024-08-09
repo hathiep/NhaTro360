@@ -36,12 +36,16 @@ public class AccountFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_account, container, false);
 
+        // Gọi hàm ánh xạ view
         init(view);
+
+        // Gọi hàm lấy user hiện tại
         getCurrentUser();
 
         return view;
     }
 
+    // Hàm ánh xạ view
     private void init(View view){
         imvInformation = view.findViewById(R.id.imv_information);
         imvEdit = view.findViewById(R.id.imv_edit);
@@ -62,6 +66,7 @@ public class AccountFragment extends Fragment {
 
     }
 
+    // Hàm bắt sự kiện click chuyển hướng các Fragment
     private void setOnclick(ImageView imv, Fragment fragment){
         imv.setOnClickListener(v -> {
             getActivity().getSupportFragmentManager().beginTransaction()
@@ -71,6 +76,7 @@ public class AccountFragment extends Fragment {
         });
     }
 
+    // Hàm lấy user hiện tại
     private void getCurrentUser(){
 
         if (currentUser != null) {
@@ -88,6 +94,7 @@ public class AccountFragment extends Fragment {
 
     }
 
+    // Hàm thông báo xác nhận đăng xuất
     private void showLogoutDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setTitle("Bạn có muốn đăng xuất?");

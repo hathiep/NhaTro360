@@ -67,11 +67,12 @@ public class RoomDetailActivity extends AppCompatActivity implements OnMapReadyC
     private FirebaseFirestore db;
     private GoogleMap mMap;
     private LatLng roomLatLng;
-    private ImageView imvBack, imvSave;
+    private ImageView imvBack, imvSave, imvMenu;
     private boolean save;
     private static Room room;
     private FirebaseUser currentUser;
     private static User user;
+    private SupportMapFragment mapFragment;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -79,66 +80,22 @@ public class RoomDetailActivity extends AppCompatActivity implements OnMapReadyC
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_room_detail);
 
+        // Gọi hàm ánh xạ view
         init();
 
-        String roomId = getIntent().getStringExtra("roomId");
-        if (roomId != null) {
-            fetchRoomDetailsFromFirestore(roomId);
-        } else {
-            Log.e("RoomDetailActivity", "Room ID is null");
-        }
-
-        // Setup Floating Action Button
-        ImageView imvMenu = findViewById(R.id.imV_menu);
-        imvMenu.setOnClickListener(view -> showMenuDialog());
-
-        getCurrentUser(new FirestoreCallback() {
-            @Override
-            public void onCallback(User userData) {
-                user = userData;
-                // Tiến hành các xử lý liên quan đến user sau khi dữ liệu đã được lấy
-                handleUserData(roomId);
-            }
-        });
-
-        imvBack.setOnClickListener(v -> onBackPressed());
+        // Gọi hàm bắt sự kiện các button
+        setOnclick();
     }
 
-    private void handleUserData(String roomId) {
-        Log.e(TAG, user.getEmail() + " " + user.getId() + " " + user.getSavedRooms());
-        if (user.getSavedRooms() != null) {
-            if (user.getSavedRooms().contains(roomId)) {
-                imvSave.setImageResource(R.drawable.ic_save);
-                save = true;
-            } else {
-                imvSave.setImageResource(R.drawable.ic_unsave);
-                save = false;
-            }
-        }
 
-        imvSave.setOnClickListener(view -> {
-            if (save) {
-                imvSave.setImageResource(R.drawable.ic_unsave);
-                user.getSavedRooms().remove(roomId);
-                save = false;
-                Toast.makeText(this, "Bỏ lưu thành công", Toast.LENGTH_SHORT).show();
-            } else {
-                imvSave.setImageResource(R.drawable.ic_save);
-                user.getSavedRooms().add(roomId);
-                save = true;
-                Toast.makeText(this, "Lưu thành công", Toast.LENGTH_SHORT).show();
-            }
-            updateUser();
-        });
-    }
-
-    // Initialize views
+    // Hàm ánh xạ view
     @SuppressLint("SuspiciousIndentation")
     private void init() {
         db = FirebaseFirestore.getInstance();
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
         imvBack = findViewById(R.id.imv_back);
         imvSave = findViewById(R.id.imv_save);
+        imvMenu = findViewById(R.id.imV_menu);
         room = new Room();
         user = new User();
         save = false;
@@ -170,7 +127,31 @@ public class RoomDetailActivity extends AppCompatActivity implements OnMapReadyC
         listTvUtilites.add(findViewById(R.id.tv_fridge));
         listTvUtilites.add(findViewById(R.id.tv_washing_machine));
         tvInfor = findViewById(R.id.tv_infor);
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+        mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+    }
+
+    // Hàm bắt sự kiện các button
+    private void setOnclick(){
+        String roomId = getIntent().getStringExtra("roomId");
+        if (roomId != null) {
+            fetchRoomDetailsFromFirestore(roomId);
+        } else {
+            Log.e("RoomDetailActivity", "Room ID is null");
+        }
+
+        imvMenu.setOnClickListener(view -> showMenuDialog());
+
+        getCurrentUser(new FirestoreCallback() {
+            @Override
+            public void onCallback(User userData) {
+                user = userData;
+                // Tiến hành các xử lý liên quan đến user sau khi dữ liệu đã được lấy
+                handleUserData(roomId);
+            }
+        });
+
+        imvBack.setOnClickListener(v -> onBackPressed());
+
         if (mapFragment != null) {
             mapFragment.getMapAsync(this);
             View mapView = mapFragment.getView();
@@ -204,6 +185,36 @@ public class RoomDetailActivity extends AppCompatActivity implements OnMapReadyC
         }
     }
 
+    // Hàm hiển thị trạng thái và bắt sự kiện lưu phòng hay không
+    private void handleUserData(String roomId) {
+        Log.e(TAG, user.getEmail() + " " + user.getId() + " " + user.getSavedRooms());
+        if (user.getSavedRooms() != null) {
+            if (user.getSavedRooms().contains(roomId)) {
+                imvSave.setImageResource(R.drawable.ic_save);
+                save = true;
+            } else {
+                imvSave.setImageResource(R.drawable.ic_unsave);
+                save = false;
+            }
+        }
+
+        imvSave.setOnClickListener(view -> {
+            if (save) {
+                imvSave.setImageResource(R.drawable.ic_unsave);
+                user.getSavedRooms().remove(roomId);
+                save = false;
+                Toast.makeText(this, "Bỏ lưu thành công", Toast.LENGTH_SHORT).show();
+            } else {
+                imvSave.setImageResource(R.drawable.ic_save);
+                user.getSavedRooms().add(roomId);
+                save = true;
+                Toast.makeText(this, "Lưu thành công", Toast.LENGTH_SHORT).show();
+            }
+            updateUser();
+        });
+    }
+
+    // Hàm cập nhật danh sách phòng đã lưu
     private void updateUser(){
         DocumentReference userRef = db.collection("users").document(user.getId());
         userRef.update("savedRooms", user.getSavedRooms())
@@ -223,6 +234,7 @@ public class RoomDetailActivity extends AppCompatActivity implements OnMapReadyC
                 });
     }
 
+    // Hàm lấy thông tin phòng từ firebase
     private void fetchRoomDetailsFromFirestore(String roomId) {
         db.collection("rooms").document(roomId)
                 .get()
@@ -247,6 +259,7 @@ public class RoomDetailActivity extends AppCompatActivity implements OnMapReadyC
                 });
     }
 
+    // Hàm cập nhật thông tin lên giao diện
     private void updateUI() {
         // Set text views
         tvPrice.setText(formatPrice(room.getPrice()) + "/tháng");
@@ -262,7 +275,6 @@ public class RoomDetailActivity extends AppCompatActivity implements OnMapReadyC
         tvContact.setText(room.getPhone() + " - " +  room.getHost());
         tvArea.setText("DT " + room.getArea() +" m2");
 
-        // Update tvTimePosted with calculated time
         updatePostedTime(room.getTimePosted());
 
         int num_utilities = 0;
@@ -273,6 +285,7 @@ public class RoomDetailActivity extends AppCompatActivity implements OnMapReadyC
         tvInfor.setText(Html.fromHtml(room.getDetail().replaceAll("\n", "<br>")));
     }
 
+    // Hàm tính thời gian đến hiện tại
     private void updatePostedTime(Timestamp timePosted) {
         long timeDiff = Timestamp.now().getSeconds() - timePosted.getSeconds();
 
@@ -288,6 +301,7 @@ public class RoomDetailActivity extends AppCompatActivity implements OnMapReadyC
         }
     }
 
+    // Hàm hiển thị các tiện ích
     private int setUtilities(int i){
         if(room.getUtilities().get(i)){
             listImvUtilites.get(i).setColorFilter(ContextCompat.getColor(listImvUtilites.get(i).getContext(), R.color.blue2), PorterDuff.Mode.SRC_IN);
@@ -297,6 +311,7 @@ public class RoomDetailActivity extends AppCompatActivity implements OnMapReadyC
         return 0;
     }
 
+    // Hàm hiển thị ảnh theo tỉ lệ điện thoại
     private void setViewPagerHeight() {
         // Lấy chiều rộng của màn hình
         int screenWidth = getResources().getDisplayMetrics().widthPixels;
@@ -309,6 +324,7 @@ public class RoomDetailActivity extends AppCompatActivity implements OnMapReadyC
         viewPager.setLayoutParams(params);
     }
 
+    // Hàm lấy tạo độ từ địa chỉ
     private void getLatLngFromAddress(String address, boolean retried) {
         Log.d(TAG, "Fetching lat/lng for address: " + address);
 
@@ -357,6 +373,7 @@ public class RoomDetailActivity extends AppCompatActivity implements OnMapReadyC
         return address;
     }
 
+    // Hàm cập nhật vị trí
     private void updateMap(double lat, double lng) {
         Log.d(TAG, "Updating map to lat: " + lat + ", lng: " + lng);
 
@@ -383,6 +400,7 @@ public class RoomDetailActivity extends AppCompatActivity implements OnMapReadyC
         });
     }
 
+    // Hàm mở bản đồ toàn màn hình
     private void openFullScreenMap() {
         FullScreenMapFragment fullScreenMapFragment = new FullScreenMapFragment();
 
@@ -421,7 +439,7 @@ public class RoomDetailActivity extends AppCompatActivity implements OnMapReadyC
         }
     }
 
-
+    // Hàm hiển thị menu liên lạc
     private void showMenuDialog() {
         View overlay = findViewById(R.id.overlay);
         overlay.setVisibility(View.VISIBLE);
@@ -464,12 +482,14 @@ public class RoomDetailActivity extends AppCompatActivity implements OnMapReadyC
         });
     }
 
+    // Hàm dẫn ra ứng dụng điện thoại
     private void makeCall() {
         Intent intent = new Intent(Intent.ACTION_DIAL);
         intent.setData(Uri.parse("tel:" + tvContact.getText().toString().split(" - ")[0]));
         startActivity(intent);
     }
 
+    // Hàm dẫn ra ứng dụng tin nhắn
     private void sendMessage() {
         Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.setData(Uri.parse("sms:" + tvContact.getText().toString().split(" - ")[0]));
@@ -477,6 +497,7 @@ public class RoomDetailActivity extends AppCompatActivity implements OnMapReadyC
         startActivity(intent);
     }
 
+    // Hàm dẫn ra ứng dụng googlemap
     private void getDirections() {
         Uri gmmIntentUri = Uri.parse("google.navigation:q=" + Uri.encode(tvAddress.getText().toString()));
         Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
@@ -484,6 +505,7 @@ public class RoomDetailActivity extends AppCompatActivity implements OnMapReadyC
         startActivity(mapIntent);
     }
 
+    // Hàm format giá đơn vị triệu
     private String formatPrice(String price){
         DecimalFormat decimalFormat = new DecimalFormat("#,###.##");
         double millions = Integer.parseInt(price) / 1_000_000.0;

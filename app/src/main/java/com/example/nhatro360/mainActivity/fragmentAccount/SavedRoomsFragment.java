@@ -49,6 +49,7 @@ public class SavedRoomsFragment extends Fragment  {
         return view;
     }
 
+    // Hàm ánh xạ view
     private void init(View view){
         db = FirebaseFirestore.getInstance();
         imvBack = view.findViewById(R.id.imv_back);
@@ -79,6 +80,7 @@ public class SavedRoomsFragment extends Fragment  {
         getCurrentUser();
     }
 
+    // Hiển lấy user hiện tại
     private void getCurrentUser() {
         db.collection("users").whereEqualTo("email", email)
                 .get()
@@ -93,6 +95,7 @@ public class SavedRoomsFragment extends Fragment  {
                 });
     }
 
+    // Hiển thị danh sách phòng đã lưu của user hiện tại
     private void getsavedRooms(List<String> savedRooms) {
         CollectionReference roomsRef = db.collection("rooms");
 

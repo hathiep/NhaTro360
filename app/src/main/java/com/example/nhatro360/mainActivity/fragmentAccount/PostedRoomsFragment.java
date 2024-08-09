@@ -51,6 +51,7 @@ public class PostedRoomsFragment extends Fragment  {
         return view;
     }
 
+    // Hàm ánh xạ view
     private void init(View view){
         fragmentSearchedRoom = new SearchedRoomsFragment();
         db = FirebaseFirestore.getInstance();
@@ -85,6 +86,7 @@ public class PostedRoomsFragment extends Fragment  {
         getCurrentUser();
     }
 
+    // Hiển lấy user hiện tại
     private void getCurrentUser() {
         db.collection("users").whereEqualTo("email", email)
                 .get()
@@ -99,6 +101,7 @@ public class PostedRoomsFragment extends Fragment  {
                 });
     }
 
+    // Hiển thị danh sách phòng đã đăng của user hiện tại
     private void getListPostedRoom(List<String> listPostedRoom) {
         CollectionReference roomsRef = db.collection("rooms");
 

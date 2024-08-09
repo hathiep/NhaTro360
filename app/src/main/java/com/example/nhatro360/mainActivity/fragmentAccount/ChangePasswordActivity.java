@@ -31,12 +31,12 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 public class ChangePasswordActivity extends AppCompatActivity {
-    TextInputEditText edt_old_password, edt_new_password, edt_new_password_again;
-    Button btn_change_password;
-    ImageView imV_back, imV_eye1, imV_eye2, imV_eye3;
-    FirebaseAuth auth;
-    FirebaseUser user;
-    Integer eye1, eye2, eye3;
+    private TextInputEditText edt_old_password, edt_new_password, edt_new_password_again;
+    private Button btn_change_password;
+    private ImageView imV_back, imV_eye1, imV_eye2, imV_eye3;
+    private FirebaseAuth auth;
+    private FirebaseUser user;
+    private Integer eye1, eye2, eye3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,13 +69,13 @@ public class ChangePasswordActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
         initUi();
-        eye1 = eye2 = eye3 = 0;
-        setUiEye(imV_eye1, edt_old_password, 1);
-        setUiEye(imV_eye2, edt_new_password, 2);
-        setUiEye(imV_eye3, edt_new_password_again, 3);
+
         setOnClickListener();
     }
+
+    // Hàm ánh xạ view
     private void initUi(){
         edt_old_password = findViewById(R.id.edt_old_password);
         edt_new_password = findViewById(R.id.edt_new_password);
@@ -87,7 +87,13 @@ public class ChangePasswordActivity extends AppCompatActivity {
         imV_eye3 = findViewById(R.id.imV_eye3);
         auth = FirebaseAuth.getInstance();
         user = auth.getCurrentUser();
+        eye1 = eye2 = eye3 = 0;
+        setUiEye(imV_eye1, edt_old_password, 1);
+        setUiEye(imV_eye2, edt_new_password, 2);
+        setUiEye(imV_eye3, edt_new_password_again, 3);
     }
+
+    // Hàm hiển thị trạng thái mắt
     private void setUiEye(ImageView imv_eye, EditText edt, int x){
         imv_eye.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -124,11 +130,14 @@ public class ChangePasswordActivity extends AppCompatActivity {
             }
         });
     }
+
+    // Hàm bắt sự kiện các button
     private void setOnClickListener(){
         imV_back.setOnClickListener(view -> {
             finish();
             overridePendingTransition(0, 0);
         });
+
         btn_change_password.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -139,14 +148,34 @@ public class ChangePasswordActivity extends AppCompatActivity {
                 // Check đổi mật khẩu
                 reAuthenticateUser();
             }
-
-
         });
     }
     private String getInput(EditText edt){
         return edt.getText().toString().trim();
     }
 
+    // Hàm check đổi mật khẩu
+    private void reAuthenticateUser(){
+        AuthCredential credential = EmailAuthProvider.getCredential(user.getEmail(), getInput(edt_old_password));
+        user.reauthenticate(credential)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if(task.isSuccessful()){
+                            if(getInput(edt_old_password).equals(getInput(edt_new_password))){
+                                show_dialog("Vui lòng nhập mật khẩu mới khác mật khẩu cũ!", 2);
+                                return;
+                            }
+                            onClickChangePassword();
+                        }
+                        else{
+                            show_dialog("Mật khẩu cũ không đúng. Vui lòng nhập lại!", 2);
+                        }
+                    }
+                });
+    }
+
+    // Hàm đổi mật khẩu trên Authentication
     private void onClickChangePassword(){
         user.updatePassword(getInput(edt_new_password))
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -170,25 +199,6 @@ public class ChangePasswordActivity extends AppCompatActivity {
                 });
     }
 
-    private void reAuthenticateUser(){
-        AuthCredential credential = EmailAuthProvider.getCredential(user.getEmail(), getInput(edt_old_password));
-        user.reauthenticate(credential)
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if(task.isSuccessful()){
-                            if(getInput(edt_old_password).equals(getInput(edt_new_password))){
-                                show_dialog("Vui lòng nhập mật khẩu mới khác mật khẩu cũ!", 2);
-                                return;
-                            }
-                            onClickChangePassword();
-                        }
-                        else{
-                            show_dialog("Mật khẩu cũ không đúng. Vui lòng nhập lại!", 2);
-                        }
-                    }
-                });
-    }
     // Hàm thông báo dialog
     private void show_dialog(String s, int time){
         ProgressDialog progressDialog = new ProgressDialog(ChangePasswordActivity.this);

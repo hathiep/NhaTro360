@@ -36,11 +36,16 @@ public class AppInformationFragment extends Fragment {
             }
         });
 
+        // Gọi hàm ánh xạ view
         init(view);
+
+        // Gọi hàm click các textview
+        setOnclickTV();
 
         return view;
     }
 
+    // Hàm ánh xạ view
     private void init(View view){
         imvBack = view.findViewById(R.id.imV_back);
         tvShareApp = view.findViewById(R.id.tv_share_app);
@@ -49,7 +54,10 @@ public class AppInformationFragment extends Fragment {
         tvAppHomepage = view.findViewById(R.id.tv_app_homepage);
         tvSimilarApp = view.findViewById(R.id.tv_similar_app);
         tvAboutUs = view.findViewById(R.id.tv_about_us);
+    }
 
+    // Hàm click các textview
+    private void setOnclickTV(){
         imvBack.setOnClickListener(v -> goBackToAccountFragment());
         setOnclick(tvShareApp, Intent.ACTION_VIEW, "https://thuenhatro360.com/");
         setOnclick(tvSubmitAppReview, Intent.ACTION_VIEW, "https://thuenhatro360.com/");
@@ -59,6 +67,7 @@ public class AppInformationFragment extends Fragment {
         setOnclick(tvAboutUs, Intent.ACTION_VIEW, "https://thuenhatro360.com/gioi-thieu");
     }
 
+    // Hàm trở về fragment trước đó
     private void goBackToAccountFragment() {
         FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
         fragmentManager.popBackStack();

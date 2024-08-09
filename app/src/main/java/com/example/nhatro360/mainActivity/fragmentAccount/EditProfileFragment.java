@@ -48,9 +48,10 @@ public class EditProfileFragment extends Fragment {
             }
         });
 
+        // Gọi hàm ánh xạ view
         init(view);
 
-        // Load current user information
+        // Gọi hàm hiển thị thông tin user hiện tại
         getCurrentUser();
 
         setOnclick();
@@ -58,13 +59,12 @@ public class EditProfileFragment extends Fragment {
         return view;
     }
 
+    // Hàm ánh xạ view
     private void init(View view){
-        // Initialize Firebase Auth and Firestore
         auth = FirebaseAuth.getInstance();
         currentUser = auth.getCurrentUser();
         db = FirebaseFirestore.getInstance();
 
-        // Initialize views
         edtEmail = view.findViewById(R.id.edt_email);
         edtFullName = view.findViewById(R.id.edt_fullName);
         edtPhone = view.findViewById(R.id.edt_phone);
@@ -73,6 +73,7 @@ public class EditProfileFragment extends Fragment {
         imVBack = view.findViewById(R.id.imV_back);
     }
 
+    // Hàm hiển thị thông tin user hiện tại
     private void getCurrentUser() {
         if (currentUser != null) {
             String userEmail = currentUser.getEmail();
@@ -93,9 +94,10 @@ public class EditProfileFragment extends Fragment {
         }
     }
 
+    // Hàm bắt sự kiện các button
     private void setOnclick(){
-        // Set onClick listeners
         imVBack.setOnClickListener(v -> goBackToAccountFragment());
+
         btnUpdate.setOnClickListener(v -> {
             String fullName = edtFullName.getText().toString();
             String phone = edtPhone.getText().toString();
@@ -104,14 +106,21 @@ public class EditProfileFragment extends Fragment {
             if(!validate.checkValidatePhone(phone)) return;
             showConfirmDialog();
         });
-        btnChangePassword.setOnClickListener(v -> openChangePasswordActivity());
+
+        btnChangePassword.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), ChangePasswordActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+            startActivity(intent);
+        });
     }
 
+    // Hàm trở về fragment trước đó
     private void goBackToAccountFragment() {
         FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
         fragmentManager.popBackStack();
     }
 
+    // Hàm hiển thị thông báo và cập nhật thông tin user
     private void updateUserInformation() {
         String fullName = edtFullName.getText().toString();
         String phone = edtPhone.getText().toString();
@@ -140,12 +149,7 @@ public class EditProfileFragment extends Fragment {
         }
     }
 
-    private void openChangePasswordActivity() {
-        Intent intent = new Intent(getActivity(), ChangePasswordActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-        startActivity(intent);
-    }
-
+    // Hàm thông báo xác nhận
     private void showConfirmDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext())
                 .setMessage(R.string.update_confirm_message)
