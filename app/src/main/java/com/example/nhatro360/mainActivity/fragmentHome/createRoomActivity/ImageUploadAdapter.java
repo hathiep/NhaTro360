@@ -34,7 +34,7 @@ public class ImageUploadAdapter extends RecyclerView.Adapter<ImageUploadAdapter.
 
     public interface OnImageClickListener {
         void onDeleteClick(int position);
-        void onImageClick(int position); // Thêm phương thức để xử lý khi click vào ảnh
+        void onImageClick(int position); // Xử lý khi click vào ảnh
     }
 
     public void setOnImageClickListener(OnImageClickListener listener) {
@@ -44,13 +44,13 @@ public class ImageUploadAdapter extends RecyclerView.Adapter<ImageUploadAdapter.
     public static class ImageViewHolder extends RecyclerView.ViewHolder {
         public ImageView imageView;
         public ImageButton buttonDelete;
-        public TextView representativeLabel; // Thêm TextView để hiển thị nhãn ảnh đại diện
+        public TextView representativeLabel; // TextView để hiển thị nhãn ảnh đại diện
 
         public ImageViewHolder(View itemView, final OnImageClickListener listener) {
             super(itemView);
             imageView = itemView.findViewById(R.id.image_view);
             buttonDelete = itemView.findViewById(R.id.button_delete);
-            representativeLabel = itemView.findViewById(R.id.representative_label); // Ánh xạ TextView
+            representativeLabel = itemView.findViewById(R.id.representative_label);
 
             buttonDelete.setOnClickListener(new View.OnClickListener() {
                 @Override

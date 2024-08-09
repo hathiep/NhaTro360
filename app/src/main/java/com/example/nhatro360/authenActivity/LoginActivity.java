@@ -35,14 +35,15 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.messaging.FirebaseMessaging;
 
 public class LoginActivity extends AppCompatActivity {
-    TextInputEditText edtEmail, edtPassword;
-    Button btnLogin;
-    TextView tvForgotPassword, tvRegister, tvPolicy;
+    private TextInputEditText edtEmail, edtPassword;
+    private Button btnLogin;
+    private TextView tvForgotPassword, tvRegister, tvPolicy;
 //    ProgressBar progressBar;
-    FirebaseAuth mAuth;
-    ImageView imvEye;
-    Integer eye;
+    private FirebaseAuth mAuth;
+    private ImageView imvEye;
+    private Integer eye;
 
+    // Hàm check tài khoản đã đăng nhập trên thiết bị
     @Override
     public void onStart() {
         super.onStart();
@@ -60,6 +61,7 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_login);
+        // Đổi theme
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             getWindow().setDecorFitsSystemWindows(false);
             final WindowInsetsController controller = getWindow().getInsetsController();
@@ -138,7 +140,7 @@ public class LoginActivity extends AppCompatActivity {
         tvForgotPassword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getApplicationContext(), ForgotPassword.class);
+                Intent intent = new Intent(getApplicationContext(), ForgotPasswordActivity.class);
                 startActivity(intent);
                 overridePendingTransition(0, 0);
             }
@@ -147,6 +149,7 @@ public class LoginActivity extends AppCompatActivity {
         tvRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // Chuyển đến trang Register
                 Intent intent = new Intent(getApplicationContext(), RegisterActivity.class);
                 startActivity(intent);
                 overridePendingTransition(0, 0);
@@ -230,16 +233,15 @@ public class LoginActivity extends AppCompatActivity {
         progressDialog.setMessage(s);
         progressDialog.show();
 
-        // Sử dụng Handler để gửi một tin nhắn hoạt động sau một khoảng thời gian
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                // Ẩn Dialog sau khi đã qua một khoảng thời gian nhất định
                 progressDialog.dismiss();
             }
-        }, time * 1000); // Số milliseconds Dialog biến mất sau đó
+        }, time * 1000);
     }
 
+    // Hàm lưu token thiết bị của user
     private void saveTokenToFirestore(String token) {
         // Lấy email của người dùng hiện tại
         FirebaseAuth auth = FirebaseAuth.getInstance();
@@ -247,16 +249,14 @@ public class LoginActivity extends AppCompatActivity {
 
         if (email != null) {
             FirebaseFirestore db = FirebaseFirestore.getInstance();
-            // Tìm tài liệu người dùng dựa trên email
             db.collection("users")
                     .whereEqualTo("email", email)
                     .get()
                     .addOnCompleteListener(task -> {
                         if (task.isSuccessful() && !task.getResult().isEmpty()) {
-                            // Giả sử có duy nhất một tài liệu với email này
                             String userId = task.getResult().getDocuments().get(0).getId();
 
-                            // Cập nhật token cho tài liệu người dùng
+                            // Cập nhật token cho user
                             db.collection("users").document(userId)
                                     .update("token", token)
                                     .addOnSuccessListener(aVoid -> {

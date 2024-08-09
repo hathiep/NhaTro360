@@ -141,7 +141,7 @@ public class EditProfileFragment extends Fragment {
     }
 
     private void openChangePasswordActivity() {
-        Intent intent = new Intent(getActivity(), ChangePassword.class);
+        Intent intent = new Intent(getActivity(), ChangePasswordActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
         startActivity(intent);
     }

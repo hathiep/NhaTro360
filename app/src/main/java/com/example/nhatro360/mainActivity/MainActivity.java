@@ -34,6 +34,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // Đổi theme
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             getWindow().setDecorFitsSystemWindows(false);
             final WindowInsetsController controller = getWindow().getInsetsController();
@@ -87,6 +89,7 @@ public class MainActivity extends AppCompatActivity {
         viewPager.setAdapter(mainViewPagerAdapter);
     }
 
+    // Bắt sự kiện click menu
     private void setOnMenuSelected() {
         bottomNavigationView.setOnItemSelectedListener(item -> {
             int itemId = item.getItemId();

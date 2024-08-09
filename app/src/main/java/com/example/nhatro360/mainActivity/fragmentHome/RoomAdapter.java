@@ -143,9 +143,9 @@ public class RoomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             tvAddress.setText(room.getAddress());
             tvArea.setText("DT " + room.getArea() + " m²");
 
+            // Format thời gian đăng
             Timestamp timePosted = room.getTimePosted();
             long timeDiff = Timestamp.now().getSeconds() - timePosted.getSeconds();
-
             if (timeDiff < TimeUnit.HOURS.toSeconds(1)) {
                 long minutes = TimeUnit.SECONDS.toMinutes(timeDiff);
                 tvTimePosted.setText(minutes + " phút");
@@ -157,6 +157,7 @@ public class RoomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 tvTimePosted.setText(days + " ngày");
             }
 
+            // Đặt kích thước chiều cao tỉ lệ với chiều rộng của thiết bị
             itemView.post(() -> {
                 int width = relativeLayout.getWidth();
                 int height = (int) (width * 10.0 / 16.0);
@@ -175,6 +176,7 @@ public class RoomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             }
         }
 
+        // Format giá thành đơn vị triệu
         private static String formatPrice(String price) {
             DecimalFormat decimalFormat = new DecimalFormat("#,###.##");
             double millions = Integer.parseInt(price) / 1_000_000.0;

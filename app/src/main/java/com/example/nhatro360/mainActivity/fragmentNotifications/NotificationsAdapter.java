@@ -64,6 +64,7 @@ public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdap
             tvDescription = itemView.findViewById(R.id.tv_description);
             btnDetail = itemView.findViewById(R.id.btn_detail);
 
+            // Hàm bắt sự kiện click vào thông báo
             itemView.setOnClickListener(v -> {
                 int position = getAdapterPosition();
                 if (expandedPosition == position) {
@@ -85,14 +86,14 @@ public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdap
             setTvType(notification.getType());
 
             boolean isExpanded = position == expandedPosition;
-            tvDescription.setVisibility(isExpanded && type < 4 ? View.VISIBLE : View.GONE);
-            btnDetail.setVisibility(isExpanded && type == 2 ? View.VISIBLE : View.GONE);
+            tvDescription.setVisibility(isExpanded && type > 0 && type < 4 ? View.VISIBLE : View.GONE);
+            btnDetail.setVisibility(isExpanded && (type == 1 || type == 2) ? View.VISIBLE : View.GONE);
 
-            if (type < 4) {
+            if (type > 0 && type < 4) {
                 setTvDescription(notification.getMessage());
             }
 
-            if (type == 2 && isExpanded) {
+            if ((type == 1 || type == 2) && isExpanded) {
                 btnDetail.setOnClickListener(v -> {
                     Intent intent = new Intent(context, RoomDetailActivity.class);
                     intent.putExtra("roomId", notification.getMessage());
@@ -101,6 +102,7 @@ public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdap
             }
         }
 
+        // Hàm hiển thị thời gian của thông báo so với hện tại
         private void setTvTime(Timestamp time) {
             if (time != null) {
                 long timeDiff = Timestamp.now().getSeconds() - time.getSeconds();
@@ -121,8 +123,13 @@ public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdap
             }
         }
 
+        // Hàm hiển thị title của thông báo
         private void setTvType(Integer type) {
             switch (type) {
+                case 0:
+                    tvTitle.setText(context.getString(R.string.title0));
+                    tvTitle.setTextColor(context.getColor(R.color.blue2));
+                    break;
                 case 1:
                     tvTitle.setText(context.getString(R.string.title1));
                     tvTitle.setTextColor(context.getColor(R.color.blue2));
@@ -150,8 +157,11 @@ public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdap
             }
         }
 
+        // Hàm hiển thị message của thông báo
         private String getMessage(Integer type) {
-            if (type == 1) {
+            if (type == 0) {
+                return context.getString(R.string.message0);
+            } else if (type == 1) {
                 return context.getString(R.string.message1);
             } else if (type == 2) {
                 return context.getString(R.string.message2);
@@ -163,6 +173,7 @@ public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdap
             return context.getString(R.string.message5);
         }
 
+        // Hàm hiển thị chi tiết phòng
         private void setTvDescription(String roomId) {
             FirebaseFirestore db = FirebaseFirestore.getInstance();
             db.collection("rooms").document(roomId)
@@ -190,6 +201,7 @@ public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdap
                     });
         }
 
+        // Hàm format giá phòng đơn vị triệu
         private String formatPrice(String price) {
             DecimalFormat decimalFormat = new DecimalFormat("#,###.##");
             double millions = Integer.parseInt(price) / 1_000_000.0;

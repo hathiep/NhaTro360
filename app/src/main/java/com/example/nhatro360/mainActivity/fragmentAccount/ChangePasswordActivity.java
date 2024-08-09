@@ -30,7 +30,7 @@ import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-public class ChangePassword extends AppCompatActivity {
+public class ChangePasswordActivity extends AppCompatActivity {
     TextInputEditText edt_old_password, edt_new_password, edt_new_password_again;
     Button btn_change_password;
     ImageView imV_back, imV_eye1, imV_eye2, imV_eye3;
@@ -133,7 +133,7 @@ public class ChangePassword extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 // Gọi đối tượng validate
-                Validate validate = new Validate(ChangePassword.this);
+                Validate validate = new Validate(ChangePasswordActivity.this);
                 if(!validate.validateChangePassword(getInput(edt_old_password),
                         getInput(edt_new_password), getInput(edt_new_password_again))) return;
                 // Check đổi mật khẩu
@@ -191,7 +191,7 @@ public class ChangePassword extends AppCompatActivity {
     }
     // Hàm thông báo dialog
     private void show_dialog(String s, int time){
-        ProgressDialog progressDialog = new ProgressDialog(ChangePassword.this);
+        ProgressDialog progressDialog = new ProgressDialog(ChangePasswordActivity.this);
         progressDialog.setTitle("Thông báo");
         progressDialog.setMessage(s);
         progressDialog.show();

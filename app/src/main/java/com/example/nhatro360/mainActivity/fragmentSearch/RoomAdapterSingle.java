@@ -85,9 +85,11 @@ public class RoomAdapterSingle extends RecyclerView.Adapter<RoomAdapterSingle.Ro
             itemView.setOnClickListener(this);
 
             if (!showDeleteIcon) {
+                // Nếu ở trang tìm kiếm thì ẩn icon xoá đi
                 imvDelete.setVisibility(View.GONE);
                 tvStatus.setVisibility(View.GONE);
             } else {
+                // Nếu ở trang danh sách phòng đã đăng thì hiển thị icon xoá
                 imvDelete.setVisibility(View.VISIBLE);
                 tvStatus.setVisibility(View.VISIBLE);
                 imvDelete.setOnClickListener(v -> {
@@ -142,6 +144,7 @@ public class RoomAdapterSingle extends RecyclerView.Adapter<RoomAdapterSingle.Ro
             }
         }
 
+        // Hàm set trạng thái phòng trong danh sách đã đăng
         private void setTvStatus(Integer status){
             if(status == 0){
                 tvStatus.setText(context.getString(R.string.unapproved));
@@ -162,6 +165,7 @@ public class RoomAdapterSingle extends RecyclerView.Adapter<RoomAdapterSingle.Ro
             }
         }
 
+        // Hiển thị thông báo xác nhận xoá
         private void showDeleteConfirmationDialog(Room room) {
             new AlertDialog.Builder(context)
                     .setTitle("Xác nhận xóa")
@@ -173,6 +177,7 @@ public class RoomAdapterSingle extends RecyclerView.Adapter<RoomAdapterSingle.Ro
                     .show();
         }
 
+        // Hiển thị thông báo đang xoá
         private void showDeletingDialog(Room room) {
             AlertDialog deletingDialog = new AlertDialog.Builder(context)
                     .setTitle("Đang xóa...")
@@ -188,6 +193,7 @@ public class RoomAdapterSingle extends RecyclerView.Adapter<RoomAdapterSingle.Ro
             deleteImagesFromStorage(imagePaths, room, db, storage, deletingDialog);
         }
 
+        // Hàm xoá ảnh trên storage
         private void deleteImagesFromStorage(List<String> imagePaths, Room room, FirebaseFirestore db, FirebaseStorage storage, AlertDialog deletingDialog) {
             if (imagePaths == null || imagePaths.isEmpty()) {
                 // If no images to delete, proceed with deleting room
@@ -199,9 +205,9 @@ public class RoomAdapterSingle extends RecyclerView.Adapter<RoomAdapterSingle.Ro
                 StorageReference imageRef = storage.getReferenceFromUrl(imagePath);
                 imageRef.delete().addOnSuccessListener(aVoid -> {
                     Log.d("RoomAdapterSingle", "Image successfully deleted!");
-                    // Check if all images are deleted
+                    // Kiểm tra xem tất cả hình ảnh đã bị xóa chưa
                     if (imagePaths.indexOf(imagePath) == imagePaths.size() - 1) {
-                        // All images deleted, proceed with deleting room
+                        // Đã xóa hết hình ảnh, tiến hành xóa phòng
                         deleteRoomFromFirestore(room, db, deletingDialog);
                     }
                 }).addOnFailureListener(exception -> {
@@ -211,6 +217,7 @@ public class RoomAdapterSingle extends RecyclerView.Adapter<RoomAdapterSingle.Ro
             }
         }
 
+        // Hàm xoá phòng trên firestore
         private void deleteRoomFromFirestore(Room room, FirebaseFirestore db, AlertDialog deletingDialog) {
             db.collection("rooms").document(room.getId())
                     .delete()
@@ -222,8 +229,9 @@ public class RoomAdapterSingle extends RecyclerView.Adapter<RoomAdapterSingle.Ro
                                     if (task.isSuccessful() && !task.getResult().isEmpty()) {
                                         DocumentSnapshot userDoc = task.getResult().getDocuments().get(0);
                                         db.collection("users").document(userDoc.getId())
-                                                .update("listPostedRoom", FieldValue.arrayRemove(room.getId()))
+                                                .update("postedRooms", FieldValue.arrayRemove(room.getId()))
                                                 .addOnSuccessListener(aVoid2 -> {
+                                                    // Cập nhật danh sách
                                                     roomList.remove(room);
                                                     notifyItemRemoved(getAdapterPosition());
                                                     notifyItemRangeChanged(getAdapterPosition(), roomList.size());
@@ -254,6 +262,7 @@ public class RoomAdapterSingle extends RecyclerView.Adapter<RoomAdapterSingle.Ro
 
     }
 
+    // Hàm format giá đơn vị triệu
     private String formatPrice(String price) {
         DecimalFormat decimalFormat = new DecimalFormat("#,###.##");
         double millions = Integer.parseInt(price) / 1_000_000.0;

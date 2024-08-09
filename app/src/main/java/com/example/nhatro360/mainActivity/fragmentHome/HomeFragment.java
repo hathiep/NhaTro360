@@ -42,13 +42,16 @@ public class HomeFragment extends Fragment implements OnRoomClickListener, RoomA
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
 
+        // Gọi hàm ánh xạ view
         init(view);
+        // Gọi hàm bắt sự kiện click button tạo phòng
         onClickCreatePost();
-        db = FirebaseFirestore.getInstance();
+        // Gọi hàm lấy dữ liệu phòng từ Firestore
         fetchRoomsFromFirestore();
         return view;
     }
 
+    // Hàm ánh xạ view
     private void init(View view) {
         itemList = new ArrayList<>();
         recyclerViewRooms = view.findViewById(R.id.recycler_view_list_room);
@@ -66,8 +69,24 @@ public class HomeFragment extends Fragment implements OnRoomClickListener, RoomA
         imvCreate = view.findViewById(R.id.imv_create);
         imvCreate.setImageResource(R.drawable.ic_create);
         imvCreate.setVisibility(View.VISIBLE);
+        db = FirebaseFirestore.getInstance();
     }
 
+    // Hàm bắt sự kiện click button tạo phòng
+    private void onClickCreatePost(){
+        imvCreate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(TAG, "Create button clicked");
+                // Chuyển đến activity tạo phòng
+                Intent intent = new Intent(getActivity(), CreateRoomActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                startActivity(intent);
+            }
+        });
+    }
+
+    // Hàm lấy dữ liệu phòng từ Firestore
     private void fetchRoomsFromFirestore() {
         db.collection("rooms")
                 .get()
@@ -77,11 +96,14 @@ public class HomeFragment extends Fragment implements OnRoomClickListener, RoomA
                         for (QueryDocumentSnapshot document : task.getResult()) {
                             Room room = document.toObject(Room.class);
                             room.setId(document.getId());
+                            // Chỉ hiển thị phòng đã được duyệt - status = 1
                             if(room.getStatus() == 1) listGeneralRoom.add(room);
                         }
 
+                        // Sắp xếp theo thứ tự thời gian đăng
                         sortRoomsByTimePosted(listGeneralRoom);
 
+                        // Khai báo các danh sách phòng
                         List<Room> listNewRoom = new ArrayList<>();
                         List<Room> listParingRoom = new ArrayList<>();
                         List<Room> listApartment = new ArrayList<>();
@@ -92,6 +114,7 @@ public class HomeFragment extends Fragment implements OnRoomClickListener, RoomA
 
                         for (Room room : listGeneralRoom) {
                             Timestamp timePosted = room.getTimePosted();
+                            // Lọc các phòng mới đăng trong 24h, tối đa 6 phòng
                             if (timePosted != null) {
                                 Date postedDate = timePosted.toDate();
                                 long diffInMillis = now.getTime() - postedDate.getTime();
@@ -101,20 +124,27 @@ public class HomeFragment extends Fragment implements OnRoomClickListener, RoomA
                                     newRoomCount++;
                                 }
                             }
+
+                            // Lọc các phòng ở ghép, tối đa 6 phòng
                             if (room.getPostType() == 2 && paringRoomCount < 6) {
                                 listParingRoom.add(room);
                                 paringRoomCount++;
                             }
+
+                            // Lọc các phòng căn hộ, chung cư mini, tối đa 6 phòng
                             if ((room.getRoomType() == 2 || room.getRoomType() == 3) && apartmentCount < 6) {
                                 listApartment.add(room);
                                 apartmentCount++;
                             }
+
+                            // Lọc các nhà nguyên căn, tối đa 6 phòng
                             if (room.getRoomType() == 4 && houseCount < 6) {
                                 listHouse.add(room);
                                 houseCount++;
                             }
                         }
 
+                        // Hiển thị các danh sách phòng
                         itemList.clear();
                         if (!listNewRoom.isEmpty()) {
                             itemList.add("title_new_room");
@@ -144,6 +174,7 @@ public class HomeFragment extends Fragment implements OnRoomClickListener, RoomA
                 });
     }
 
+    // Hàm sắp xếp theo thời gian đăng
     private void sortRoomsByTimePosted(List<Room> rooms) {
         Collections.sort(rooms, new Comparator<Room>() {
             @Override
@@ -156,19 +187,7 @@ public class HomeFragment extends Fragment implements OnRoomClickListener, RoomA
         });
     }
 
-    private void onClickCreatePost(){
-        imvCreate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.d(TAG, "Create button clicked");
-                Intent intent = new Intent(getActivity(), CreateRoomActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                startActivity(intent);
-            }
-        });
-    }
-
-
+    // Hàm chuyển hướng đến trang chi tiết phòng
     @Override
     public void onRoomClick(Room room) {
         Intent intent = new Intent(getActivity(), RoomDetailActivity.class);

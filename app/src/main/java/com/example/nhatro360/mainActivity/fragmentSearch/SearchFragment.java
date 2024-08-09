@@ -103,11 +103,16 @@ public class SearchFragment extends Fragment  {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_search, container, false);
 
+        // Gọi hàm ánh xạ view
         init(view);
+
+        // Gọi hàm bắt sự kiên click
+        setOnclick(view);
 
         return view;
     }
 
+    // Hàm ánh xạ view
     private void init(View view){
         edtSearch = view.findViewById(R.id.edt_search);
         progressBar = view.findViewById(R.id.progressBar);
@@ -122,9 +127,13 @@ public class SearchFragment extends Fragment  {
         imvFilter.setVisibility(View.GONE);
 
         db = FirebaseFirestore.getInstance();
-
+        // lấy vị trí hiện tại của người dùng
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(getActivity());
 
+    }
+
+    // Hàm bắt sự kiên click
+    private void setOnclick(View view){
         tvSearchAround.setOnClickListener(v -> {
             Log.d(TAG, "Current location TextView clicked");
             if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
@@ -136,6 +145,7 @@ public class SearchFragment extends Fragment  {
             }
         });
 
+        // Gọi hàm hiển thị lịch sử tìm kiếm
         loadSearchHistory(view);
 
         edtSearch.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -195,9 +205,9 @@ public class SearchFragment extends Fragment  {
                 }
             }
         });
-
     }
 
+    // Hiển thị dialog lọc phòng theo điều kiện
     private void showFilterDialog(View view) throws JSONException {
         overlay.setVisibility(View.VISIBLE);
         initFilter();
@@ -209,7 +219,7 @@ public class SearchFragment extends Fragment  {
         dialog.show();
 
         dialog.setOnDismissListener(dialogInterface -> {
-            // Hide overlay when dialog is dismissed
+            // Ẩn lớp overlay khi dialog tắt
             overlay.setVisibility(View.GONE);
         });
 
@@ -228,6 +238,7 @@ public class SearchFragment extends Fragment  {
         });
     }
 
+    // Ánh xạ view dialog bộ lọc
     private void initFilter(){
         dialog = new Dialog(getContext());
         dialog.setContentView(R.layout.dialog_filter_room);
@@ -272,6 +283,7 @@ public class SearchFragment extends Fragment  {
         btnFilter = dialog.findViewById(R.id.btn_filter);
     }
 
+    // Hàm onclick các tv điều kiện
     private void onClickList(List<TextView> listTv, int position){
         for (int i=0; i<listTv.size(); i++){
             TextView tv = listTv.get(i);
@@ -288,6 +300,7 @@ public class SearchFragment extends Fragment  {
         }
     }
 
+    // Ánh xạ view 2 thanh kéo và bắt sự kiện
     private void initDrag(int i, boolean isLeft) {
         TextView tvSelected;
         View handleLeft, handleRight, rangeView;
@@ -368,6 +381,7 @@ public class SearchFragment extends Fragment  {
         });
     }
 
+    // Hàm lọc phòng với các điều kiện
     private void filterRoomsByOption() {
         progressBar.setVisibility(View.VISIBLE);
         int postType = listOption[0];
@@ -386,6 +400,7 @@ public class SearchFragment extends Fragment  {
         for (Room room : listSearchedRoom) {
             boolean matches = true;
 
+            // Lọc theo postType
             if (postType != 0 && room.getPostType() != postType) {
                 matches = false;
             }
@@ -395,17 +410,20 @@ public class SearchFragment extends Fragment  {
                 matches = false;
             }
 
+            // Lọc theo giá
             int price = Integer.parseInt(room.getPrice());
             if (price < minPrice * 1000000 || price > maxPrice * 1000000) {
                 matches = false;
             }
 
+            // Lọc theo diện tích
             int area = Integer.parseInt(room.getArea());
             if (area < minArea || area > maxArea) {
                 matches = false;
             }
 
             if (matches) {
+                // nếu thoả mãn điều kiện lọc thì thêm vào danh sách
                 filteredRooms.add(room);
             }
         }
@@ -438,11 +456,6 @@ public class SearchFragment extends Fragment  {
                 break;
         }
 
-        // Ghi log danh sách phòng đã lọc
-        for (Room room : filteredRooms) {
-            Log.e(TAG, "" + room.getPrice());
-            Log.e(TAG, "" + room.getPostType());
-        }
         dialog.dismiss();
 
         new Handler().postDelayed(() -> {
@@ -451,6 +464,7 @@ public class SearchFragment extends Fragment  {
         }, 1000);
     }
 
+    // Hàm lấy vị trí hiện tại
     @SuppressLint("MissingPermission")
     private void getCurrentLocation() {
         LocationRequest locationRequest = LocationRequest.create();
@@ -470,6 +484,7 @@ public class SearchFragment extends Fragment  {
                 });
     }
 
+    // Hàm cập nhật vị trí hiện tại lên thanh tìm kiếm và thực hiện tìm kiếm
     private void updateAddressFields(double latitude, double longitude) {
         Geocoder geocoder = new Geocoder(getActivity(), Locale.getDefault());
         try {
@@ -489,6 +504,7 @@ public class SearchFragment extends Fragment  {
         }
     }
 
+    // Hàm hiển thị lịch sử tìm kiếm (5 lần gần nhất)
     private void loadSearchHistory(View view) {
         layoutHistory.setVisibility(View.VISIBLE);
         layoutListRoom.setVisibility(View.GONE);
@@ -528,6 +544,7 @@ public class SearchFragment extends Fragment  {
         }
     }
 
+    // Hàm tìm kiếm theo địa chỉ
     private void performSearch(String query) {
         saveSearchHistory(query);
         edtSearch.setText(query);
@@ -558,6 +575,7 @@ public class SearchFragment extends Fragment  {
         });
     }
 
+    //
     private void searchRooms(String query, FirestoreCallback callback) {
         db.collection("rooms")
                 .get()
@@ -581,6 +599,7 @@ public class SearchFragment extends Fragment  {
                 });
     }
 
+    // Hàm lọc phòng theo địa chỉ
     private List<Room> filterRoomsByQuery(List<Room> rooms, String query) {
         List<Room> filteredRooms = new ArrayList<>();
         for (Room room : rooms) {
@@ -596,6 +615,7 @@ public class SearchFragment extends Fragment  {
         void onCallback(List<Room> searchResults);
     }
 
+    // Hàm hiển thị danh sách địa chỉ lọc
     private void showMenuDialog(View view) throws JSONException {
         overlay.setVisibility(View.VISIBLE);
 
@@ -678,6 +698,7 @@ public class SearchFragment extends Fragment  {
 
     }
 
+    // Hàm lưu lịch sử tìm kiếm
     private void saveSearchHistory(String query) {
         layoutHistory.setVisibility(View.GONE);
         imvFilter.setVisibility(View.VISIBLE);
@@ -708,6 +729,7 @@ public class SearchFragment extends Fragment  {
         }
     }
 
+    // Hàm lấy danh sách tỉnh, huyện từ file json
     private void getArray() throws IOException, JSONException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(getActivity().getAssets().open("provinces.json")));
         StringBuilder jsonBuilder = new StringBuilder();
@@ -720,6 +742,7 @@ public class SearchFragment extends Fragment  {
         districtsArray = sortArray(jsonObject.getJSONArray("district"), false);
     }
 
+    // Hàm sắp xếp danh sách tỉnh, huyện theo bảng chữ cái
     private JSONArray sortArray(JSONArray arr, boolean prov) throws JSONException {
         List<JSONObject> list = new ArrayList<>();
         int x = 0;
@@ -799,6 +822,7 @@ public class SearchFragment extends Fragment  {
 
     }
 
+    // Hàm hiển thị listview
     private void showListViewPopup(View anchor, List<String> items, OnItemClickListener listener) {
         if (items.size() == 0) {
             Toast.makeText(getActivity(), "Danh sách trống", Toast.LENGTH_SHORT).show();
@@ -808,7 +832,7 @@ public class SearchFragment extends Fragment  {
         ListView listView = dialog.findViewById(R.id.list_view_popup);
         ArrayAdapter<String> adapter = new ArrayAdapter<>(
                 getActivity(),
-                R.layout.item_list_seach_address,  // Sử dụng layout của bạn
+                R.layout.item_list_seach_address,
                 items
         );
         adapter.notifyDataSetChanged();
@@ -827,6 +851,7 @@ public class SearchFragment extends Fragment  {
         dialog.show();
     }
 
+    // Hàm setup menu tìm kiếm địa chỉ
     private void setupPopupMenus() {
         List<String> provinces = new ArrayList<>();
         provinceIds = new ArrayList<>();

@@ -66,6 +66,7 @@ public class SearchedRoomsFragment extends Fragment implements OnRoomClickListen
         return view;
     }
 
+    // Hàm cập nhật danh sách phòng
     public void updateRoomList(List<Room> newRoomList) {
         tvEmptyMessage.setVisibility(View.GONE);
         recyclerView.setVisibility(View.VISIBLE);

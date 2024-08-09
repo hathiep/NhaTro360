@@ -33,11 +33,13 @@ import android.widget.Toast;
 
 import com.example.nhatro360.mainActivity.MainActivity;
 import com.example.nhatro360.R;
+import com.example.nhatro360.model.Notification;
 import com.example.nhatro360.model.Room;
 import com.example.nhatro360.model.Address;
 import com.example.nhatro360.model.User;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
@@ -101,6 +103,7 @@ public class CreateRoomActivity extends AppCompatActivity {
 
         init();
 
+        // Hiển thị fragment đầu tiên
         if (savedInstanceState == null) {
             loadFragment(new AddressFragment(), false);
         } else {
@@ -115,6 +118,7 @@ public class CreateRoomActivity extends AppCompatActivity {
         updateButtons();
     }
 
+    // Hàm ánh xạ view
     private void init() {
         db = FirebaseFirestore.getInstance();
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
@@ -142,6 +146,7 @@ public class CreateRoomActivity extends AppCompatActivity {
         listLine.add(findViewById(R.id.line32));
     }
 
+    // Hàm lấy thông tin tài khoản hiện tại
     private void getCurrentUser(FirestoreCallback callback) {
         if (currentUser != null) {
             String userEmail = currentUser.getEmail();
@@ -160,27 +165,9 @@ public class CreateRoomActivity extends AppCompatActivity {
         }
     }
 
-    private void updateUser(){
-        DocumentReference userRef = db.collection("users").document(user.getId());
-        userRef.update("postedRooms", user.getPostedRooms())
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        // Thông báo cập nhật thành công
-                        Log.d("Firestore", "User attribute updated successfully.");
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        // Thông báo lỗi
-                        Log.w("Firestore", "Error updating user attribute.", e);
-                    }
-                });
-    }
-
+    // Hàm bắt sự kiện click nút back và next
     private void setOnclickHeader() {
-
+        // Nút tiếp theo
         tvNext.setOnClickListener(v -> {
             Fragment currentFragment = getCurrentFragment();
             if (currentFragment instanceof AddressFragment) {
@@ -195,6 +182,7 @@ public class CreateRoomActivity extends AppCompatActivity {
                 }
             } else if (currentFragment instanceof ImageFragment) {
                 if (!((ImageFragment) currentFragment).getImageList().isEmpty()){
+                    // Lưu danh sách ảnh vào viewModel
                     room.setImages(((ImageFragment) currentFragment).getImageList());
                     viewModel.setRoom(room);
                     loadFragment(new ConfirmFragment(), true);
@@ -211,11 +199,15 @@ public class CreateRoomActivity extends AppCompatActivity {
             }
         });
 
+        // Nút Huỷ/Quay lại
         tvCancel.setOnClickListener(v -> {
             Fragment currentFragment = getCurrentFragment();
             if (currentFragment instanceof AddressFragment) {
+                // Nếu ở bước điền địa chỉ thì hiển thị thông báo huỷ
                 showCancelDialog();
             } else {
+                // Nếu ở các bước khác thì quay lại bước trước đó
+                // Đồng thời lưu lại trạng thái phòng đang tạo vào ViewModel
                 if (currentFragment instanceof ConfirmFragment) {
                     viewModel.setRoom(((ConfirmFragment) getCurrentFragment()).getRoom());
                     setBackStep(2, 3);
@@ -234,140 +226,82 @@ public class CreateRoomActivity extends AppCompatActivity {
         getSupportFragmentManager().addOnBackStackChangedListener(this::updateButtons);
     }
 
-    private void loadFragment(Fragment fragment, boolean addToBackStack) {
-        if (fragment instanceof ImageFragment) {
-            ((ImageFragment) fragment).setImageList(room.getImages());
+    // Hàm check dữ liệu trống khi nhập địa chỉ
+    private boolean validateAddress() {
+        AddressFragment addressFragment = (AddressFragment) getCurrentFragment();
+
+        String province = addressFragment.getProvince();
+        String district = addressFragment.getDistrict();
+        String ward = addressFragment.getWard();
+        String street = addressFragment.getStreet();
+
+        if(province == null || province.isEmpty()){
+            showError("Vui lòng chọn Tỉnh/TP!");
+            return false;
         }
-        if (fragment instanceof ImageFragment) {
-            ((ImageFragment) fragment).setImageList(room.getImages());
+        if(district == null || district.isEmpty()){
+            showError("Vui lòng chọn Quận/Huyện!");
+            return false;
         }
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.fragment_container, fragment);
-        if (addToBackStack) {
-            fragmentTransaction.addToBackStack(null);
+        if(ward == null || ward.isEmpty()){
+            showError("Vui lòng chọn Phường/Xã!");
+            return false;
         }
-        fragmentTransaction.commit();
-        fragmentManager.executePendingTransactions(); // Đảm bảo transaction hoàn tất
-        updateButtons(); // Cập nhật nút sau khi fragment thay đổi
-    }
-
-    private Fragment getCurrentFragment() {
-        return getSupportFragmentManager().findFragmentById(R.id.fragment_container);
-    }
-
-    private void saveRoomToFireStoreDatabase() {
-        showProgressDialog("Đang lưu dữ liệu...");
-
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        FirebaseStorage storage = FirebaseStorage.getInstance();
-        StorageReference storageRef = storage.getReference();
-
-        // Create a new room with the fields specified
-        Map<String, Object> roomData = new HashMap<>();
-        roomData.put("address", room.getAddress());
-        roomData.put("area", room.getArea());
-        roomData.put("avatar", room.getAvatar());
-        roomData.put("detail", room.getDetail());
-        roomData.put("host", room.getHost());
-        roomData.put("phone", room.getPhone());
-        roomData.put("postType", room.getPostType() + 1);
-        roomData.put("price", room.getPrice());
-        roomData.put("roomType", room.getRoomType() + 1);
-        roomData.put("status", 0);
-        roomData.put("timePosted", FieldValue.serverTimestamp());
-        roomData.put("title", room.getTitle());
-        roomData.put("utilities", room.getUtilities());
-
-        // Add a new document with a generated ID
-        db.collection("rooms")
-                .add(roomData)
-                .addOnSuccessListener(documentReference -> {
-                    String documentId = documentReference.getId();
-                    getCurrentUser(new FirestoreCallback() {
-                        @Override
-                        public void onCallback(User userData) {
-                            user = userData;
-                            user.getPostedRooms().add(documentId);
-                            updateUser();
-                        }
-                    });
-                    // Call the method to upload images and save their URLs
-                    uploadImagesAndSaveUrls(documentId, room.getImages());
-                })
-                .addOnFailureListener(e -> {
-                    // Failed to add room
-                    progressDialog.dismiss();
-                    Toast.makeText(CreateRoomActivity.this, "Error posting room: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                });
-    }
-
-    private void uploadImagesAndSaveUrls(String documentId, List<String> imagePaths) {
-        FirebaseStorage storage = FirebaseStorage.getInstance();
-        StorageReference storageRef = storage.getReference().child("rooms/" + documentId);
-
-        ConcurrentHashMap<Integer, String> imageUrlsMap = new ConcurrentHashMap<>();
-        ExecutorService executor = Executors.newFixedThreadPool(4); // Số lượng tiến trình song song, có thể tùy chỉnh
-        for (int i = 0; i < imagePaths.size(); i++) {
-            String imagePath = imagePaths.get(i);
-            int index = i; // Tạo một biến final cho chỉ số hiện tại
-            executor.execute(() -> {
-                try {
-                    Uri fileUri = Uri.parse(imagePath); // Chuyển đổi đường dẫn thành Uri
-                    StorageReference imageRef = storageRef.child("image_" + index + ".jpg"); // Đặt tên tệp theo thứ tự
-
-                    imageRef.putFile(fileUri)
-                            .addOnSuccessListener(taskSnapshot -> imageRef.getDownloadUrl()
-                                    .addOnSuccessListener(uri -> {
-                                        imageUrlsMap.put(index, uri.toString());
-                                        if (imageUrlsMap.size() == imagePaths.size()) {
-                                            List<String> sortedImageUrls = new ArrayList<>(imagePaths.size());
-                                            for (int j = 0; j < imagePaths.size(); j++) {
-                                                sortedImageUrls.add(imageUrlsMap.get(j));
-                                            }
-                                            saveImageUrlsToFirestore(documentId, sortedImageUrls);
-                                        }
-                                    }))
-                            .addOnFailureListener(e -> {
-                                // Failed to upload image
-                                runOnUiThread(() -> {
-                                    progressDialog.dismiss();
-                                    Toast.makeText(CreateRoomActivity.this, "Error uploading image: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                                });
-                            });
-                } catch (Exception e) {
-                    runOnUiThread(() -> {
-                        progressDialog.dismiss();
-                        Toast.makeText(CreateRoomActivity.this, "Error uploading image: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                    });
-                }
-            });
+        if(street == null || street.isEmpty()){
+            showError("Vui lòng điền Số nhà, tên đường!");
+            return false;
         }
-        executor.shutdown(); // Đảm bảo tất cả các tiến trình đều hoàn tất
+
+        address = new Address(province, district, ward, street);
+        room.setAddress(address.getAddress());
+        viewModel.setRoom(room);
+        return true;
     }
 
-    private void saveImageUrlsToFirestore(String documentId, List<String> imageUrls) {
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        db.collection("rooms").document(documentId)
-                .update("images", imageUrls)
-                .addOnSuccessListener(aVoid -> {
-                    // Successfully updated room with image URLs
-                    progressDialog.setMessage("Hoàn tất tạo mới phòng. Vui lòng chờ được chờ xét duyệt.");
-                    new Handler().postDelayed(() -> {
-                        progressDialog.dismiss();
-                        Intent intent = new Intent(this, MainActivity.class);
-                        startActivity(intent);
-                        overridePendingTransition(0, 0);
-                        finish();
-                    }, 2000); // Chờ 2 giây trước khi chuyển sang MainActivity
-                })
-                .addOnFailureListener(e -> {
-                    // Failed to update room with image URLs
-                    progressDialog.dismiss();
-                    Toast.makeText(CreateRoomActivity.this, "Error updating room with images: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                });
+    // Hàm check dữ liệu trống khi nhập thông tin
+    private boolean validateInformation(){
+        InformationFragment informationFragment = (InformationFragment) getCurrentFragment();
+        Room roomInfor = informationFragment.getRoom();
+        String roomPrice = roomInfor.getPrice();
+        String roomArea = roomInfor.getArea();
+        if(roomPrice.equals("")){
+            showError("Vui lòng nhập giá phòng!");
+            return false;
+        }
+        if(Integer.parseInt(roomPrice)<100000){
+            showError("Giá phòng phải trên 100.000 VND!");
+            return false;
+        }
+        if(roomArea.equals("")){
+            showError("Vui lòng nhập diện tích phòng!");
+            return false;
+        }
+        if(Integer.parseInt(roomArea)<5){
+            showError("Diện tích phòng phải trên 5 m2!");
+            return false;
+        }
+        if(!roomInfor.getUtilities().contains(true)){
+            showError("Chọn tối thiểu một tiện ích");
+            return false;
+        }
+        viewModel.setRoom(roomInfor);
+        return true;
     }
 
+    // Hàm check dữ liệu trống khi ở bước xác nhận
+    private boolean validateConfirm(){
+        ConfirmFragment confirmFragment = (ConfirmFragment) getCurrentFragment();
+        Room roomInfor = confirmFragment.getRoom();
+        if(roomInfor.getTitle().equals("") || roomInfor.getHost().equals("") ||
+                roomInfor.getPhone().equals("") || roomInfor.getDetail().equals("") ){
+            showError("Vui lòng nhập đầy đủ thông tin!");
+            return false;
+        }
+        viewModel.setRoom(roomInfor);
+        return true;
+    }
+
+    // Hàm tuỳ chỉnh view các bước khi click vào next
     private void setNextStep(int current, int complete) {
         listTv.get(complete).setTextColor(getResources().getColor(R.color.blue2));
         setAnimationIcon(complete, 1, 1);
@@ -375,6 +309,7 @@ public class CreateRoomActivity extends AppCompatActivity {
         new Handler().postDelayed(() -> setAnimationIcon(current, 2, 1), 50);
     }
 
+    // Hàm tuỳ chỉnh view các bước khi click vào back
     private void setBackStep(int current, int inComplete) {
         listTv.get(current).setTextColor(getResources().getColor(R.color.black2));
         setAnimationIcon(inComplete, 3, 2);
@@ -382,6 +317,7 @@ public class CreateRoomActivity extends AppCompatActivity {
         new Handler().postDelayed(() -> setAnimationIcon(current, 2, 2), 50);
     }
 
+    // Hàm thay đổi hiệu ứng Icon
     private void setAnimationIcon(int cnt, int i, int direction) {
         int time_delay;
         ImageView imv = listImv.get(cnt);
@@ -447,6 +383,7 @@ public class CreateRoomActivity extends AppCompatActivity {
         }, 50);
     }
 
+    // Hàm thay đổi hiệu ứng đường thẳng
     private void setAnimationLine(int i, int direction) {
         if(direction == 2) {
             listLine.get(i).setBackgroundResource(R.drawable.ic_line);
@@ -457,6 +394,7 @@ public class CreateRoomActivity extends AppCompatActivity {
         listLine.get(i+3).setBackgroundResource(R.drawable.ic_line2);
     }
 
+    // Hàm cập nhật tên của nút back và next
     private void updateButtons() {
         if (tvCancel == null || tvNext == null) {
             return; // Tránh lỗi NullPointerException
@@ -478,78 +416,30 @@ public class CreateRoomActivity extends AppCompatActivity {
         }
     }
 
-    private boolean validateAddress() {
-        AddressFragment addressFragment = (AddressFragment) getCurrentFragment();
-
-        String province = addressFragment.getProvince();
-        String district = addressFragment.getDistrict();
-        String ward = addressFragment.getWard();
-        String street = addressFragment.getStreet();
-
-        if(province == null || province.isEmpty()){
-            showError("Vui lòng chọn Tỉnh/TP!");
-            return false;
+    // Hàm Hàm hiển thị bước hiện tại
+    private void loadFragment(Fragment fragment, boolean addToBackStack) {
+        if (fragment instanceof ImageFragment) {
+            ((ImageFragment) fragment).setImageList(room.getImages());
         }
-        if(district == null || district.isEmpty()){
-            showError("Vui lòng chọn Quận/Huyện!");
-            return false;
+        if (fragment instanceof ImageFragment) {
+            ((ImageFragment) fragment).setImageList(room.getImages());
         }
-        if(ward == null || ward.isEmpty()){
-            showError("Vui lòng chọn Phường/Xã!");
-            return false;
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.fragment_container, fragment);
+        if (addToBackStack) {
+            fragmentTransaction.addToBackStack(null);
         }
-        if(street == null || street.isEmpty()){
-            showError("Vui lòng điền Số nhà, tên đường!");
-            return false;
-        }
-
-        address = new Address(province, district, ward, street);
-        room.setAddress(address.getAddress());
-        viewModel.setRoom(room);
-        return true;
+        fragmentTransaction.commit();
+        fragmentManager.executePendingTransactions(); // Đảm bảo transaction hoàn tất
+        updateButtons(); // Cập nhật nút sau khi fragment thay đổi
     }
 
-    private boolean validateInformation(){
-        InformationFragment informationFragment = (InformationFragment) getCurrentFragment();
-        Room roomInfor = informationFragment.getRoom();
-        String roomPrice = roomInfor.getPrice();
-        String roomArea = roomInfor.getArea();
-        if(roomPrice.equals("")){
-            showError("Vui lòng nhập giá phòng!");
-            return false;
-        }
-        if(Integer.parseInt(roomPrice)<100000){
-            showError("Giá phòng phải trên 100.000 VND!");
-            return false;
-        }
-        if(roomArea.equals("")){
-            showError("Vui lòng nhập diện tích phòng!");
-            return false;
-        }
-        if(Integer.parseInt(roomArea)<5){
-            showError("Diện tích phòng phải trên 5 m2!");
-            return false;
-        }
-        if(!roomInfor.getUtilities().contains(true)){
-            showError("Chọn tối thiểu một tiện ích");
-            return false;
-        }
-        viewModel.setRoom(roomInfor);
-        return true;
+    private Fragment getCurrentFragment() {
+        return getSupportFragmentManager().findFragmentById(R.id.fragment_container);
     }
 
-    private boolean validateConfirm(){
-        ConfirmFragment confirmFragment = (ConfirmFragment) getCurrentFragment();
-        Room roomInfor = confirmFragment.getRoom();
-        if(roomInfor.getTitle().equals("") || roomInfor.getHost().equals("") ||
-                roomInfor.getPhone().equals("") || roomInfor.getDetail().equals("") ){
-            showError("Vui lòng nhập đầy đủ thông tin!");
-            return false;
-        }
-        viewModel.setRoom(roomInfor);
-        return true;
-    }
-
+    // Hàm hiển thị thông báo xác nhận tạo phòng
     private void showConfirmDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this)
                 .setMessage(R.string.confirm_message)
@@ -564,6 +454,7 @@ public class CreateRoomActivity extends AppCompatActivity {
             dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setAllCaps(true);
 
             dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(v -> {
+                // Gọi hàm lưu phòng vào firestore
                 saveRoomToFireStoreDatabase();
                 dialog.dismiss();
             });
@@ -572,6 +463,150 @@ public class CreateRoomActivity extends AppCompatActivity {
         dialog.show();
     }
 
+    // Hàm lưu phòng hiện tại lên Firestore
+    private void saveRoomToFireStoreDatabase() {
+        showProgressDialog("Đang lưu dữ liệu...");
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        StorageReference storageRef = storage.getReference();
+
+        // Create a new room with the fields specified
+        Map<String, Object> roomData = new HashMap<>();
+        roomData.put("address", room.getAddress());
+        roomData.put("area", room.getArea());
+        roomData.put("avatar", room.getAvatar());
+        roomData.put("detail", room.getDetail());
+        roomData.put("host", room.getHost());
+        roomData.put("phone", room.getPhone());
+        roomData.put("postType", room.getPostType() + 1);
+        roomData.put("price", room.getPrice());
+        roomData.put("roomType", room.getRoomType() + 1);
+        roomData.put("status", 0);
+        roomData.put("timePosted", FieldValue.serverTimestamp());
+        roomData.put("title", room.getTitle());
+        roomData.put("utilities", room.getUtilities());
+
+        // Add a new document with a generated ID
+        db.collection("rooms")
+                .add(roomData)
+                .addOnSuccessListener(documentReference -> {
+                    String documentId = documentReference.getId();
+                    getCurrentUser(new FirestoreCallback() {
+                        @Override
+                        public void onCallback(User userData) {
+                            user = userData;
+                            user.getPostedRooms().add(documentId);
+                            // Gọi hàm cập nhật danh sách phòng đã đăng của người dùng
+                            updateUser(documentId);
+                        }
+                    });
+                    // Gọi hàm lưu ảnh và tạo đường dẫn
+                    uploadImagesAndSaveUrls(documentId, room.getImages());
+                })
+                .addOnFailureListener(e -> {
+                    // Failed to add room
+                    progressDialog.dismiss();
+                    Toast.makeText(CreateRoomActivity.this, "Error posting room: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                });
+    }
+
+    // Hàm cập nhật danh sách phòng đã đăng của người dùng
+    private void updateUser(String roomId){
+        DocumentReference userRef = db.collection("users").document(user.getId());
+        // Tạo đối tượng Notification mới
+        Notification newNotification = new Notification(roomId, Timestamp.now(), 1);
+        List<Notification> notifications = user.getNotifications();
+        notifications.add(newNotification);
+
+        // Cập nhật trường notifications trong Firestore
+        userRef.update("notifications", notifications)
+                .addOnSuccessListener(aVoid -> {
+                    // Cập nhật trường postedRooms với danh sách toàn cục
+                    userRef.update("postedRooms", user.getPostedRooms())
+                            .addOnSuccessListener(aVoid1 -> {
+                                Log.d("Firestore", "User attribute updated successfully.");
+                            })
+                            .addOnFailureListener(e -> {
+                                Log.w("Firestore", "Error updating postedRooms.", e);
+                            });
+                })
+                .addOnFailureListener(e -> {
+                    Log.w("Firestore", "Error updating notifications.", e);
+                });
+    }
+
+    // Hàm lưu ảnh và tạo đường dẫn
+    private void uploadImagesAndSaveUrls(String documentId, List<String> imagePaths) {
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        StorageReference storageRef = storage.getReference().child("rooms/" + documentId);
+
+        ConcurrentHashMap<Integer, String> imageUrlsMap = new ConcurrentHashMap<>();
+        ExecutorService executor = Executors.newFixedThreadPool(4); // Số lượng tiến trình song song, có thể tùy chỉnh
+        for (int i = 0; i < imagePaths.size(); i++) {
+            String imagePath = imagePaths.get(i);
+            int index = i;
+            executor.execute(() -> {
+                try {
+                    Uri fileUri = Uri.parse(imagePath); // Chuyển đổi đường dẫn thành Uri
+                    StorageReference imageRef = storageRef.child("image_" + index + ".jpg"); // Đặt tên tệp theo thứ tự
+
+                    imageRef.putFile(fileUri)
+                            .addOnSuccessListener(taskSnapshot -> imageRef.getDownloadUrl()
+                                    .addOnSuccessListener(uri -> {
+                                        imageUrlsMap.put(index, uri.toString());
+                                        if (imageUrlsMap.size() == imagePaths.size()) {
+                                            List<String> sortedImageUrls = new ArrayList<>(imagePaths.size());
+                                            for (int j = 0; j < imagePaths.size(); j++) {
+                                                sortedImageUrls.add(imageUrlsMap.get(j));
+                                            }
+                                            // Gọi hàm lưu ảnh vào storage
+                                            saveImageUrlsToFirestore(documentId, sortedImageUrls);
+                                        }
+                                    }))
+                            .addOnFailureListener(e -> {
+                                // Failed to upload image
+                                runOnUiThread(() -> {
+                                    progressDialog.dismiss();
+                                    Toast.makeText(CreateRoomActivity.this, "Error uploading image: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                });
+                            });
+                } catch (Exception e) {
+                    runOnUiThread(() -> {
+                        progressDialog.dismiss();
+                        Toast.makeText(CreateRoomActivity.this, "Error uploading image: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    });
+                }
+            });
+        }
+        executor.shutdown(); // Đảm bảo tất cả các tiến trình đều hoàn tất
+    }
+
+    // Hàm lưu ảnh vào storage
+    private void saveImageUrlsToFirestore(String documentId, List<String> imageUrls) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("rooms").document(documentId)
+                .update("images", imageUrls)
+                .addOnSuccessListener(aVoid -> {
+                    // Hiển thị thông báo tạo phòng thành công
+                    progressDialog.setMessage("Hoàn tất tạo mới phòng. Vui lòng chờ được chờ xét duyệt.");
+                    new Handler().postDelayed(() -> {
+                        progressDialog.dismiss();
+                        // Chuyển hướng đến trang chủ
+                        Intent intent = new Intent(this, MainActivity.class);
+                        startActivity(intent);
+                        overridePendingTransition(0, 0);
+                        finish();
+                    }, 2000); // Chờ 2 giây trước khi chuyển sang MainActivity
+                })
+                .addOnFailureListener(e -> {
+                    // Failed to update room with image URLs
+                    progressDialog.dismiss();
+                    Toast.makeText(CreateRoomActivity.this, "Error updating room with images: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                });
+    }
+
+    // Hàm hiển thị thông báo
     private void showProgressDialog(String message) {
         progressDialog = new ProgressDialog(this);
         progressDialog.setMessage(message);
@@ -579,6 +614,7 @@ public class CreateRoomActivity extends AppCompatActivity {
         progressDialog.show();
     }
 
+    // Hàm hiển thị thông báo huỷ đăng tin
     private void showCancelDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this)
                 .setMessage(R.string.cancel_post_message)
@@ -612,6 +648,7 @@ public class CreateRoomActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed(){
+        // Gọi hàm hiển thị thông báo huỷ đăng tin khi ấn thoát
         showCancelDialog();
     }
 }

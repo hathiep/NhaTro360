@@ -22,13 +22,16 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.nhatro360.R;
+import com.example.nhatro360.model.Notification;
 import com.example.nhatro360.model.Validate;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.Timestamp;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
@@ -85,6 +88,8 @@ public class RegisterActivity extends AppCompatActivity {
         setUiEye(imV_eye2, editTextPasswordAgain, 2);
         setOnClickListener();
     }
+
+    // Ánh xạ view
     private void initUi(){
         editTextEmail = findViewById(R.id.email);
         editTextName = findViewById(R.id.fullname);
@@ -98,6 +103,8 @@ public class RegisterActivity extends AppCompatActivity {
         imV_eye2 = findViewById(R.id.imV_eye2);
         auth = FirebaseAuth.getInstance();
     }
+
+    // Set trạng thái mắt cho mật khẩu
     private void setUiEye(ImageView imv_eye, EditText edt, int x){
         imv_eye.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -131,6 +138,8 @@ public class RegisterActivity extends AppCompatActivity {
             }
         });
     }
+
+    // Set onclick cho các button
     private void setOnClickListener(){
         imV_back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -154,7 +163,7 @@ public class RegisterActivity extends AppCompatActivity {
                 // Gọi đối tượng validate
                 Validate validate = new Validate(RegisterActivity.this);
                 if(!validate.validateRegister(name, email, phone, password, passwordagain)) return;
-                // Chạy vòng loading
+                // Chạy loading
 //                progressBar.setVisibility(View.VISIBLE);
                 // Check đăng ký
                 createUserWithEmailAndPassword(email, password);
@@ -164,6 +173,7 @@ public class RegisterActivity extends AppCompatActivity {
         });
     }
 
+    // Kiểm tra email và đăng ký
     private void createUserWithEmailAndPassword(String email, String password){
         auth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
@@ -171,6 +181,7 @@ public class RegisterActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
 //                        progressBar.setVisibility(View.GONE);
 
+                        // Nếu hoàn thành gửi email xác thực
                         if (task.isSuccessful()) {
                             user = auth.getCurrentUser();
                             if (user != null) {
@@ -178,6 +189,7 @@ public class RegisterActivity extends AppCompatActivity {
                             }
 
                         } else {
+                            // Email đã tồn tại. Hiển thị thông báo
                             show_dialog("Email đã được sử dụng.Vui lòng thử nhập email khác!", 2);
                             new Handler().postDelayed(new Runnable() {
                                 @Override
@@ -191,6 +203,7 @@ public class RegisterActivity extends AppCompatActivity {
                 });
     }
 
+    // Hiển thị thông báo v gửi email xc tực
     private void sendEmailVerify(String email){
         user.sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
@@ -200,7 +213,7 @@ public class RegisterActivity extends AppCompatActivity {
                     show_dialog("Tạo tài khoản thành công. Email xác thực đã được gửi đến " + email + "\nVui lòng truy cập email để xác nhận!", 3);
                     // Lưu thông tin user vào Firestore Database
                     insertUserToFirestoreDatabase();
-                    //Back to login
+                    //Trở về trang đăng nhập
                     new Handler().postDelayed(new Runnable() {
                         @Override
                         public void run() {
@@ -217,12 +230,14 @@ public class RegisterActivity extends AppCompatActivity {
         });
     }
 
-    //Hàm khởi tạo thông tin User trên FirestoreDatabase
-    private void insertUserToFirestoreDatabase(){
+    private void insertUserToFirestoreDatabase() {
         db = FirebaseFirestore.getInstance();
         user = auth.getCurrentUser();
-        List<String> listSavedRoom = new ArrayList<>(); listSavedRoom.add("x");
-        List<String> listPostedRoom = new ArrayList<>(); listPostedRoom.add("x");
+        List<String> listSavedRoom = new ArrayList<>();
+        listSavedRoom.add("x");
+        List<String> listPostedRoom = new ArrayList<>();
+        listPostedRoom.add("x");
+
         if (user != null) {
             Map<String, Object> userMap = new HashMap<>();
             userMap.put("fullName", editTextName.getText().toString());
@@ -231,21 +246,29 @@ public class RegisterActivity extends AppCompatActivity {
             userMap.put("savedRooms", listSavedRoom);
             userMap.put("postedRooms", listPostedRoom);
 
-            // Add the user to the Firestore db
+            // Tạo đối tượng Notification với các giá trị truyền vào
+            Notification notification = new Notification("", Timestamp.now(), 0);
+
+            // Thêm đối tượng Notification vào danh sách
+            List<Notification> notifications = new ArrayList<>();
+            notifications.add(notification);
+            userMap.put("notifications", notifications);
+
+            // Thêm user vào Firestore db
             db.collection("users")
                     .add(userMap)
                     .addOnSuccessListener(documentReference -> {
-                        // Successfully added user to Firestore
                         Log.d("Firestore", "User added successfully with ID: " + documentReference.getId());
                     })
                     .addOnFailureListener(e -> {
-                        // Failed to add user to Firestore
                         Log.d("Firestore", "Error adding user", e);
                     });
         } else {
             Log.d("Firestore", "No current user logged in");
         }
     }
+
+
     private void show_dialog(String s, int time){
         ProgressDialog progressDialog = new ProgressDialog(RegisterActivity.this);
         progressDialog.setTitle("Thông báo");

@@ -140,11 +140,13 @@
     <string name="empty_message">Danh sách trống</string>
 
     // Notification Fragment
+    <string name="title0">Đăng ký tài khoản thành công</string>
     <string name="title1">Tạo phòng thành công</string>
     <string name="title2">Quản trị viên đã duyệt phòng</string>
     <string name="title3">Quản trị viên đã từ chối phòng</string>
     <string name="title4">Phòng mới hôm nay</string>
     <string name="title5">Đừng bỏ lỡ phòng nhé</string>
+    <string name="message0">Chào mừng bạn đến với Nhà Trọ 360. Hãy trải nghiệm ngay</string>
     <string name="message1">Bạn đã tạo phòng thành công. Vui lòng chờ quản trị viên phê duyệt</string>
     <string name="message2">Chúc mừng phòng của bạn đã được phê duyệt. Vào xem ngay</string>
     <string name="message3">Rất tiếc phòng của bạn đã không được phê duyệt</string>

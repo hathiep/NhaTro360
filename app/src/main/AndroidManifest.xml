@@ -35,10 +35,10 @@
             android:name=".authenActivity.RegisterActivity"
             android:exported="false" />
         <activity
-            android:name=".mainActivity.fragmentAccount.ChangePassword"
+            android:name=".mainActivity.fragmentAccount.ChangePasswordActivity"
             android:exported="false" />
         <activity
-            android:name=".authenActivity.ForgotPassword"
+            android:name=".authenActivity.ForgotPasswordActivity"
             android:exported="false" />
         <activity
             android:name=".mainActivity.MainActivity"
@@ -53,7 +53,7 @@
             </intent-filter>
         </activity>
 
-        <service android:name=".MyFirebaseMessagingService"
+        <service android:name=".mainActivity.fragmentNotifications.MyFirebaseMessagingService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />

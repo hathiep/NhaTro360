@@ -43,6 +43,7 @@ public class ConfirmFragment extends Fragment {
         return view;
     }
 
+    // Ánh xạ view
     private void init(View view){
         viewModel = new ViewModelProvider(requireActivity()).get(CreateRoomViewModel.class);
         room = viewModel.getRoom();
@@ -67,6 +68,7 @@ public class ConfirmFragment extends Fragment {
         setWarning();
     }
 
+    // Hiển thị số lượng kí tự
     private void setCharacterCount(EditText edt, TextView tv, int limit){
         edt.addTextChangedListener(new TextWatcher() {
             @Override
@@ -84,6 +86,7 @@ public class ConfirmFragment extends Fragment {
         });
     }
 
+    // Đẩy edt lên trên bàn phím
     private void setDetailFocus(){
         edtDetail.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
@@ -103,6 +106,7 @@ public class ConfirmFragment extends Fragment {
         });
     }
 
+    // Set đường dẫn cho message confirm
     private void setWarning(){
         SpannableString spannableString = new SpannableString(getString(R.string.warning));
 

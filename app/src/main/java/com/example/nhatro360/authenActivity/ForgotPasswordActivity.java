@@ -22,12 +22,12 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
 
-public class ForgotPassword extends AppCompatActivity {
+public class ForgotPasswordActivity extends AppCompatActivity {
 
-    ImageView imV_back;
-    TextInputEditText editTextEmail;
-    ProgressDialog progressDialog;
-    Button btnGetPassword;
+    private ImageView imV_back;
+    private TextInputEditText editTextEmail;
+    private ProgressDialog progressDialog;
+    private Button btnGetPassword;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,15 +39,22 @@ public class ForgotPassword extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        // Gọi hàm ánh xạ view
         initUi();
+        // Gọi hàm onclick
         onClickListener();
     }
+
+    // Hàm ánh xạ view
     private void initUi(){
         imV_back = findViewById(R.id.imV_back);
         editTextEmail = findViewById(R.id.edt_email);
         btnGetPassword = findViewById(R.id.btn_get_password);
         progressDialog = new ProgressDialog(this);
     }
+
+    // Hàm bắt sự kiện click button
     private void onClickListener(){
         imV_back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -63,15 +70,17 @@ public class ForgotPassword extends AppCompatActivity {
             public void onClick(View view) {
                 String email = editTextEmail.getText().toString().trim();
                 if(email == null || email == ""){
-                    Toast.makeText(ForgotPassword.this, "Vui lòng nhập email!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ForgotPasswordActivity.this, "Vui lòng nhập email!", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                Validate validate = new Validate(ForgotPassword.this);
+                Validate validate = new Validate(ForgotPasswordActivity.this);
                 if(!validate.checkValidateEmail(email)) return;
                 onClickGetPassword(email);
             }
         });
     }
+
+    // Hiển thị thông báo và gửi email xác thực
     private void onClickGetPassword(String email){
         progressDialog.setTitle("Loading...");
         progressDialog.setMessage("Đang gửi email xác nhận!");
@@ -83,14 +92,14 @@ public class ForgotPassword extends AppCompatActivity {
                     public void onComplete(@NonNull Task<Void> task) {
                         progressDialog.dismiss();
                         if (task.isSuccessful()) {
-                            Toast.makeText(ForgotPassword.this, "Đã gửi email thành công. Vui lòng truy cập email để đổi mật khẩu!",
+                            Toast.makeText(ForgotPasswordActivity.this, "Đã gửi email thành công. Vui lòng truy cập email để đổi mật khẩu!",
                                     Toast.LENGTH_LONG).show();
                             Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
                             startActivity(intent);
                             finish();
                         }
                         else{
-                            Toast.makeText(ForgotPassword.this, "Đã có lỗi xảy ra. Vui lòng thử lại!",
+                            Toast.makeText(ForgotPasswordActivity.this, "Đã có lỗi xảy ra. Vui lòng thử lại!",
                                     Toast.LENGTH_LONG).show();
                         }
                     }

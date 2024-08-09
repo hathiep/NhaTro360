@@ -45,6 +45,7 @@ public class InformationFragment extends Fragment {
         return view;
     }
 
+    // Hàm ánh xạ view
     private void init(View view){
         viewModel = new ViewModelProvider(requireActivity()).get(CreateRoomViewModel.class);
         room = viewModel.getRoom();
@@ -77,11 +78,11 @@ public class InformationFragment extends Fragment {
         listTvUtilites.add(view.findViewById(R.id.tv_fridge));
         listTvUtilites.add(view.findViewById(R.id.tv_washing_machine));
 
-        // Set initial data from ViewModel
+        // Set dữ liệu từ ViewModel
         edtRoomPrice.setText(room.getPrice());
         edtRoomArea.setText(room.getArea());
 
-        // Update UI based on room data
+        // Update thuộc tính từ dữ liệu trên View Model (nếu có)
         updateUIBasedOnRoomData();
     }
 
@@ -95,10 +96,15 @@ public class InformationFragment extends Fragment {
         }
     }
 
+    // Hàm bắt sự kiện click các lựa chọn
     private void setOnclickTextView(){
+        // Nếu Cho thuê được click
         onClickPostType(tvRentRoom, tvShareRoom, 0);
+        // Nếu Tìm người ở ghép được click
         onClickPostType(tvShareRoom, tvRentRoom, 1);
+        // Bắt sự kiện click 4 loại phòng
         for(int i=0; i<4; i++) onClickRoomType(listTvRoomType.get(i), i);
+        // Bắt sự kiện click tiện ích phòng
         onClickUtilities();
     }
 
@@ -111,8 +117,10 @@ public class InformationFragment extends Fragment {
     }
 
     private void updatePostType(TextView tv1, TextView tv2){
+        // TV được chọn màu nền xanh, màu chữ trắng
         tv1.setTextColor(getResources().getColor(R.color.white));
         tv1.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.blue2)));
+        // Tv còn lại màu nền trắng, màu chữ xanh
         tv2.setTextColor(getResources().getColor(R.color.blue2));
         tv2.setBackgroundTintList(null);
     }
@@ -126,10 +134,12 @@ public class InformationFragment extends Fragment {
     }
 
     private void updateRoomType(TextView tv){
+        // Chuyển hết tv thành màu nền trắng, màu chữ xanh
         for(int i=0; i<4; i++){
             listTvRoomType.get(i).setTextColor(getResources().getColor(R.color.blue2));
             listTvRoomType.get(i).setBackgroundTintList(null);
         }
+        // TV được chọn màu nền xanh, màu chữ trắng
         tv.setTextColor(getResources().getColor(R.color.white));
         tv.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.blue2)));
     }
@@ -156,9 +166,11 @@ public class InformationFragment extends Fragment {
 
     private void updateUtilityUI(ImageView imv, TextView tv, boolean isEnabled) {
         if (isEnabled) {
+            // imv và tv được chọn màu xanh
             imv.setColorFilter(ContextCompat.getColor(imv.getContext(), R.color.blue2), PorterDuff.Mode.SRC_IN);
             tv.setTextColor(ContextCompat.getColor(tv.getContext(), R.color.blue2));
         } else {
+            // imv và tv bỏ chọn màu xám
             imv.setColorFilter(ContextCompat.getColor(imv.getContext(), R.color.gray3), PorterDuff.Mode.SRC_IN);
             tv.setTextColor(ContextCompat.getColor(tv.getContext(), R.color.gray3));
         }

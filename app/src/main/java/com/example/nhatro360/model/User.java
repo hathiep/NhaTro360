@@ -6,16 +6,19 @@ public class User {
     private String id, fullName, email, phone;
     private List<String> savedRooms;
     private List<String> postedRooms;
+    private List<Notification> notifications;
 
     public User() {
     }
 
-    public User(String fullName, String email, String phone, List<String> savedRooms, List<String> postedRooms) {
+    public User(String id, String fullName, String email, String phone, List<String> savedRooms, List<String> postedRooms, List<Notification> notifications) {
+        this.id = id;
         this.fullName = fullName;
         this.email = email;
         this.phone = phone;
         this.savedRooms = savedRooms;
         this.postedRooms = postedRooms;
+        this.notifications = notifications;
     }
 
     public String getId() {
@@ -64,5 +67,13 @@ public class User {
 
     public void setPostedRooms(List<String> postedRooms) {
         this.postedRooms = postedRooms;
+    }
+
+    public List<Notification> getNotifications() {
+        return notifications;
+    }
+
+    public void setNotifications(List<Notification> notifications) {
+        this.notifications = notifications;
     }
 }

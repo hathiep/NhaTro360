@@ -60,13 +60,8 @@ public class AddressFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_address, container, false);
 
-        edtProvince = view.findViewById(R.id.edt_province);
-        edtDistrict = view.findViewById(R.id.edt_district);
-        edtWard = view.findViewById(R.id.edt_ward);
-        edtStreet = view.findViewById(R.id.edt_street);
-        provinceId = "";
-        districtId = "";
-        wardId = "";
+        init(view);
+
         try {
             getArray();
         } catch (IOException e) {
@@ -95,6 +90,17 @@ public class AddressFragment extends Fragment {
         return view;
     }
 
+    private void init(View view){
+        edtProvince = view.findViewById(R.id.edt_province);
+        edtDistrict = view.findViewById(R.id.edt_district);
+        edtWard = view.findViewById(R.id.edt_ward);
+        edtStreet = view.findViewById(R.id.edt_street);
+        provinceId = "";
+        districtId = "";
+        wardId = "";
+    }
+
+    // Lấy danh sách tỉnh, huyện, xã từ file provinces.json
     private void getArray() throws IOException, JSONException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(getActivity().getAssets().open("provinces.json")));
         StringBuilder jsonBuilder = new StringBuilder();
@@ -108,6 +114,7 @@ public class AddressFragment extends Fragment {
         wardsArray = sortArray(jsonObject.getJSONArray("ward"), false);
     }
 
+    // Sắp xếp theo tên
     private JSONArray sortArray(JSONArray arr, boolean prov) throws JSONException {
         List<JSONObject> list = new ArrayList<>();
         int x = 0;

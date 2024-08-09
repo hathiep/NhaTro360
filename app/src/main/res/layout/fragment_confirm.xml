@@ -70,7 +70,8 @@
             android:paddingHorizontal="10dp"
             android:textColor="@color/black2"
             android:textSize="16sp"
-            android:ellipsize="end"/>
+            android:ellipsize="end"
+            android:singleLine="true" />
 
         <TextView
             android:layout_width="wrap_content"

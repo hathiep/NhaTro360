@@ -41,6 +41,7 @@ public class NotificationsFragment extends Fragment {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         String currentUserEmail = FirebaseAuth.getInstance().getCurrentUser().getEmail();
 
+        // Lấy danh sách thông báo trên firebase
         db.collection("users").whereEqualTo("email", currentUserEmail).get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
