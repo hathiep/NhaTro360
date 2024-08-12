@@ -24,6 +24,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.*;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class PostedRoomsFragment extends Fragment  {
@@ -116,10 +118,25 @@ public class PostedRoomsFragment extends Fragment  {
                             room.setId(roomId);
                             rooms.add(room);
                         }
+                        Collections.reverse(rooms);
+                        sortRoomsByTimePosted(rooms);
                         fragmentSearchedRoom.updateRoomList(rooms);
                     } else {
                         Log.d("Firestore", "Error getting documents: ", task.getException());
                     }
                 });
+    }
+
+    // Hàm sắp xếp theo thời gian đăng
+    private void sortRoomsByTimePosted(List<Room> rooms) {
+        Collections.sort(rooms, new Comparator<Room>() {
+            @Override
+            public int compare(Room room1, Room room2) {
+                if (room1.getTimePosted() == null || room2.getTimePosted() == null) {
+                    return 0;
+                }
+                return room2.getTimePosted().compareTo(room1.getTimePosted());
+            }
+        });
     }
 }
