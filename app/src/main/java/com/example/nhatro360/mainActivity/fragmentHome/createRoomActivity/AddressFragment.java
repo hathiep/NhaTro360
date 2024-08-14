@@ -173,16 +173,39 @@ public class AddressFragment extends Fragment {
                 Address address = addresses.get(0);
                 String province = address.getAdminArea();
                 String district = address.getSubAdminArea();
-                String ward = address.getSubLocality();
+                String ward = address.getLocality();
+                String street = address.getThoroughfare();
                 String houseNumber = address.getFeatureName();
+
+                String fullAddress = address.getAddressLine(0);
+
+                if (fullAddress != null) {
+                    // Tách chuỗi dựa trên dấu phẩy
+                    String[] addressParts = fullAddress.split(",");
+
+                    if (addressParts.length >= 2) {
+                        // Phần tử thứ 2 là phường/xã
+                        ward = addressParts[1].trim();
+
+                        // Log kết quả để kiểm tra
+                        Log.d(TAG, "Ward (Phường/Xã): " + ward);
+
+                        // Cập nhật vào EditText hoặc các trường giao diện khác
+                        edtWard.setText(ward);
+                    } else {
+                        Log.e(TAG, "Không thể tìm thấy Phường/Xã trong địa chỉ");
+                    }
+                } else {
+                    Log.d(TAG, "No address line found");
+                }
 
                 // Nếu không có số nhà, sử dụng tọa độ
                 if (houseNumber == null || houseNumber.isEmpty()) {
                     houseNumber = latitude + ", " + longitude;
                 }
-                String street = houseNumber + ", " + address.getThoroughfare();
+                if(street.equals("null") || street.equals("Unnamed")) edtStreet.setText(houseNumber);
+                else edtStreet.setText(houseNumber + ", " + address.getThoroughfare());
 
-                edtStreet.setText(street);
                 provinceIds = new ArrayList<>();
                 for (int i = 0; i < provincesArray.length(); i++) {
                     JSONObject provinceObject = provincesArray.getJSONObject(i);
@@ -195,6 +218,8 @@ public class AddressFragment extends Fragment {
                         provinceId = provinceIds.get(provincePosition);
                         fetchDistricts(provinceId);
                     } else {
+                        edtProvince.setText(null);
+                        Toast.makeText(getActivity(),"Không tìm thấy Tỉnh/TP. Vui lòng chọn trong danh sách!", Toast.LENGTH_SHORT).show();
                         Log.e(TAG, "Province not found or index out of bounds " + provincePosition);
                     }
                 }
@@ -210,6 +235,8 @@ public class AddressFragment extends Fragment {
                         districtId = districtIds.get(districtPosition);
                         fetchWards(districtId);
                     } else {
+                        edtDistrict.setText(null);
+                        Toast.makeText(getActivity(),"Không tìm thấy Quận/Huyện. Vui lòng chọn trong danh sách!", Toast.LENGTH_SHORT).show();
                         Log.e(TAG, "District not found or index out of bounds " + districtPosition);
                     }
                 }
@@ -220,10 +247,13 @@ public class AddressFragment extends Fragment {
                 }
                 if (ward != null) {
                     int wardPosition = findWardPosition(ward.trim(), districtId);
+                    Log.e(TAG, "wardPosition" + wardPosition);
                     if (wardPosition >= 0) {
-                        edtWard.setText(ward);
+                        edtWard.setText(wardsArray.getJSONObject(wardPosition).getString("name"));
                         wardId = wardIds.get(wardPosition);
                     } else {
+                        edtWard.setText(null);
+                        Toast.makeText(getActivity(),"Không tìm thấy Phường/Xã. Vui lòng chọn trong danh sách!", Toast.LENGTH_SHORT).show();
                         Log.e(TAG, "Ward not found or index out of bounds " + wardPosition);
                     }
                 }
@@ -264,7 +294,9 @@ public class AddressFragment extends Fragment {
     private int findWardPosition(String ward, String districtId) {
         for (int i = 0; i < wardsArray.length(); i++) {
             try {
-                if (wardsArray.getJSONObject(i).getString("idDistrict").equals(districtId) && wardsArray.getJSONObject(i).getString("name").equals(ward)) {
+                if (wardsArray.getJSONObject(i).getString("idDistrict").equals(districtId) &&
+                        (wardsArray.getJSONObject(i).getString("name").contains(ward) ||
+                                ward.contains(wardsArray.getJSONObject(i).getString("name")))) {
                     return i;
                 }
             } catch (JSONException e) {
