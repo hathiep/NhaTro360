@@ -388,13 +388,6 @@ public class SearchFragment extends Fragment  {
         int roomType = listOption[1];
         int orderType = listOption[2];
 
-        Log.e(TAG, "PostType = " + postType);
-        Log.e(TAG, "RoomType = " + roomType);
-        Log.e(TAG, "OrderType = " + orderType);
-        Log.e(TAG, "Price = " + minPrice + " - " + maxPrice);
-        Log.e(TAG, "Area = " + minArea + " - " + maxArea);
-        Log.e(TAG, "" + listSearchedRoom.size());
-
         // Lọc danh sách phòng dựa trên các điều kiện
         List<Room> filteredRooms = new ArrayList<>();
         for (Room room : listSearchedRoom) {
@@ -412,20 +405,25 @@ public class SearchFragment extends Fragment  {
 
             // Lọc theo giá
             int price = Integer.parseInt(room.getPrice());
-            if (price < minPrice * 1000000 || price > maxPrice * 1000000) {
-                matches = false;
-            }
+
+            if (minPrice > 1 && maxPrice == 20 && price < minPrice * 1000000) matches = false;
+            else if (minPrice == 1 && maxPrice < 20 && price > maxPrice * 1000000) matches = false;
+            else if ((minPrice > 1 && price < minPrice * 1000000) ||
+                    (maxPrice < 20 && price > maxPrice * 1000000)) matches = false;
 
             // Lọc theo diện tích
             int area = Integer.parseInt(room.getArea());
-            if (area < minArea || area > maxArea) {
-                matches = false;
-            }
+
+            if (minArea > 10 && maxArea == 100 && area < minArea) matches = false;
+            else if (minArea == 10 && maxArea < 100 && area > maxArea) matches = false;
+            else if ((minArea > 10 && area < minArea) ||
+                    (maxArea < 100 && area > maxArea)) matches = false;
 
             if (matches) {
                 // nếu thoả mãn điều kiện lọc thì thêm vào danh sách
                 filteredRooms.add(room);
             }
+
         }
 
         // Sắp xếp danh sách phòng dựa trên điều kiện orderType
