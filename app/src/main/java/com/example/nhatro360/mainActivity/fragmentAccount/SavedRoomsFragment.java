@@ -1,5 +1,7 @@
 package com.example.nhatro360.mainActivity.fragmentAccount;
 
+import static android.content.ContentValues.TAG;
+
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -22,6 +24,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.*;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class SavedRoomsFragment extends Fragment  {
@@ -112,6 +115,8 @@ public class SavedRoomsFragment extends Fragment  {
                             rooms.add(room);
                             foundRoomIds.add(roomId);
                         }
+                        Log.e(TAG, "" + rooms);
+                        Collections.reverse(rooms);
                         fragmentSearchedRoom.updateRoomList(rooms);
 
                         // Loại bỏ các roomId không có trong kết quả truy vấn khỏi savedRooms
